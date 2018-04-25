@@ -1,0 +1,350 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.steemit.com/
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","id":1,"method":"jsonrpc.get_signature","params":{"method":"database_api.get_dynamic_global_properties"}}'
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - steem-rb/0.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Apr 2018 15:28:14 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '938'
+      Connection:
+      - keep-alive
+      Server:
+      - nginx
+      X-Jussi-Request-Id:
+      - '000543333185589033'
+      X-Amzn-Trace-Id:
+      - Root=1-5ae09e8e-4bea4800e04d88c8bcf3cb56
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST, OPTIONS
+      Access-Control-Allow-Headers:
+      - DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range
+      Strict-Transport-Security:
+      - max-age=31557600; includeSubDomains; preload
+      Content-Security-Policy:
+      - upgrade-insecure-requests
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","result":{"args":{},"ret":{"id":0,"head_block_number":0,"head_block_id":"0000000000000000000000000000000000000000","time":"1970-01-01T00:00:00","current_witness":"","total_pow":"18446744073709551615","num_pow_witnesses":0,"virtual_supply":["0",3,"@@000000021"],"current_supply":["0",3,"@@000000021"],"confidential_supply":["0",3,"@@000000021"],"current_sbd_supply":["0",3,"@@000000013"],"confidential_sbd_supply":["0",3,"@@000000013"],"total_vesting_fund_steem":["0",3,"@@000000021"],"total_vesting_shares":["0",6,"@@000000037"],"total_reward_fund_steem":["0",3,"@@000000021"],"total_reward_shares2":"0","pending_rewarded_vesting_shares":["0",6,"@@000000037"],"pending_rewarded_vesting_steem":["0",3,"@@000000021"],"sbd_interest_rate":0,"sbd_print_rate":10000,"maximum_block_size":0,"current_aslot":0,"recent_slots_filled":"0","participation_count":0,"last_irreversible_block_num":0,"vote_power_reserve_rate":40}},"id":1}'
+    http_version: 
+  recorded_at: Wed, 25 Apr 2018 15:28:14 GMT
+- request:
+    method: post
+    uri: https://api.steemit.com/
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","id":1,"method":"database_api.get_dynamic_global_properties","params":{}}'
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - steem-rb/0.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Apr 2018 15:28:15 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - nginx
+      X-Jussi-Request-Id:
+      - '000114008374333168'
+      X-Amzn-Trace-Id:
+      - Root=1-5ae09e8e-97e8a95e32391bc3ac52fcab
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST, OPTIONS
+      Access-Control-Allow-Headers:
+      - DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range
+      Strict-Transport-Security:
+      - max-age=31557600; includeSubDomains; preload
+      Content-Security-Policy:
+      - upgrade-insecure-requests
+    body:
+      encoding: ASCII-8BIT
+      string: '{"jsonrpc":"2.0","result":{"id":0,"head_block_number":21879405,"head_block_id":"014dda6d16b0fc03c91c9d592c3a056bee5483f5","time":"2018-04-25T15:28:12","current_witness":"someguy123","total_pow":514415,"num_pow_witnesses":172,"virtual_supply":["271240775883",3,"@@000000021"],"current_supply":["267449057095",3,"@@000000021"],"confidential_supply":["0",3,"@@000000021"],"current_sbd_supply":["12239668249",3,"@@000000013"],"confidential_sbd_supply":["0",3,"@@000000013"],"total_vesting_fund_steem":["190460261835",3,"@@000000021"],"total_vesting_shares":["387982515270615761",6,"@@000000037"],"total_reward_fund_steem":["0",3,"@@000000021"],"total_reward_shares2":"0","pending_rewarded_vesting_shares":["385007033315333",6,"@@000000037"],"pending_rewarded_vesting_steem":["187652635",3,"@@000000021"],"sbd_interest_rate":0,"sbd_print_rate":10000,"maximum_block_size":65536,"current_aslot":21944964,"recent_slots_filled":"340282366920938463463374607431768211455","participation_count":128,"last_irreversible_block_num":21879384,"vote_power_reserve_rate":10},"id":1}'
+    http_version: 
+  recorded_at: Wed, 25 Apr 2018 15:28:15 GMT
+- request:
+    method: post
+    uri: https://api.steemit.com/
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","id":1,"method":"block_api.get_block_header","params":{"block_num":21879384}}'
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - steem-rb/0.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Apr 2018 15:28:15 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '239'
+      Connection:
+      - keep-alive
+      Server:
+      - nginx
+      X-Jussi-Request-Id:
+      - '000667486105658084'
+      X-Amzn-Trace-Id:
+      - Root=1-5ae09e8f-6500fd0d7a372c8645e527bb
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST, OPTIONS
+      Access-Control-Allow-Headers:
+      - DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range
+      Strict-Transport-Security:
+      - max-age=31557600; includeSubDomains; preload
+      Content-Security-Policy:
+      - upgrade-insecure-requests
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","result":{"header":{"previous":"014dda57316751197d9bde52241a31c8a6a3ec71","timestamp":"2018-04-25T15:27:09","witness":"aggroed","transaction_merkle_root":"11eb9ba2e5407eac6d44e132c00ee811b0ed1b53","extensions":[]}},"id":1}'
+    http_version: 
+  recorded_at: Wed, 25 Apr 2018 15:28:15 GMT
+- request:
+    method: post
+    uri: https://api.steemit.com/
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","id":2,"method":"database_api.get_transaction_hex","params":{"trx":{"ref_block_num":55895,"ref_block_prefix":424765233,"expiration":"2018-04-25T15:38:12","extensions":[],"operations":[["vote",{"voter":"social","author":"steemit","permlink":"firstpost","weight":10000}]],"signatures":[]}}}'
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - steem-rb/0.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      Host:
+      - api.steemit.com
+      Content-Length:
+      - '90'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Apr 2018 15:28:16 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '126'
+      Connection:
+      - keep-alive
+      Server:
+      - nginx
+      X-Jussi-Request-Id:
+      - '000527343608708544'
+      X-Amzn-Trace-Id:
+      - Root=1-5ae09e90-c8b56bd67ec45a68c337f018
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST, OPTIONS
+      Access-Control-Allow-Headers:
+      - DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range
+      Strict-Transport-Security:
+      - max-age=31557600; includeSubDomains; preload
+      Content-Security-Policy:
+      - upgrade-insecure-requests
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","result":{"hex":"57da31675119e4a0e05a010006736f6369616c07737465656d6974096669727374706f737410270000"},"id":2}'
+    http_version: 
+  recorded_at: Wed, 25 Apr 2018 15:28:16 GMT
+- request:
+    method: post
+    uri: https://api.steemit.com/
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","id":1,"method":"jsonrpc.get_signature","params":{"method":"block_api.get_block_header"}}'
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - steem-rb/0.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Apr 2018 15:32:27 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '67'
+      Connection:
+      - keep-alive
+      Server:
+      - nginx
+      X-Jussi-Request-Id:
+      - '000383492365125303'
+      X-Amzn-Trace-Id:
+      - Root=1-5ae09f8b-10f3cd8e0691b6e08543e360
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST, OPTIONS
+      Access-Control-Allow-Headers:
+      - DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range
+      Strict-Transport-Security:
+      - max-age=31557600; includeSubDomains; preload
+      Content-Security-Policy:
+      - upgrade-insecure-requests
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","result":{"args":{"block_num":0},"ret":{}},"id":1}'
+    http_version: 
+  recorded_at: Wed, 25 Apr 2018 15:32:27 GMT
+- request:
+    method: post
+    uri: https://api.steemit.com/
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","id":2,"method":"jsonrpc.get_signature","params":{"method":"database_api.get_transaction_hex"}}'
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - steem-rb/0.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Apr 2018 15:36:31 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '191'
+      Connection:
+      - keep-alive
+      Server:
+      - nginx
+      X-Jussi-Request-Id:
+      - '000708236251476443'
+      X-Amzn-Trace-Id:
+      - Root=1-5ae0a07e-95887600d8ba2ebe4b0a04c4
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST, OPTIONS
+      Access-Control-Allow-Headers:
+      - DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range
+      Strict-Transport-Security:
+      - max-age=31557600; includeSubDomains; preload
+      Content-Security-Policy:
+      - upgrade-insecure-requests
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","result":{"args":{"trx":{"ref_block_num":0,"ref_block_prefix":0,"expiration":"1970-01-01T00:00:00","operations":[],"extensions":[],"signatures":[]}},"ret":{"hex":""}},"id":2}'
+    http_version: 
+  recorded_at: Wed, 25 Apr 2018 15:36:31 GMT
+- request:
+    method: post
+    uri: https://api.steemit.com/
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","id":1,"method":"jsonrpc.get_signature","params":{"method":"database_api.get_transaction_hex"}}'
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - steem-rb/0.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Apr 2018 15:41:51 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '191'
+      Connection:
+      - keep-alive
+      Server:
+      - nginx
+      X-Jussi-Request-Id:
+      - '000933363824003009'
+      X-Amzn-Trace-Id:
+      - Root=1-5ae0a1bf-c64da720c4d85bc0c46bcf50
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST, OPTIONS
+      Access-Control-Allow-Headers:
+      - DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range
+      Strict-Transport-Security:
+      - max-age=31557600; includeSubDomains; preload
+      Content-Security-Policy:
+      - upgrade-insecure-requests
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","result":{"args":{"trx":{"ref_block_num":0,"ref_block_prefix":0,"expiration":"1970-01-01T00:00:00","operations":[],"extensions":[],"signatures":[]}},"ret":{"hex":""}},"id":1}'
+    http_version: 
+  recorded_at: Wed, 25 Apr 2018 15:41:51 GMT
+recorded_with: VCR 4.0.0

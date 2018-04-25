@@ -1,0 +1,101 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.steemit.com/
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","id":1,"method":"jsonrpc.get_signature","params":{"method":"database_api.get_witness_schedule"}}'
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - steem-rb/0.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Apr 2018 15:29:39 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '549'
+      Connection:
+      - keep-alive
+      Server:
+      - nginx
+      X-Jussi-Request-Id:
+      - '000104805506039513'
+      X-Amzn-Trace-Id:
+      - Root=1-5ae09ee3-a2e0b9063526af8cd2b93af6
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST, OPTIONS
+      Access-Control-Allow-Headers:
+      - DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range
+      Strict-Transport-Security:
+      - max-age=31557600; includeSubDomains; preload
+      Content-Security-Policy:
+      - upgrade-insecure-requests
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","result":{"args":{},"ret":{"id":0,"current_virtual_time":"0","next_shuffle_block_num":0,"current_shuffled_witnesses":[],"num_scheduled_witnesses":176,"top19_weight":23,"timeshare_weight":194,"miner_weight":3,"witness_pay_normalization_factor":0,"median_props":{"account_creation_fee":["1",3,"@@000000021"],"maximum_block_size":131072,"sbd_interest_rate":1000,"account_subsidy_limit":0},"majority_version":"0.0.0","max_voted_witnesses":176,"max_miner_witnesses":23,"max_runner_witnesses":194,"hardfork_required_witnesses":3}},"id":1}'
+    http_version: 
+  recorded_at: Wed, 25 Apr 2018 15:29:39 GMT
+- request:
+    method: post
+    uri: https://api.steemit.com/
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","id":1,"method":"database_api.get_witness_schedule","params":{}}'
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - steem-rb/0.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Apr 2018 15:29:41 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '804'
+      Connection:
+      - keep-alive
+      Server:
+      - nginx
+      X-Jussi-Request-Id:
+      - '000657645549135219'
+      X-Amzn-Trace-Id:
+      - Root=1-5ae09ee4-882a549559470dec10ebecd2
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST, OPTIONS
+      Access-Control-Allow-Headers:
+      - DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range
+      Strict-Transport-Security:
+      - max-age=31557600; includeSubDomains; preload
+      Content-Security-Policy:
+      - upgrade-insecure-requests
+    body:
+      encoding: UTF-8
+      string: '{"jsonrpc":"2.0","result":{"id":0,"current_virtual_time":"320587002322261677024951135","next_shuffle_block_num":21879438,"current_shuffled_witnesses":["someguy123","netuoso","clayop","pfunk","aizensou","timcliff","jesta","ausbitbank","xeldal","followbtcnews","anyx","pharesim","good-karma","roelandp","jerrybanfield","gtg","thecryptodrive","smooth.witness","blocktrades","lukestokes.mhth","aggroed"],"num_scheduled_witnesses":21,"top19_weight":1,"timeshare_weight":5,"miner_weight":1,"witness_pay_normalization_factor":25,"median_props":{"account_creation_fee":["100",3,"@@000000021"],"maximum_block_size":65536,"sbd_interest_rate":0,"account_subsidy_limit":0},"majority_version":"0.19.2","max_voted_witnesses":20,"max_miner_witnesses":0,"max_runner_witnesses":1,"hardfork_required_witnesses":17},"id":1}'
+    http_version: 
+  recorded_at: Wed, 25 Apr 2018 15:29:41 GMT
+recorded_with: VCR 4.0.0
