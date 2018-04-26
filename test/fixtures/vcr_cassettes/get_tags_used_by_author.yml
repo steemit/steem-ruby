@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:56 GMT
+      - Thu, 26 Apr 2018 15:48:27 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000385540839818667'
+      - '000819153721949379'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ef3-b6b65440855af500993031c0
+      - Root=1-5ae1f4cb-2e828706e3863c8c3d02049e
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{"author":""},"ret":{"tags":[]}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:56 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:28 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,7 +70,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:56 GMT
+      - Thu, 26 Apr 2018 15:48:28 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -80,9 +80,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000207887918726326'
+      - '000118199684604633'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ef4-e40cd0607e3c4b2013439ca0
+      - Root=1-5ae1f4cc-1feff9d9b6c9f8dca1b084fc
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -97,7 +97,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"tags":[]},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:56 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:28 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -109,7 +109,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -120,7 +120,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:57 GMT
+      - Thu, 26 Apr 2018 15:48:34 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -130,9 +130,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000015725259015083'
+      - '000532905782746929'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ef5-f5aa079ed9cdcf95f59b9299
+      - Root=1-5ae1f4d1-7e8b9a4c199c0098f507c7cc
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -147,8 +147,8 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","error":{"code":-32003,"message":"Assert Exception:acnt
         != nullptr: Author not found","data":{"code":10,"name":"assert_exception","message":"Assert
-        Exception","stack":[{"context":{"level":"error","file":"tags_api.cpp","line":99,"method":"get_tags_used_by_author","hostname":"","timestamp":"2018-04-25T15:29:57"},"format":"acnt
+        Exception","stack":[{"context":{"level":"error","file":"tags_api.cpp","line":99,"method":"get_tags_used_by_author","hostname":"","timestamp":"2018-04-26T15:48:34"},"format":"acnt
         != nullptr: Author not found","data":{}}]}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:57 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:34 GMT
 recorded_with: VCR 4.0.0

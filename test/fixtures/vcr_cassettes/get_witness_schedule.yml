@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:39 GMT
+      - Thu, 26 Apr 2018 15:49:31 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000104805506039513'
+      - '000070468029672248'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ee3-a2e0b9063526af8cd2b93af6
+      - Root=1-5ae1f50a-719fb5d0faffab90ddfebc40
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -46,9 +46,9 @@ http_interactions:
       - upgrade-insecure-requests
     body:
       encoding: UTF-8
-      string: '{"jsonrpc":"2.0","result":{"args":{},"ret":{"id":0,"current_virtual_time":"0","next_shuffle_block_num":0,"current_shuffled_witnesses":[],"num_scheduled_witnesses":176,"top19_weight":23,"timeshare_weight":194,"miner_weight":3,"witness_pay_normalization_factor":0,"median_props":{"account_creation_fee":["1",3,"@@000000021"],"maximum_block_size":131072,"sbd_interest_rate":1000,"account_subsidy_limit":0},"majority_version":"0.0.0","max_voted_witnesses":176,"max_miner_witnesses":23,"max_runner_witnesses":194,"hardfork_required_witnesses":3}},"id":1}'
+      string: '{"jsonrpc":"2.0","result":{"args":{},"ret":{"id":0,"current_virtual_time":"0","next_shuffle_block_num":0,"current_shuffled_witnesses":[],"num_scheduled_witnesses":176,"top19_weight":39,"timeshare_weight":184,"miner_weight":2,"witness_pay_normalization_factor":0,"median_props":{"account_creation_fee":["1",3,"@@000000021"],"maximum_block_size":131072,"sbd_interest_rate":1000,"account_subsidy_limit":0},"majority_version":"0.0.0","max_voted_witnesses":176,"max_miner_witnesses":39,"max_runner_witnesses":184,"hardfork_required_witnesses":2}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:39 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:31 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,19 +70,19 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:41 GMT
+      - Thu, 26 Apr 2018 15:49:31 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '804'
+      - '801'
       Connection:
       - keep-alive
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000657645549135219'
+      - '000152392884798554'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ee4-882a549559470dec10ebecd2
+      - Root=1-5ae1f50b-48621dc47c612498f1473f74
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -95,7 +95,7 @@ http_interactions:
       - upgrade-insecure-requests
     body:
       encoding: UTF-8
-      string: '{"jsonrpc":"2.0","result":{"id":0,"current_virtual_time":"320587002322261677024951135","next_shuffle_block_num":21879438,"current_shuffled_witnesses":["someguy123","netuoso","clayop","pfunk","aizensou","timcliff","jesta","ausbitbank","xeldal","followbtcnews","anyx","pharesim","good-karma","roelandp","jerrybanfield","gtg","thecryptodrive","smooth.witness","blocktrades","lukestokes.mhth","aggroed"],"num_scheduled_witnesses":21,"top19_weight":1,"timeshare_weight":5,"miner_weight":1,"witness_pay_normalization_factor":25,"median_props":{"account_creation_fee":["100",3,"@@000000021"],"maximum_block_size":65536,"sbd_interest_rate":0,"account_subsidy_limit":0},"majority_version":"0.19.2","max_voted_witnesses":20,"max_miner_witnesses":0,"max_runner_witnesses":1,"hardfork_required_witnesses":17},"id":1}'
+      string: '{"jsonrpc":"2.0","result":{"id":0,"current_virtual_time":"320973187430684120158027255","next_shuffle_block_num":21908628,"current_shuffled_witnesses":["jesta","curie","roelandp","blocktrades","jerrybanfield","timcliff","good-karma","netuoso","smooth.witness","followbtcnews","pfunk","xeldal","aggroed","thecryptodrive","someguy123","ausbitbank","anyx","gtg","pharesim","clayop","lukestokes.mhth"],"num_scheduled_witnesses":21,"top19_weight":1,"timeshare_weight":5,"miner_weight":1,"witness_pay_normalization_factor":25,"median_props":{"account_creation_fee":["100",3,"@@000000021"],"maximum_block_size":65536,"sbd_interest_rate":0,"account_subsidy_limit":0},"majority_version":"0.19.2","max_voted_witnesses":20,"max_miner_witnesses":0,"max_runner_witnesses":1,"hardfork_required_witnesses":17},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:41 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:31 GMT
 recorded_with: VCR 4.0.0

@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:28:24 GMT
+      - Thu, 26 Apr 2018 15:49:50 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000710259511626279'
+      - '000252159825306041'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09e98-8dd5df8e9f277568b5d8263a
+      - Root=1-5ae1f51d-e70d98aeb00983f164a41e1c
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{"account":""},"ret":{"account":"","follower_count":0,"following_count":0}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:28:24 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:50 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,7 +70,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:28:24 GMT
+      - Thu, 26 Apr 2018 15:49:51 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -80,9 +80,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000368673169611996'
+      - '000230878118623704'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09e98-2c3ee01c19aeb80c02a71bcc
+      - Root=1-5ae1f51f-9b9bf9b896d1f6c4dfa3d7dc
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -95,7 +95,7 @@ http_interactions:
       - upgrade-insecure-requests
     body:
       encoding: UTF-8
-      string: '{"jsonrpc":"2.0","result":{"account":"steemit","follower_count":2837,"following_count":0},"id":1}'
+      string: '{"jsonrpc":"2.0","result":{"account":"steemit","follower_count":2844,"following_count":0},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:28:24 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:51 GMT
 recorded_with: VCR 4.0.0

@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -23,7 +23,7 @@ http_interactions:
       Server:
       - nginx/1.13.4
       Date:
-      - Wed, 25 Apr 2018 15:30:22 GMT
+      - Thu, 26 Apr 2018 15:48:39 GMT
       Content-Type:
       - text/html
       Content-Length:
@@ -35,11 +35,11 @@ http_interactions:
       Location:
       - https://www.test.com/
       X-Dis-Request-Id:
-      - 248b10a0dd1f7fa596455fb49dd4f8dc
+      - '039641f0005a41a126215c9d4bbf9a7e'
     body:
       encoding: UTF-8
       string: "<html>\r\n<head><title>301 Moved Permanently</title></head>\r\n<body
         bgcolor=\"white\">\r\n<center><h1>301 Moved Permanently</h1></center>\r\n<hr><center>nginx/1.13.4</center>\r\n</body>\r\n</html>\r\n"
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:30:22 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:39 GMT
 recorded_with: VCR 4.0.0

@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:06 GMT
+      - Thu, 26 Apr 2018 15:49:31 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '001046674761381680'
+      - '001094411570892648'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ec2-36520e17cfef90097e3bc815
+      - Root=1-5ae1f50b-1ddf4e0053e8c93006ba4450
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{"limit":0},"ret":{"asks":[],"bids":[]}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:06 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:31 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,7 +70,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:07 GMT
+      - Thu, 26 Apr 2018 15:49:32 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -80,9 +80,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000160683424745168'
+      - '000461962957858098'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ec3-42f8bb98c0fdbb282fb13880
+      - Root=1-5ae1f50c-e16f7042a53b6d5e645752f4
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -97,7 +97,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"asks":[],"bids":[]},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:07 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:32 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -108,7 +108,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -119,7 +119,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:30:23 GMT
+      - Thu, 26 Apr 2018 15:49:53 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -129,9 +129,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '001061351213315934'
+      - '000619028677883523'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09f0f-1fe253a02205bb200e992e70
+      - Root=1-5ae1f521-4976bbb0e8f699e03a530900
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -146,7 +146,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{"limit":500},"ret":{"bids":[],"asks":[]}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:30:23 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:53 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -157,7 +157,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -168,7 +168,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:30:23 GMT
+      - Thu, 26 Apr 2018 15:49:55 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -178,9 +178,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000573245054043701'
+      - '000808912168298820'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09f0f-80c5c90c8a10f470c1f5a21c
+      - Root=1-5ae1f522-a3be3c70acb2697505e70d9a
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -195,5 +195,5 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"bids":[],"asks":[]},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:30:23 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:55 GMT
 recorded_with: VCR 4.0.0

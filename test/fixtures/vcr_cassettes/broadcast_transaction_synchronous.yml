@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:28:17 GMT
+      - Thu, 26 Apr 2018 15:48:42 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000373801499448441'
+      - '000415742165275988'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09e90-ee4f5b4e8c2aa045fec5e5b9
+      - Root=1-5ae1f4da-82dec9808cfddb66c7b994ce
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{"trx":{"ref_block_num":0,"ref_block_prefix":0,"expiration":"1970-01-01T00:00:00","operations":[],"extensions":[],"signatures":[]},"max_block_age":-1},"ret":{"id":"0000000000000000000000000000000000000000","block_num":0,"trx_num":0,"expired":false}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:28:17 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:42 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,7 +70,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:28:18 GMT
+      - Thu, 26 Apr 2018 15:48:42 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -80,9 +80,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000611198085164248'
+      - '000087252248912852'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09e92-77d2881a07a42fee02ab7bb8
+      - Root=1-5ae1f4da-8e9fd8f198350ef39ba53ccb
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -97,8 +97,8 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '{"jsonrpc":"2.0","error":{"code":-32000,"message":"Assert Exception:operations.size()
         > 0: A transaction must have at least one operation","data":{"code":10,"name":"assert_exception","message":"Assert
-        Exception","stack":[{"context":{"level":"error","file":"transaction.cpp","line":37,"method":"validate","hostname":"","timestamp":"2018-04-25T15:28:18"},"format":"operations.size()
-        > 0: A transaction must have at least one operation","data":{"trx":{"ref_block_num":0,"ref_block_prefix":0,"expiration":"1970-01-01T00:00:00","operations":[],"extensions":[]}}},{"context":{"level":"warn","file":"database.cpp","line":3032,"method":"_apply_transaction","hostname":"","timestamp":"2018-04-25T15:28:18"},"format":"","data":{"trx":{"ref_block_num":0,"ref_block_prefix":0,"expiration":"1970-01-01T00:00:00","operations":[],"extensions":[],"signatures":[]}}},{"context":{"level":"warn","file":"database.cpp","line":705,"method":"push_transaction","hostname":"","timestamp":"2018-04-25T15:28:18"},"format":"","data":{"trx":{"ref_block_num":0,"ref_block_prefix":0,"expiration":"1970-01-01T00:00:00","operations":[],"extensions":[],"signatures":[]}}}]}},"id":1}'
+        Exception","stack":[{"context":{"level":"error","file":"transaction.cpp","line":37,"method":"validate","hostname":"","timestamp":"2018-04-26T15:48:42"},"format":"operations.size()
+        > 0: A transaction must have at least one operation","data":{"trx":{"ref_block_num":0,"ref_block_prefix":0,"expiration":"1970-01-01T00:00:00","operations":[],"extensions":[]}}},{"context":{"level":"warn","file":"database.cpp","line":3032,"method":"_apply_transaction","hostname":"","timestamp":"2018-04-26T15:48:42"},"format":"","data":{"trx":{"ref_block_num":0,"ref_block_prefix":0,"expiration":"1970-01-01T00:00:00","operations":[],"extensions":[],"signatures":[]}}},{"context":{"level":"warn","file":"database.cpp","line":705,"method":"push_transaction","hostname":"","timestamp":"2018-04-26T15:48:42"},"format":"","data":{"trx":{"ref_block_num":0,"ref_block_prefix":0,"expiration":"1970-01-01T00:00:00","operations":[],"extensions":[],"signatures":[]}}}]}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:28:18 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:42 GMT
 recorded_with: VCR 4.0.0

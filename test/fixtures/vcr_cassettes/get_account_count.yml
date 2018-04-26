@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:28:25 GMT
+      - Thu, 26 Apr 2018 15:48:37 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000037745953079395'
+      - '000873851371240942'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09e99-ab266a94948ceb361419bd25
+      - Root=1-5ae1f4d5-8559502cce2d3ad60a6fa66a
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -46,7 +46,7 @@ http_interactions:
       - upgrade-insecure-requests
     body:
       encoding: UTF-8
-      string: '{"jsonrpc":"2.0","result":963800,"id":1}'
+      string: '{"jsonrpc":"2.0","result":964393,"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:28:25 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:38 GMT
 recorded_with: VCR 4.0.0

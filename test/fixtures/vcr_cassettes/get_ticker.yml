@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:30:23 GMT
+      - Thu, 26 Apr 2018 15:49:57 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000558007468568772'
+      - '001015519212478861'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09f0f-0b878b06d472f04ac51bc5c8
+      - Root=1-5ae1f525-bb1a085a0ae636f21df5e75a
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{},"ret":{"latest":"0.00000000000000000","lowest_ask":"0.00000000000000000","highest_bid":"0.00000000000000000","percent_change":"0.00000000000000000","steem_volume":["0",3,"@@000000021"],"sbd_volume":["0",3,"@@000000013"]}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:30:23 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:57 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,19 +70,19 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:30:24 GMT
+      - Thu, 26 Apr 2018 15:49:58 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '262'
+      - '260'
       Connection:
       - keep-alive
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000452297438885343'
+      - '000465256942848311'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09f10-4076e539c3a9527c39b9a60e
+      - Root=1-5ae1f525-3cdd7258da2feba485080b38
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -95,7 +95,7 @@ http_interactions:
       - upgrade-insecure-requests
     body:
       encoding: UTF-8
-      string: '{"jsonrpc":"2.0","result":{"latest":"1.06899999999999995","lowest_ask":"1.10491999999999990","highest_bid":"1.10471806674338313","percent_change":"0.00000000000000000","steem_volume":["12342691",3,"@@000000021"],"sbd_volume":["13500705",3,"@@000000013"]},"id":1}'
+      string: '{"jsonrpc":"2.0","result":{"latest":"1.11824324324324320","lowest_ask":"1.14640431014289068","highest_bid":"1.14005441787197470","percent_change":"0.00000000000000000","steem_volume":["6644875",3,"@@000000021"],"sbd_volume":["7494557",3,"@@000000013"]},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:30:24 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:58 GMT
 recorded_with: VCR 4.0.0

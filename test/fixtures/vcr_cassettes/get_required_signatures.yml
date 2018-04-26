@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:01 GMT
+      - Thu, 26 Apr 2018 15:49:29 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000096779404701440'
+      - '000255008968195327'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ebd-8942d0daa44a5a0634757ab1
+      - Root=1-5ae1f509-f0eb698b02e3f2b35875603f
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{"trx":{"ref_block_num":0,"ref_block_prefix":0,"expiration":"1970-01-01T00:00:00","operations":[],"extensions":[],"signatures":[]},"available_keys":[]},"ret":{"keys":[]}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:01 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:29 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,7 +70,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:02 GMT
+      - Thu, 26 Apr 2018 15:49:29 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -80,9 +80,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000598078988829724'
+      - '000903394070734331'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ebe-93af7af95d586c4f37bdf656
+      - Root=1-5ae1f509-965573000d2cae03ab368d0b
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -97,5 +97,5 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"keys":[]},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:02 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:29 GMT
 recorded_with: VCR 4.0.0

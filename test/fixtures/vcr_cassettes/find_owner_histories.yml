@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:42 GMT
+      - Thu, 26 Apr 2018 15:49:24 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000001771056257195'
+      - '000232121144645503'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ee6-bd8735a0bebab7c024c515e0
+      - Root=1-5ae1f504-ad56c2f47756a010e93e2a78
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{"owner":""},"ret":{"owner_auths":[]}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:42 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:24 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,7 +70,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:44 GMT
+      - Thu, 26 Apr 2018 15:49:25 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -80,9 +80,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000665353893151888'
+      - '000537610232589147'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ee7-7d1e3b0d1e33afc658ec7d11
+      - Root=1-5ae1f504-036608409c5100744e0c0258
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -97,5 +97,5 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"owner_auths":[{"id":97100,"account":"steemit","previous_owner_authority":{"weight_threshold":1,"account_auths":[],"key_auths":[["STM5tfrdPG1Ycjwa9FuBUueDFFyygndBLXdVEEs2c9eRKScnFk6vM",1],["STM71f6yWztimJuREVyyMXNqAVbx1FzPVW6LLXNoQ35dHwKuszmHX",1],["STM7U3ymhUTuKME72dpdpQkdQvh722gTLjKBKtmKQPPWgtkr418Nf",1]]},"last_valid_time":"2018-04-16T07:58:57"},{"id":97121,"account":"steemit","previous_owner_authority":{"weight_threshold":1,"account_auths":[],"key_auths":[["STM5tfrdPG1Ycjwa9FuBUueDFFyygndBLXdVEEs2c9eRKScnFk6vM",1],["STM71f6yWztimJuREVyyMXNqAVbx1FzPVW6LLXNoQ35dHwKuszmHX",1],["STM7TCZKisQnvR69CK9BaL6W4SJn2cXYwkfWYRicoVGGzhtFswxMH",1],["STM7U3ymhUTuKME72dpdpQkdQvh722gTLjKBKtmKQPPWgtkr418Nf",1]]},"last_valid_time":"2018-04-16T10:00:48"}]},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:44 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:25 GMT
 recorded_with: VCR 4.0.0

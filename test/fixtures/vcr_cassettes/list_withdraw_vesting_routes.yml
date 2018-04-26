@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:28 GMT
+      - Thu, 26 Apr 2018 15:48:59 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '001064459174183196'
+      - '000653454221494875'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ed8-3b165fb00664236a1062fa8a
+      - Root=1-5ae1f4eb-b271205001637b405ba3f460
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{"start":null,"limit":0,"order":"by_name"},"ret":{"routes":[]}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:28 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:59 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,7 +70,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:39 GMT
+      - Thu, 26 Apr 2018 15:48:59 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -80,9 +80,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000817747725381750'
+      - '000943526304573320'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ee3-12ef16d07e81b11674f49d18
+      - Root=1-5ae1f4eb-6737d24783b0434b06b08530
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -97,5 +97,5 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"routes":[]},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:39 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:59 GMT
 recorded_with: VCR 4.0.0

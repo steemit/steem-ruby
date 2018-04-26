@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:28:19 GMT
+      - Thu, 26 Apr 2018 15:48:43 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000521245981134575'
+      - '000853253530529099'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09e92-5c66534da36fc1a875aba8f0
+      - Root=1-5ae1f4db-eac41a0bfaab1433e582e5a7
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{"block":{"previous":"0000000000000000000000000000000000000000","timestamp":"1970-01-01T00:00:00","witness":"","transaction_merkle_root":"0000000000000000000000000000000000000000","extensions":[],"witness_signature":"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000","transactions":[]}},"ret":{}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:28:19 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:43 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,7 +70,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:28:20 GMT
+      - Thu, 26 Apr 2018 15:48:43 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -80,9 +80,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000867000332360500'
+      - '000707329273518277'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09e93-27eb231e5cc7746ceaff3cd6
+      - Root=1-5ae1f4db-c4e224da15d4e43aa7c3ae7e
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -98,9 +98,9 @@ http_interactions:
       string: '{"jsonrpc":"2.0","error":{"code":-32000,"message":"Assert Exception:item->num
         > std::max<int64_t>( 0, int64_t(_head->num) - (_max_size) ): attempting to
         push a block that is too old","data":{"code":10,"name":"assert_exception","message":"Assert
-        Exception","stack":[{"context":{"level":"error","file":"fork_database.cpp","line":57,"method":"_push_block","hostname":"","timestamp":"2018-04-25T15:28:19"},"format":"item->num
+        Exception","stack":[{"context":{"level":"error","file":"fork_database.cpp","line":57,"method":"_push_block","hostname":"","timestamp":"2018-04-26T15:48:43"},"format":"item->num
         > std::max<int64_t>( 0, int64_t(_head->num) - (_max_size) ): attempting to
-        push a block that is too old","data":{"item->num":1,"head":21879407,"max_size":22}},{"context":{"level":"warn","file":"database.cpp","line":673,"method":"_push_block","hostname":"","timestamp":"2018-04-25T15:28:19"},"format":"","data":{}},{"context":{"level":"warn","file":"database.cpp","line":558,"method":"operator()","hostname":"","timestamp":"2018-04-25T15:28:19"},"format":"","data":{"new_block":{"previous":"0000000000000000000000000000000000000000","timestamp":"1970-01-01T00:00:00","witness":"","transaction_merkle_root":"0000000000000000000000000000000000000000","extensions":[],"witness_signature":"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000","transactions":[]}}}]}},"id":1}'
+        push a block that is too old","data":{"item->num":1,"head":21908602,"max_size":16}},{"context":{"level":"warn","file":"database.cpp","line":673,"method":"_push_block","hostname":"","timestamp":"2018-04-26T15:48:43"},"format":"","data":{}},{"context":{"level":"warn","file":"database.cpp","line":558,"method":"operator()","hostname":"","timestamp":"2018-04-26T15:48:43"},"format":"","data":{"new_block":{"previous":"0000000000000000000000000000000000000000","timestamp":"1970-01-01T00:00:00","witness":"","transaction_merkle_root":"0000000000000000000000000000000000000000","extensions":[],"witness_signature":"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000","transactions":[]}}}]}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:28:20 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:43 GMT
 recorded_with: VCR 4.0.0

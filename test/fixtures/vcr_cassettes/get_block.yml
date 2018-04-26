@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:49 GMT
+      - Thu, 26 Apr 2018 15:49:43 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000899142024030948'
+      - '000854395695715365'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09eed-aee6e4365a7f09964bd5fb8c
+      - Root=1-5ae1f517-6d95ad1fde5139e2b141cebe
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{"block_num":0},"ret":{}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:49 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:43 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,7 +70,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:50 GMT
+      - Thu, 26 Apr 2018 15:49:43 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -80,9 +80,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000252721123711269'
+      - '000504265920614991'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09eee-d9c9a612e7fe56e8230a26f2
+      - Root=1-5ae1f517-143237f4d0984e004ab021b4
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -97,5 +97,5 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '{"jsonrpc":"2.0","result":{"block":{"previous":"00bc614d58b1745f3347e4f55f35fe68c82ad0d1","timestamp":"2017-05-29T06:28:42","witness":"good-karma","transaction_merkle_root":"3843fd6daebf3742ecc84fe5926df037131a66a6","extensions":[],"witness_signature":"2034f139325273e8d16851d34222001776731a4d5a114230732edb9836504d7aa927b8a10e2bfe07a02c59bc5a6337343a5e71adcfed5ce81d931b8a7eb5b2abda","transactions":[{"ref_block_num":24909,"ref_block_prefix":1601483096,"expiration":"2017-05-29T06:29:09","operations":[["limit_order_cancel",{"owner":"teamsmooth-mm","orderid":1000}]],"extensions":[],"signatures":["2024b169eed30843e75671dab44a41bda33d84728d9aa90000466f7fd78bf9ec0f78e174adf3f337d0d306d3df00ed8a268e1391168da345d48bacd8dd6162ad95"]},{"ref_block_num":24908,"ref_block_prefix":895219916,"expiration":"2017-05-29T06:28:51","operations":[["vote",{"voter":"lordoftruth","author":"profitgenerator","permlink":"uasf-bitcoin-is-finished","weight":10000}]],"extensions":[],"signatures":["207e9606efd1b5fa9cddb3bd1e16063d303efcc82aee4835780b33df916506ae4320dc530662a3d9835fac41a1a8e954c6b00c295e25ba344a0940e0840f75f4a2"]},{"ref_block_num":24909,"ref_block_prefix":1601483096,"expiration":"2017-05-29T06:28:54","operations":[["vote",{"voter":"lautenglye","author":"looftee","permlink":"re-good-karma-steem-multi-authority-permissions-and-how-posting-authority-works-2017529t84022790z-20170529t055246202z","weight":10000}]],"extensions":[],"signatures":["1f3379ac444ffd23cb4ccc14ff1c5df8c9b45cceecf77aedb90ff94632c106e4402212709bfaed4a7479ac975648321a605bed621f7b28fbdc373769c139ac246c"]},{"ref_block_num":24909,"ref_block_prefix":1601483096,"expiration":"2017-05-29T06:28:54","operations":[["custom_json",{"required_auths":[],"required_posting_auths":["imagediet"],"id":"follow","json":"[\"follow\",{\"follower\":\"imagediet\",\"following\":\"joureytoher\",\"what\":[\"blog\"]}]"}]],"extensions":[],"signatures":["1f219aba0bdd66d0a1c442a16f66b2ad62ae3a12fc61446ea78200621e9c3a375c09ec3a12f0dbfa54685b7a118770eba41b72742c6c23ca188be51da6435c180e"]},{"ref_block_num":24907,"ref_block_prefix":1930404700,"expiration":"2017-05-29T06:29:06","operations":[["vote",{"voter":"steemalf","author":"profitgenerator","permlink":"uasf-bitcoin-is-finished","weight":10000}]],"extensions":[],"signatures":["206fee9619ef6de84f793ac1ee2ffb2802f246826204bfbe1dc5152bac5488ec7574010087bf2b7b2f951e3fd032947db0a4de06c581adf6dce5acda8d8e50a370"]},{"ref_block_num":24909,"ref_block_prefix":1601483096,"expiration":"2017-05-29T06:28:54","operations":[["vote",{"voter":"torem-di-torem","author":"steemit-health","permlink":"what-are-you-thankful-for-today-may-27-a-healthy-steem-distribution-activity","weight":10000}]],"extensions":[],"signatures":["1f731c3810ae1eba4b9195c9496fa875a0cbb52332186ae6030ab2c9093f48d8b424db506e44fd726c9a8220e8f8d659997ac94238740604443ccc0d0a718f1ad5"]},{"ref_block_num":24909,"ref_block_prefix":1601483096,"expiration":"2017-05-29T06:28:54","operations":[["custom_json",{"required_auths":[],"required_posting_auths":["imagediet"],"id":"follow","json":"[\"follow\",{\"follower\":\"imagediet\",\"following\":\"joytriviani\",\"what\":[\"blog\"]}]"}]],"extensions":[],"signatures":["205375d226c17c0df5cf02ac7605b83a8ba1d06a821fb66d6ac68da24fb65b117e3c48322b853945d9eae6b6a14f0e09ae556d142413a9379ae706d01c2cefec99"]}],"block_id":"00bc614ec0d97d69497a1e7757e705b48532aec9","signing_key":"STM7xh66F5ZHyfN9u4rNZmTioBteZhvWdqDwaR2kR55tBXeCjTr2z","transaction_ids":["07fd3fa4a26ef8081ba5aa8003c8c97248d78d56","3d436589f9ed29d3a1e00d8452ad10f96af6cbcc","5fc6a6429b4bd506f645b93f41de93549fbda8e4","6f2bd352c62566272a69c785d1f255a332202885","8b423d8484c7d0a9caf70d565e9fe8a523c7d7d0","30ff2be4818a28adefcea4c51d6e10eaead08cdf","447113cd3066cd6549368819d8f8565d131515ac"]}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:50 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:43 GMT
 recorded_with: VCR 4.0.0

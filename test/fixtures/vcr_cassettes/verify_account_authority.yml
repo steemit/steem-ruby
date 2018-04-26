@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:11 GMT
+      - Thu, 26 Apr 2018 15:49:32 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000124782613396715'
+      - '000306402426307226'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ec7-f840b318a63736e87842a9e0
+      - Root=1-5ae1f50c-6ab500de63d18015abd10da9
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{"account":"","signers":[]},"ret":{"valid":false}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:11 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:32 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,7 +70,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:12 GMT
+      - Thu, 26 Apr 2018 15:49:33 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -80,9 +80,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000255025125586232'
+      - '000491399230067844'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ec8-fd5883be30adbc46421a0a90
+      - Root=1-5ae1f50c-031470da58e65bb36f7875b3
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -97,8 +97,8 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '{"jsonrpc":"2.0","error":{"code":-32000,"message":"missing required
         active authority:Missing Active Authority steemit","data":{"code":3010000,"name":"tx_missing_active_auth","message":"missing
-        required active authority","stack":[{"context":{"level":"error","file":"transaction_util.hpp","line":82,"method":"verify_authority","hostname":"","timestamp":"2018-04-25T15:29:12"},"format":"Missing
-        Active Authority ${id}","data":{"id":"steemit","auth":{"weight_threshold":1,"account_auths":[],"key_auths":[["STM5832HKCJzs6K3rRCsZ1PidTKgjF38ZJb718Y3pCW92HEMsCGPf",1],["STM5VkLha96X5EQu3HSkJdD8SEuwazWtZrzLjUT6Sc5sopgghBYrz",1],["STM7Q2rLBqzPzFeteQZewv9Lu3NLE69fZoLeL6YK59t7UmssCBNTU",1],["STM7u1BsoqLaoCu9XHi1wjWctLWSFCuvyagFjYMfga4QNWEjP7d3U",1]]},"owner":{"weight_threshold":1,"account_auths":[],"key_auths":[["STM5tfrdPG1Ycjwa9FuBUueDFFyygndBLXdVEEs2c9eRKScnFk6vM",1],["STM6Ezkzey8FWoEnnHHP4rxbrysJqoMmzwR2EdoD5p7FDsF64qxbQ",1],["STM71f6yWztimJuREVyyMXNqAVbx1FzPVW6LLXNoQ35dHwKuszmHX",1],["STM7TCZKisQnvR69CK9BaL6W4SJn2cXYwkfWYRicoVGGzhtFswxMH",1],["STM7U3ymhUTuKME72dpdpQkdQvh722gTLjKBKtmKQPPWgtkr418Nf",1]]}}},{"context":{"level":"warn","file":"transaction_util.hpp","line":97,"method":"verify_authority","hostname":"","timestamp":"2018-04-25T15:29:12"},"format":"","data":{"auth_containers":[["transfer",{"from":"steemit","to":"","amount":["0",3,"@@000000021"],"memo":""}]],"sigs":[]}},{"context":{"level":"warn","file":"transaction.cpp","line":195,"method":"verify_authority","hostname":"","timestamp":"2018-04-25T15:29:12"},"format":"","data":{"*this":{"ref_block_num":0,"ref_block_prefix":0,"expiration":"1970-01-01T00:00:00","operations":[["transfer",{"from":"steemit","to":"","amount":["0",3,"@@000000021"],"memo":""}]],"extensions":[],"signatures":[]}}}]}},"id":1}'
+        required active authority","stack":[{"context":{"level":"error","file":"transaction_util.hpp","line":82,"method":"verify_authority","hostname":"","timestamp":"2018-04-26T15:49:33"},"format":"Missing
+        Active Authority ${id}","data":{"id":"steemit","auth":{"weight_threshold":1,"account_auths":[],"key_auths":[["STM5832HKCJzs6K3rRCsZ1PidTKgjF38ZJb718Y3pCW92HEMsCGPf",1],["STM5VkLha96X5EQu3HSkJdD8SEuwazWtZrzLjUT6Sc5sopgghBYrz",1],["STM7Q2rLBqzPzFeteQZewv9Lu3NLE69fZoLeL6YK59t7UmssCBNTU",1],["STM7u1BsoqLaoCu9XHi1wjWctLWSFCuvyagFjYMfga4QNWEjP7d3U",1]]},"owner":{"weight_threshold":1,"account_auths":[],"key_auths":[["STM5tfrdPG1Ycjwa9FuBUueDFFyygndBLXdVEEs2c9eRKScnFk6vM",1],["STM6Ezkzey8FWoEnnHHP4rxbrysJqoMmzwR2EdoD5p7FDsF64qxbQ",1],["STM71f6yWztimJuREVyyMXNqAVbx1FzPVW6LLXNoQ35dHwKuszmHX",1],["STM7TCZKisQnvR69CK9BaL6W4SJn2cXYwkfWYRicoVGGzhtFswxMH",1],["STM7U3ymhUTuKME72dpdpQkdQvh722gTLjKBKtmKQPPWgtkr418Nf",1]]}}},{"context":{"level":"warn","file":"transaction_util.hpp","line":97,"method":"verify_authority","hostname":"","timestamp":"2018-04-26T15:49:33"},"format":"","data":{"auth_containers":[["transfer",{"from":"steemit","to":"","amount":["0",3,"@@000000021"],"memo":""}]],"sigs":[]}},{"context":{"level":"warn","file":"transaction.cpp","line":195,"method":"verify_authority","hostname":"","timestamp":"2018-04-26T15:49:33"},"format":"","data":{"*this":{"ref_block_num":0,"ref_block_prefix":0,"expiration":"1970-01-01T00:00:00","operations":[["transfer",{"from":"steemit","to":"","amount":["0",3,"@@000000021"],"memo":""}]],"extensions":[],"signatures":[]}}}]}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:12 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:33 GMT
 recorded_with: VCR 4.0.0

@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:51 GMT
+      - Thu, 26 Apr 2018 15:49:45 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000500873879718174'
+      - '000463882955350757'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09eee-e2b4c19043843160ed64e3bc
+      - Root=1-5ae1f518-7d4e7ba00eddfa5eeba67ce8
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,5 +48,5 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '[{"jsonrpc":"2.0","result":{"block":{"previous":"00002328daee22690296f47b6fd78cf1fe6271e4","timestamp":"2016-03-24T23:43:45","witness":"steemit1","transaction_merkle_root":"0000000000000000000000000000000000000000","extensions":[],"witness_signature":"2046d92d5386b9b9727be83e261a2d9c0740ee312cf3c857279c49793f33a1545c4383051dabd7f4f327c7d1eea70f11ca105f486a9c2085c249a0fd5cc87366b2","transactions":[],"block_id":"00002329c5aa1ee70f35b1768327fd429d56cf3b","signing_key":"STM65wH1LZ7BfSHcK69SShnqCAH5xdoSZpGkUjmzHJ5GCuxEK9V5G","transaction_ids":[]}},"id":1},{"jsonrpc":"2.0","result":{"block":{"previous":"00002329c5aa1ee70f35b1768327fd429d56cf3b","timestamp":"2016-03-24T23:43:48","witness":"dark","transaction_merkle_root":"0000000000000000000000000000000000000000","extensions":[],"witness_signature":"1f7725e9c9f050c882a486832798f55702b3ea88814872344795db11631e9f03660155405b7680c72431e6926328a9ba3038f491932de84ced5d1ffdf7078695d8","transactions":[],"block_id":"0000232abc67c8c55cdfdfc4f5162982375446cd","signing_key":"STM5QPFyb4ANmtoaubh4iEtDd1DJvx5jxJYKbFtLExdVjKdGkQo44","transaction_ids":[]}},"id":2},{"jsonrpc":"2.0","result":{"block":{"previous":"0000232abc67c8c55cdfdfc4f5162982375446cd","timestamp":"2016-03-24T23:43:51","witness":"steemit55","transaction_merkle_root":"0000000000000000000000000000000000000000","extensions":[],"witness_signature":"20586f7a63f747dcf030b46bb0be69f2eebe9f8149c2aae94ea17c2c3666c9b3b53479da8ccc7ed8d8fe5830129b3d577816f65020aeada269c1bf8d2767175c22","transactions":[],"block_id":"0000232ba05c8beae497b69bc441a4c6969c405d","signing_key":"STM65wH1LZ7BfSHcK69SShnqCAH5xdoSZpGkUjmzHJ5GCuxEK9V5G","transaction_ids":[]}},"id":3},{"jsonrpc":"2.0","result":{"block":{"previous":"0000232ba05c8beae497b69bc441a4c6969c405d","timestamp":"2016-03-24T23:43:54","witness":"steemit","transaction_merkle_root":"0000000000000000000000000000000000000000","extensions":[],"witness_signature":"2075f9e78d31a9cd9ebd4bc1fd2b608afe79160cbf0330dc0cfe1f6be5e9218aa42a5c09b5eff5b08c75783dc2fa466fc4aebb19a99fcbbd8c28c8f69af14b68d5","transactions":[],"block_id":"0000232c75088b64fc5fdd5991d5ab19f28d2911","signing_key":"STM65wH1LZ7BfSHcK69SShnqCAH5xdoSZpGkUjmzHJ5GCuxEK9V5G","transaction_ids":[]}},"id":4},{"jsonrpc":"2.0","result":{"block":{"previous":"0000232c75088b64fc5fdd5991d5ab19f28d2911","timestamp":"2016-03-24T23:43:57","witness":"steemit50","transaction_merkle_root":"0000000000000000000000000000000000000000","extensions":[],"witness_signature":"207fbab0e14e3d57477a966042234aac3df8c9c3350cec6884d9fe0a04b77a88aa115fff757c054cc75859cf980bf1aa2048eda386ccc0d1c1514c7a8fceff32c5","transactions":[],"block_id":"0000232d2aaeba87520df5d6d64e15095b66f9ad","signing_key":"STM65wH1LZ7BfSHcK69SShnqCAH5xdoSZpGkUjmzHJ5GCuxEK9V5G","transaction_ids":[]}},"id":5},{"jsonrpc":"2.0","result":{"block":{"previous":"0000232d2aaeba87520df5d6d64e15095b66f9ad","timestamp":"2016-03-24T23:44:00","witness":"steemit15","transaction_merkle_root":"0000000000000000000000000000000000000000","extensions":[],"witness_signature":"20108bb50182a3935b6107762b062691aa44d8d4515cdf7824732bbe95b65f1e0104c0d6302f1e82d1ab6b564a99986014bddc38084e21c89000b0a675e9c9b3a6","transactions":[],"block_id":"0000232e7875d5bc482372641baa94a82bf568d7","signing_key":"STM65wH1LZ7BfSHcK69SShnqCAH5xdoSZpGkUjmzHJ5GCuxEK9V5G","transaction_ids":[]}},"id":6},{"jsonrpc":"2.0","result":{"block":{"previous":"0000232e7875d5bc482372641baa94a82bf568d7","timestamp":"2016-03-24T23:44:03","witness":"steemit10","transaction_merkle_root":"0000000000000000000000000000000000000000","extensions":[],"witness_signature":"1f13b5deca693102fd5690e77fdf619d350f121c87d9456c800f3357c4af233f7919c4a0828f679440d06e6ed63dfc5ebf05effab67f7893121320de1574b6dafc","transactions":[],"block_id":"0000232fa683f9b114e46e219cbe003e67aebf46","signing_key":"STM65wH1LZ7BfSHcK69SShnqCAH5xdoSZpGkUjmzHJ5GCuxEK9V5G","transaction_ids":[]}},"id":7},{"jsonrpc":"2.0","result":{"block":{"previous":"0000232fa683f9b114e46e219cbe003e67aebf46","timestamp":"2016-03-24T23:44:06","witness":"steemit53","transaction_merkle_root":"0000000000000000000000000000000000000000","extensions":[],"witness_signature":"1f33ec907f7c53faae5baf8550de838363c260ad98daf4c2c1d53bb6e339d295dd27aab217adca264fe44629bf298fe654cc5b80f8acdba8cf57028dd723b36c9e","transactions":[],"block_id":"000023302e9d36da9d4229559285b136428f5e71","signing_key":"STM65wH1LZ7BfSHcK69SShnqCAH5xdoSZpGkUjmzHJ5GCuxEK9V5G","transaction_ids":[]}},"id":8},{"jsonrpc":"2.0","result":{"block":{"previous":"000023302e9d36da9d4229559285b136428f5e71","timestamp":"2016-03-24T23:44:09","witness":"steemit13","transaction_merkle_root":"0000000000000000000000000000000000000000","extensions":[],"witness_signature":"1f38d830c4e0f427bcb28270beb3027bc3f85a1cbbdd3e8b5287d786a9d1b56fb5066a0e45b4f79b7535fb34d70464de4a22f939261c798eb64265b12d1a87faa5","transactions":[],"block_id":"00002331ba57c0204ae6c48f6f1ea38b3594a66e","signing_key":"STM65wH1LZ7BfSHcK69SShnqCAH5xdoSZpGkUjmzHJ5GCuxEK9V5G","transaction_ids":[]}},"id":9},{"jsonrpc":"2.0","result":{"block":{"previous":"00002331ba57c0204ae6c48f6f1ea38b3594a66e","timestamp":"2016-03-24T23:44:12","witness":"steemit50","transaction_merkle_root":"0000000000000000000000000000000000000000","extensions":[],"witness_signature":"20244c9f5125bf711e311ef0406c75e7ccc56351db3c8ea5475725b76d20bad65347342c72c5c0d1dd640881d036125f8267e6da6babd5eb84ec9bf63aba005397","transactions":[],"block_id":"00002332e6b3ca0b82df4a513ec6a0bf8dbd226d","signing_key":"STM65wH1LZ7BfSHcK69SShnqCAH5xdoSZpGkUjmzHJ5GCuxEK9V5G","transaction_ids":[]}},"id":10}]'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:52 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:45 GMT
 recorded_with: VCR 4.0.0

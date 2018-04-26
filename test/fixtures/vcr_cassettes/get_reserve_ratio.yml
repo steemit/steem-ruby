@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:51 GMT
+      - Thu, 26 Apr 2018 15:48:37 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '001022291910464785'
+      - '000788743279223287'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09eef-8b4041ba76716284c5ec5e36
+      - Root=1-5ae1f4d5-2a73e6300001018013558270
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{},"ret":{"id":0,"average_block_size":0,"current_reserve_ratio":1,"max_virtual_bandwidth":"0"}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:51 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:37 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,19 +70,19 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:51 GMT
+      - Thu, 26 Apr 2018 15:48:37 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '151'
+      - '147'
       Connection:
       - keep-alive
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000855490050990789'
+      - '001068494144656224'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09eef-c81c88f86abb1d6e4371268c
+      - Root=1-5ae1f4d5-96685a28035effb88737cbc8
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -95,7 +95,7 @@ http_interactions:
       - upgrade-insecure-requests
     body:
       encoding: UTF-8
-      string: '{"jsonrpc":"2.0","result":{"id":0,"average_block_size":14627,"current_reserve_ratio":200000000,"max_virtual_bandwidth":"264241152000000000000"},"id":1}'
+      string: '{"jsonrpc":"2.0","result":{"id":0,"average_block_size":16357,"current_reserve_ratio":4643167,"max_virtual_bandwidth":"6134578985041920000"},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:51 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:37 GMT
 recorded_with: VCR 4.0.0

@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:46 GMT
+      - Thu, 26 Apr 2018 15:48:56 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000121499098551530'
+      - '000048834997014424'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09eea-865526c029a15da0fcf9d580
+      - Root=1-5ae1f4e8-6d8fc889f06373778fc6311d
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{"comments":[]},"ret":{"comments":[]}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:46 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:56 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,7 +70,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:47 GMT
+      - Thu, 26 Apr 2018 15:48:57 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -80,9 +80,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '001102483249161955'
+      - '000698331615383133'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09eeb-56e1d3e0f33421e0b5d57fa0
+      - Root=1-5ae1f4e9-408cb07403baa9987afe88c8
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -99,7 +99,7 @@ http_interactions:
         to Steem!","body":"Steemit is a social media platform where anyone can earn
         STEEM points by posting. The more people who like a post, the more STEEM the
         poster earns. Anyone can sell their STEEM for cash or vest it to boost their
-        voting power.","json_metadata":"","last_update":"2016-03-30T18:30:18","created":"2016-03-30T18:30:18","active":"2018-04-20T08:36:12","last_payout":"2016-08-24T19:59:42","depth":0,"children":347,"net_rshares":0,"abs_rshares":0,"vote_rshares":0,"children_abs_rshares":"26182562839028","cashout_time":"1969-12-31T23:59:59","max_cashout_time":"1969-12-31T23:59:59","total_vote_weight":0,"reward_weight":10000,"total_payout_value":["942",3,"@@000000013"],"curator_payout_value":["756",3,"@@000000013"],"author_rewards":3548,"net_votes":90,"root_author":"steemit","root_permlink":"firstpost","max_accepted_payout":["1000000000",3,"@@000000013"],"percent_steem_dollars":10000,"allow_replies":true,"allow_votes":true,"allow_curation_rewards":true,"beneficiaries":[]}]},"id":1}'
+        voting power.","json_metadata":"","last_update":"2016-03-30T18:30:18","created":"2016-03-30T18:30:18","active":"2018-04-26T06:39:24","last_payout":"2016-08-24T19:59:42","depth":0,"children":348,"net_rshares":0,"abs_rshares":0,"vote_rshares":0,"children_abs_rshares":"26182562839028","cashout_time":"1969-12-31T23:59:59","max_cashout_time":"1969-12-31T23:59:59","total_vote_weight":0,"reward_weight":10000,"total_payout_value":["942",3,"@@000000013"],"curator_payout_value":["756",3,"@@000000013"],"author_rewards":3548,"net_votes":90,"root_author":"steemit","root_permlink":"firstpost","max_accepted_payout":["1000000000",3,"@@000000013"],"percent_steem_dollars":10000,"allow_replies":true,"allow_votes":true,"allow_curation_rewards":true,"beneficiaries":[]}]},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:47 GMT
+  recorded_at: Thu, 26 Apr 2018 15:48:57 GMT
 recorded_with: VCR 4.0.0

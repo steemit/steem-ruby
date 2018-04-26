@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:41 GMT
+      - Thu, 26 Apr 2018 15:49:15 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000932528567724982'
+      - '000354696192920409'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ee5-8c6b78e0d31d1a68374c8574
+      - Root=1-5ae1f4fb-45570ede18357175f3c4a4b4
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{},"ret":{"funds":[]}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:41 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:15 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,7 +70,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:41 GMT
+      - Thu, 26 Apr 2018 15:49:15 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -80,9 +80,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000524670856965801'
+      - '000453622787548669'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ee5-ea218da49c2adaf015969cd4
+      - Root=1-5ae1f4fb-57fe87b4147ea9960c3d990e
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -95,7 +95,7 @@ http_interactions:
       - upgrade-insecure-requests
     body:
       encoding: UTF-8
-      string: '{"jsonrpc":"2.0","result":{"funds":[{"id":0,"name":"post","reward_balance":["738498235",3,"@@000000021"],"recent_claims":"446031627243549211","last_update":"2018-04-25T15:29:39","content_constant":"2000000000000","percent_curation_rewards":2500,"percent_content_rewards":10000,"author_reward_curve":"linear","curation_reward_curve":"square_root"}]},"id":1}'
+      string: '{"jsonrpc":"2.0","result":{"funds":[{"id":0,"name":"post","reward_balance":["737567910",3,"@@000000021"],"recent_claims":"447132212755051084","last_update":"2018-04-26T15:49:15","content_constant":"2000000000000","percent_curation_rewards":2500,"percent_content_rewards":10000,"author_reward_curve":"linear","curation_reward_curve":"square_root"}]},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:41 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:15 GMT
 recorded_with: VCR 4.0.0

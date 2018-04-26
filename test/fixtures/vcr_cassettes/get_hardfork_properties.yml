@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:17 GMT
+      - Thu, 26 Apr 2018 15:49:34 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,9 +31,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '000584936371962826'
+      - '000758826700923749'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ecd-7cc0343cabf2f82670a734ee
+      - Root=1-5ae1f50e-cf57685666619b6d77ec680d
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"args":{},"ret":{"id":0,"processed_hardforks":[],"last_hardfork":0,"current_hardfork_version":"0.0.0","next_hardfork":"0.0.0","next_hardfork_time":"1970-01-01T00:00:00"}},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:17 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:34 GMT
 - request:
     method: post
     uri: https://api.steemit.com/
@@ -59,7 +59,7 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       User-Agent:
-      - steem-rb/0.0.1
+      - steem-ruby/0.0.1
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -70,7 +70,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 25 Apr 2018 15:29:17 GMT
+      - Thu, 26 Apr 2018 15:49:34 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -80,9 +80,9 @@ http_interactions:
       Server:
       - nginx
       X-Jussi-Request-Id:
-      - '001081958231256015'
+      - '000239565802969077'
       X-Amzn-Trace-Id:
-      - Root=1-5ae09ecd-b1aef1236f42a6d7ed483cec
+      - Root=1-5ae1f50e-14dfcb34f8f5bc38c331d61c
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -97,5 +97,5 @@ http_interactions:
       encoding: UTF-8
       string: '{"jsonrpc":"2.0","result":{"id":0,"processed_hardforks":["2016-03-24T16:00:00","2016-04-25T17:30:00","2016-04-26T18:00:00","2016-04-27T13:00:00","2016-04-30T15:00:00","2016-05-31T17:00:00","2016-06-30T14:00:00","2016-07-04T00:00:00","2016-07-04T01:00:00","2016-07-14T00:00:00","2016-07-15T12:00:00","2016-07-17T15:00:00","2016-07-26T15:00:00","2016-08-15T14:00:00","2016-09-20T15:00:00","2016-11-08T16:00:00","2016-12-06T16:00:00","2017-03-30T15:00:00","2017-03-30T15:00:00","2017-06-20T15:00:00"],"last_hardfork":19,"current_hardfork_version":"0.19.0","next_hardfork":"0.19.0","next_hardfork_time":"2017-06-20T15:00:00"},"id":1}'
     http_version: 
-  recorded_at: Wed, 25 Apr 2018 15:29:17 GMT
+  recorded_at: Thu, 26 Apr 2018 15:49:34 GMT
 recorded_with: VCR 4.0.0
