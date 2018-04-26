@@ -1,6 +1,42 @@
 require 'net/https'
 
 module Steem
+  # This ruby API works with
+  # {https://github.com/steemit/steem/releases steemd-0.19.4} and other Appbase
+  # compatible upstreams.  To access different API namespaces, use the
+  # following:
+  #
+  #     api = Steem::Api.new
+  #     api.get_dynamic_global_properties
+  #
+  # The above example will make an instance that can access the
+  # {https://developers.steem.io/apidefinitions/condenser-api condenser_api}
+  # namespace.  Alternatively, you may also create a direct instances with its
+  # full name, if you prefer:
+  #
+  #     api = Steem::CondenserApi.new
+  #     api.get_dynamic_global_properties
+  #
+  # If you know the name of another API that is supported by the remote node,
+  # you can create an instance to that instead, for example:
+  #
+  #     api = Steem::MarketHistoryApi.new
+  #     api.get_volume
+  #
+  # All known API by namespace:
+  #
+  # * {AccountByKeyApi}
+  # * {AccountHistoryApi}
+  # * {BlockApi}
+  # * {DatabaseApi}
+  # * {FollowApi}
+  # * {Jsonrpc}
+  # * {MarketHistoryApi}
+  # * {NetworkBroadcastApi}
+  # * {TagsApi}
+  # * {WitnessApi}
+  #
+  # Also see: {https://developers.steem.io/apidefinitions.html Complete API Definitions}
   class Api
     include ChainConfig
     

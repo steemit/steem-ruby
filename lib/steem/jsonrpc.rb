@@ -1,8 +1,8 @@
 module Steem
-  # Steem::Jsonrpc allows you to inspect the available methods offered by a
-  # node.  If a node runs a plugin you want, then all of the API methods it
-  # can exposes will automatically be available.  This API is used internally to
-  # determine which APIs and methods are available on the node you specify.
+  # {Jsonrpc} allows you to inspect the available methods offered by a node.
+  # If a node runs a plugin you want, then all of the API methods it can exposes
+  # will automatically be available.  This API is used internally to determine
+  # which APIs and methods are available on the node you specify.
   #
   # In theory, if a new plugin is created and enabled by the node, it will be
   # available by this library without needing an update to its code.

@@ -1,4 +1,23 @@
 module Steem
+  # {TransactionBuilder} can be used to create a transaction that the
+  # {NetworkBroadcastApi} can broadcast to the rest of the platform.  The main
+  # feature of this class is the ability to cryptographically sign the
+  # transaction so that it conforms to the consensus rules that are required by
+  # the blockchain.
+  #
+  #     wif = '5JrvPrQeBBvCRdjv29iDvkwn3EQYZ9jqfAHzrCyUvfbEbRkrYFC'
+  #     builder = Steem::TransactionBuilder.new(wif: wif)
+  #     builder.put(vote: {
+  #       voter: 'alice',
+  #       author: 'bob',
+  #       permlink: 'my-burgers',
+  #       weight: 10000
+  #     })
+  #     
+  #     trx = builder.transaction
+  #     network_broadcast_api = Steem::NetworkBroadcastApi.new
+  #     network_broadcast_api.broadcast_transaction_synchronous(trx: trx)
+  #
   class TransactionBuilder
     include ChainConfig
     include Utils
@@ -51,6 +70,13 @@ module Steem
       @expiration.nil? || @expiration < Time.now
     end
     
+    # If the transaction can be prepared, this method will do so and set the
+    # expiration.  Once the expiration is set, it will not re-prepare.  If you
+    # call {#put}, the expiration is set {::Nil} so that it can be re-prepared.
+    #
+    # Usually, this method is called automatically by {#put} and/or {#transaction}.
+    #
+    # @return {TransactionBuilder}
     def prepare
       if expired?
         @database_api.get_dynamic_global_properties do |properties|
@@ -70,6 +96,28 @@ module Steem
       self
     end
     
+    # A quick and flexible way to append a new operation to the transaction.
+    # This method uses ducktyping to figure out how to form the operation.
+    #
+    # There are three main ways you can call this method.  These assume that
+    # `op_type` is a {::Symbol} (or {::String}) representing the type of operation and `op` is the
+    # operation {::Hash}.
+    #
+    #     put(op_type, op)
+    #
+    # ... or ...
+    #
+    #     put(op_type => op)
+    #
+    # ... or ...
+    #
+    #     put([op_type, op])
+    #
+    # You can also chain multiple operations:
+    #
+    #     builder = Steem::TransactionBuilder.new
+    #     builder.put(vote: vote1).put(vote: vote2)
+    # @return {TransactionBuilder}
     def put(type, op = nil)
       @expiration = nil
       
@@ -87,11 +135,33 @@ module Steem
       self
     end
     
+    # If all of the required values are set, this returns a fully formed
+    # transaction that is ready to broadcast.
+    # 
+    # @return
+    #     {
+    #            :ref_block_num => 18912,
+    #         :ref_block_prefix => 575781536,
+    #               :expiration => "2018-04-26T15:26:12",
+    #               :extensions => [],
+    #               :operations => [[:vote, {
+    #                    :voter => "alice",
+    #                   :author => "bob",
+    #                 :permlink => "my-burgers",
+    #                   :weight => 10000
+    #                 }
+    #             ]],
+    #               :signatures => ["1c45b65740b4b2c17c4bcf6bcc3f8d90ddab827d50532729fc3b8f163f2c465a532b0112ae4bf388ccc97b7c2e0bc570caadda78af48cf3c261037e65eefcd941e"]
+    #     }
     def transaction
       prepare
       sign
     end
     
+    # Appends to the `signatures` array of the transaction, built from a
+    # serialized digest.
+    #
+    # @return {Hash | TransactionBuilder} The fully signed transaction if a `wif` is provided or the instance of the {TransactionBuilder} if a `wif` has not yet been provided.
     def sign
       return self unless !!@wif
       
@@ -129,18 +199,25 @@ module Steem
       trx
     end
     
+    # @return [Array] All public keys that could possibly sign for a given transaction.
     def potential_signatures
       @database_api.get_potential_signatures(trx: transaction) do |result|
         result[:keys]
       end
     end
     
+    # This API will take a partially signed transaction and a set of public keys
+    # that the owner has the ability to sign for and return the minimal subset
+    # of public keys that should add signatures to the transaction.
+    #
+    # @return [Array] The minimal subset of public keys that should add signatures to the transaction.
     def required_signatures
       @database_api.get_required_signatures(trx: transaction) do |result|
         result[:keys]
       end
     end
     
+    # @return [Boolean] True if the transaction has all of the required signatures.
     def valid?
       @database_api.verify_authority(trx: transaction) do |result|
         result.valid

@@ -1,5 +1,9 @@
 module Steem
-  # Steem::BlockApi
+  # {BlockApi} is used to query values related to the block plugin.  It can also
+  # be used to access a range of multiple blocks by using
+  # {http://www.jsonrpc.org/specification#batch JSON-RPC 2.0 batch} requests.
+  #
+  # Also see: {https://developers.steem.io/apidefinitions/block-api Block API Definitions}
   class BlockApi < Api
     MAX_RANGE_SIZE = 3000
     
@@ -8,7 +12,10 @@ module Steem
       super
     end
     
-    # Uses a batched requst on `block_range`.
+    # Uses a batched requst on a range of blocks.
+    #
+    # @param options [Hash] The attributes to get a block range with.
+    # @option options [Range] :block_range starting on one block number and ending on an higher block number.
     def get_blocks(options = {block_range: [0..0]}, &block)
       block_range = options[:block_range] || [0..0]
       
