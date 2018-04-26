@@ -37,14 +37,16 @@ end
 namespace :show do
   desc 'Shows known API names.'
   task :apis do
-    jsonrpc = Steem::Jsonrpc.new
+    url = ENV['URL']
+    jsonrpc = Steem::Jsonrpc.new(url: url)
     api_methods = jsonrpc.get_api_methods
     puts api_methods.keys
   end
 
   desc 'Shows known method names for specified API.'
   task :methods, [:api] do |t, args|
-    jsonrpc = Steem::Jsonrpc.new
+    url = ENV['URL']
+    jsonrpc = Steem::Jsonrpc.new(url: url)
     api_methods = jsonrpc.get_api_methods
     api_methods[args[:api]].each do |method|
       jsonrpc.get_signature(method: "#{args[:api]}.#{method}") do |signature|
