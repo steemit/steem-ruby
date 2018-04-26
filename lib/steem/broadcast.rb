@@ -33,7 +33,7 @@ module Steem
       
       tx = TransactionBuilder.new(options)
       metadata = (options[:json_metadata] rescue nil) || {}
-      metadata['app'] ||= "steem-rb/#{Steem::AGENT_ID}"
+      metadata['app'] ||= Steem::AGENT_ID
       tags = metadata['tags'] || []
       parent_permlink = options[:parent_permlink] || tags.first
       

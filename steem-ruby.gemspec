@@ -4,14 +4,14 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'steem/version'
 
 Gem::Specification.new do |spec|
-  spec.name = 'steem-rb'
+  spec.name = 'steem-ruby'
   spec.version = Steem::VERSION
   spec.authors = ['Anthony Martin']
   spec.email = ['anthony@steem.com']
 
   spec.summary = %q{Steem Ruby Client}
   spec.description = %q{Client for accessing the Steem blockchain.}
-  spec.homepage = 'https://github.com/steem/steem-rb'
+  spec.homepage = 'https://github.com/steem/steem-ruby'
   spec.license = 'MIT'
 
   spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test)/}) }

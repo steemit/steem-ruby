@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    steem-rb (0.0.1)
+    steem-ruby (0.0.1)
       awesome_print (~> 1.8, >= 1.8.0)
       bitcoin-ruby (~> 0.0, >= 0.0.18)
       ffi (~> 1.9, >= 1.9.23)
@@ -64,7 +64,7 @@ DEPENDENCIES
   pry (~> 0.11, >= 0.11.3)
   rake (~> 12.3, >= 12.3.0)
   simplecov (~> 0.15, >= 0.15.1)
-  steem-rb!
+  steem-ruby!
   vcr (~> 4.0, >= 4.0.0)
   webmock (~> 3.3, >= 3.3.0)
   yard (~> 0.9, >= 0.9.12)

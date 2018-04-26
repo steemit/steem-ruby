@@ -1,12 +1,12 @@
-# `steem-rb`
+# `steem-ruby`
 
-Steem-rb the Ruby API for Steem blockchain.
+Steem-ruby the Ruby API for Steem blockchain.
 
-Full documentation: http://www.rubydoc.info/gems/steem-rb
+Full documentation: http://www.rubydoc.info/gems/steem-ruby
 
 ## Getting Started
 
-The steem-rb gem is compatible with Ruby 2.2.5 or later.
+The steem-ruby gem is compatible with Ruby 2.2.5 or later.
 
 ### Install the gem for your project
 
@@ -15,7 +15,7 @@ The steem-rb gem is compatible with Ruby 2.2.5 or later.
 To install the gem on your computer, run in shell:
 
 ```bash
-gem install steem-rb
+gem install steem-ruby
 ```
 
 ... then add in your code:
@@ -27,7 +27,7 @@ require 'steem'
 To add the gem as a dependency to your project with [Bundler](http://bundler.io/), you can add this line in your Gemfile:
 
 ```ruby
-gem 'steem-rb', require: 'steem'
+gem 'steem-ruby', require: 'steem'
 ```
 
 ## Examples
@@ -67,7 +67,7 @@ puts rep
 
 ## Contributions
 
-Patches are welcome! Contributors are listed in the `steem-rb.gemspec` file. Please run the tests (`rake test`) before opening a pull request and make sure that you are passing all of them. If you would like to contribute, but don't know what to work on, check the issues list.
+Patches are welcome! Contributors are listed in the `steem-ruby.gemspec` file. Please run the tests (`rake test`) before opening a pull request and make sure that you are passing all of them. If you would like to contribute, but don't know what to work on, check the issues list.
 
 ## Issues
 
