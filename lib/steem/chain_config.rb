@@ -8,7 +8,7 @@ module Steem
     NETWORKS_STEEM_CORE_ASSET = ["0", 3, "@@000000021"] # STEEM
     NETWORKS_STEEM_DEBT_ASSET = ["0", 3, "@@000000013"] # SBD
     NETWORKS_STEEM_VEST_ASSET = ["0", 6, "@@000000037"] # VESTS
-    NETWORKS_STEEM_DEFAULT_NODE = 'https://api.steemit.com'
+    NETWORKS_STEEM_DEFAULT_NODE = 'https://api.steemit.com' # √
     # NETWORKS_STEEM_DEFAULT_NODE = 'https://api.steemitstage.com' # √
     # NETWORKS_STEEM_DEFAULT_NODE = 'https://api.steemitdev.com' # √
     # NETWORKS_STEEM_DEFAULT_NODE = 'https://appbasetest.timcliff.com'

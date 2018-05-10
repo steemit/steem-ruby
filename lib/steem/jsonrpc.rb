@@ -25,7 +25,7 @@ module Steem
     end
     
     def get_api_methods(&block)
-      api_methods = self.class.api_methods[uri.to_s]
+      api_methods = self.class.api_methods[@rpc_client.uri.to_s]
       
       if api_methods.nil?
         get_methods do |result, error, rpc_id|
@@ -40,7 +40,7 @@ module Steem
             api_methods[api] << method
           end
           
-          self.class.api_methods[uri.to_s] = api_methods
+          self.class.api_methods[@rpc_client.uri.to_s] = api_methods
         end
       end
       
@@ -58,12 +58,14 @@ module Steem
       method_names = []
       method_map = {}
       signatures = {}
+      offset = 0
       
       get_api_methods do |api, methods|
         request_body += methods.map do |method|
           method_name = "#{api}.#{method}"
           method_names << method_name
-          current_rpc_id = rpc_id
+          current_rpc_id = @rpc_client.rpc_id
+          offset += 1
           method_map[current_rpc_id] = [api, method]
           
           {
@@ -75,7 +77,7 @@ module Steem
         end
       end
       
-      rpc_post(nil, nil, {request_body: request_body}) do |result, error, id|
+      @rpc_client.rpc_post(nil, nil, {request_body: request_body}) do |result, error, id|
         api, method = method_map[id]
         api = api.to_sym
         method = method.to_sym

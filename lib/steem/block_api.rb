@@ -20,23 +20,23 @@ module Steem
       block_range = options[:block_range] || [0..0]
       
       if block_range.size > MAX_RANGE_SIZE
-        raise "Too many blocks requested: #{block_range.size}; maximum request size: #{MAX_RANGE_SIZE}."
+        raise Steem::ArgumentError, "Too many blocks requested: #{block_range.size}; maximum request size: #{MAX_RANGE_SIZE}."
       end
       
       request_body = []
       
       for i in block_range do
-        put(self.class.api_name, :get_block, block_num: i, request_body: request_body)
+        @rpc_client.put(self.class.api_name, :get_block, block_num: i, request_body: request_body)
       end
       
       if !!block
-        rpc_post(nil, nil, request_body: request_body) do |result, error, id|
+        @rpc_client.rpc_post(nil, nil, request_body: request_body) do |result, error, id|
           yield result.nil? ? nil : result.block, error, id
         end
       else
         blocks = []
         
-        rpc_post(nil, nil, request_body: request_body) do |result, error, id|
+        @rpc_client.rpc_post(nil, nil, request_body: request_body) do |result, error, id|
           blocks << result
         end
       end

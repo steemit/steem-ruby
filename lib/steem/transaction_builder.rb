@@ -19,10 +19,11 @@ module Steem
   #     network_broadcast_api.broadcast_transaction_synchronous(trx: trx)
   #
   class TransactionBuilder
+    include Retriable
     include ChainConfig
     include Utils
     
-    attr_accessor :database_api, :block_api, :wif, :operations
+    attr_accessor :database_api, :block_api, :wif, :expiration, :operations
     
     def initialize(options = {})
       @database_api = options[:database_api] || Steem::DatabaseApi.new(options)
@@ -35,10 +36,11 @@ module Steem
       @extensions = []
       @signatures = []
       @chain = options[:chain] || :steem
+      @error_pipe = options[:error_pipe] || STDERR
       @chain_id = case @chain
       when :steem then NETWORKS_STEEM_CHAIN_ID
       when :test then NETWORKS_TEST_CHAIN_ID
-      else; raise "Unsupported chain: #{@chain}"
+      else; raise UnsupportedChainError, "Unsupported chain: #{@chain}"
       end
     end
     
@@ -79,21 +81,36 @@ module Steem
     # @return {TransactionBuilder}
     def prepare
       if expired?
-        @database_api.get_dynamic_global_properties do |properties|
-          block_number = properties.last_irreversible_block_num
+        catch :prepare_header do; begin
+          @database_api.get_dynamic_global_properties do |properties|
+            block_number = properties.last_irreversible_block_num
           
-          @block_api.get_block_header(block_num: block_number) do |result, error|
-            raise "Unable to prepare transaction: #{error}" if !!error
-            
-            header = result.header
-            @ref_block_num = (block_number - 1) & 0xFFFF
-            @ref_block_prefix = unhexlify(header.previous[8..-1]).unpack('V*')[0]
-            @expiration = (Time.parse(properties.time + 'Z') + EXPIRE_IN_SECS).utc
+            @block_api.get_block_header(block_num: block_number) do |result|
+              header = result.header
+              
+              @ref_block_num = (block_number - 1) & 0xFFFF
+              @ref_block_prefix = unhexlify(header.previous[8..-1]).unpack('V*')[0]
+              @expiration = (Time.parse(properties.time + 'Z') + EXPIRE_IN_SECS).utc
+            end
           end
-        end
+        rescue => e
+          if can_retry? e
+            @error_pipe.puts "#{e} ... retrying."
+            throw :prepare_header
+          else
+            raise e
+          end
+        end; end
       end
       
       self
+    end
+    
+    # Sets operations all at once, then prepares.
+    def operations=(operations)
+      @operations = operations
+      prepare
+      @operations
     end
     
     # A quick and flexible way to append a new operation to the transaction.
@@ -164,37 +181,47 @@ module Steem
     # @return {Hash | TransactionBuilder} The fully signed transaction if a `wif` is provided or the instance of the {TransactionBuilder} if a `wif` has not yet been provided.
     def sign
       return self unless !!@wif
+      return self if expired?
       
       trx = {
         ref_block_num: @ref_block_num,
         ref_block_prefix: @ref_block_prefix, 
         expiration: @expiration.strftime('%Y-%m-%dT%H:%M:%S'),
-        extensions: @extensions,
         operations: @operations,
+        extensions: @extensions,
         signatures: @signatures
       }
       
-      @database_api.get_transaction_hex(trx: trx) do |result|
-        hex = @chain_id + result.hex[0..-4] # Why do we have to chop the last two bytes?
-        digest = unhexlify(hex)
-        digest_hex = Digest::SHA256.digest(digest)
-        private_key = Bitcoin::Key.from_base58 @wif
-        public_key_hex = private_key.pub
-        ec = Bitcoin::OpenSSL_EC
-        count = 0
-        sig = nil
-        
-        loop do
-          count += 1
-          STDERR.puts "#{count} attempts to find canonical signature" if count % 40 == 0
-          sig = ec.sign_compact(digest_hex, private_key.priv, public_key_hex, false)
+      catch :serialize do; begin
+        @database_api.get_transaction_hex(trx: trx) do |result|
+          hex = @chain_id + result.hex[0..-4] # Why do we have to chop the last two bytes?
+          digest = unhexlify(hex)
+          digest_hex = Digest::SHA256.digest(digest)
+          private_key = Bitcoin::Key.from_base58 @wif
+          public_key_hex = private_key.pub
+          ec = Bitcoin::OpenSSL_EC
+          count = 0
+          sig = nil
           
-          next if public_key_hex != ec.recover_compact(digest_hex, sig)
-          break if canonical? sig
+          loop do
+            count += 1
+            @error_pipe.puts "#{count} attempts to find canonical signature" if count % 40 == 0
+            sig = ec.sign_compact(digest_hex, private_key.priv, public_key_hex, false)
+            
+            next if public_key_hex != ec.recover_compact(digest_hex, sig)
+            break if canonical? sig
+          end
+          
+          trx[:signatures] = @signatures = [hexlify(sig)]
         end
-        
-        trx[:signatures] = @signatures = [hexlify(sig)]
-      end
+      rescue => e
+        if can_retry? e
+          @error_pipe.puts "#{e} ... retrying."
+          throw :serialize
+        else
+          raise e
+        end
+      end; end
       
       trx
     end

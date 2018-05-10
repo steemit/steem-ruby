@@ -1,17 +1,23 @@
 # encoding: UTF-8
+require 'json' unless defined?(JSON)
+require 'net/https'
+
 require 'hashie'
 require 'steem/version'
 require 'steem/utils'
-require 'steem/chain_config'
 require 'steem/base_error'
+require 'steem/mixins/retriable'
+require 'steem/chain_config'
+require 'steem/type/base_type'
+require 'steem/type/amount'
 require 'steem/transaction_builder'
+require 'steem/rpc/base_client'
+require 'steem/rpc/thread_safe_client'
 require 'steem/api'
 require 'steem/jsonrpc'
 require 'steem/block_api'
 require 'steem/formatter'
 require 'steem/broadcast'
-
-require 'json' unless defined?(JSON)
 
 module Steem
   def self.api_classes
