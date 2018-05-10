@@ -35,15 +35,14 @@ gem 'steem-ruby', require: 'steem'
 ### Broadcast Vote
 
 ```ruby
-options = {
-  wif: wif,
+params = {
   voter: voter,
   author: author,
   permlink: permlink,
   weight: weight
 }
 
-Steem::Broadcast.vote(options) do |result|
+Steem::Broadcast.vote(wif: wif, params: params) do |result|
   puts result
 end
 ```
