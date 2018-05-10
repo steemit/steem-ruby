@@ -11,21 +11,21 @@ module Steem
     end
     
     def test_get_api_methods
-      vcr_cassette('get_methods') do
+      vcr_cassette('jsonrpc_get_methods', record: :once) do
         apis = @jsonrpc.get_api_methods
         assert_equal Hashie::Mash, apis.class
       end
     end
     
     def test_get_signature
-      vcr_cassette('get_signature') do
+      vcr_cassette('jsonrpc_get_signature', record: :once) do
         signature = @jsonrpc.get_signature(method: 'database_api.get_active_witnesses')
         assert_equal Hashie::Mash, signature.class
       end
     end
     
     def test_get_all_signatures
-      vcr_cassette('get_all_signatures') do
+      vcr_cassette('jsonrpc_get_all_signatures') do
         refute_nil @jsonrpc.get_methods
         
         @jsonrpc.get_all_signatures do |api, methods|
@@ -54,14 +54,14 @@ module Steem
     end
     
     def test_get_all_signatures_no_closure
-      vcr_cassette('get_all_signatures') do
+      vcr_cassette('jsonrpc_get_all_signatures_no_closure', record: :once) do
         assert @jsonrpc.get_all_signatures, 'expect signatures'
       end
     end
     
     def test_get_methods_bad_node
-      vcr_cassette('get_methods_bad_node') do
-        assert_raises SocketError do
+      vcr_cassette('jsonrpc_get_methods_bad_node', record: :once) do
+        assert_raises SocketError, Errno::ECONNREFUSED do
           jsonrpc = Steem::Jsonrpc.new(url: 'https://bad.node')
           jsonrpc.get_methods
         end
@@ -69,8 +69,8 @@ module Steem
     end
     
     def test_get_methods_non_api_endpoint
-      vcr_cassette('get_methods_non_api_endpoint') do
-        assert_raises RuntimeError do
+      vcr_cassette('jsonrpc_get_methods_non_api_endpoint', record: :once) do
+        assert_raises UnknownError do # FIXME
           jsonrpc = Steem::Jsonrpc.new(url: 'https://test.com')
           jsonrpc.get_methods
         end
@@ -78,7 +78,7 @@ module Steem
     end
     
     # def test_get_methods_non_appbase
-    #   vcr_cassette('get_methods_non_appbase') do
+    #   vcr_cassette('jsonrpc_get_methods_non_appbase', record: :once) do
     #     assert_raises JSON::ParserError do
     #       jsonrpc = Steem::Jsonrpc.new(url: 'https://rpc.steemviz.com')
     #       jsonrpc.get_methods
@@ -87,7 +87,7 @@ module Steem
     # end
     
     # def test_get_methods_bad_uri
-    #   vcr_cassette('get_methods_bad_uri') do
+    #   vcr_cassette('jsonrpc_get_methods_bad_uri', record: :once) do
     #     assert_raises JSON::ParserError do
     #       jsonrpc = Steem::Jsonrpc.new(url: 'https://rpc.steemviz.com/health')
     #       jsonrpc.get_methods

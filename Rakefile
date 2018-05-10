@@ -2,10 +2,8 @@ require 'bundler/gem_tasks'
 require 'rake/testtask'
 require 'yard'
 require 'steem'
-require 'awesome_print'
-require 'pry'
 
-Rake::TestTask.new(:test) do |t|
+Rake::TestTask.new(test: 'clean:vcr') do |t|
   t.libs << 'test'
   t.libs << 'lib'
   t.test_files = FileList['test/**/*_test.rb']
@@ -13,6 +11,53 @@ Rake::TestTask.new(:test) do |t|
     '-W2'
   else
     '-W1'
+  end
+end
+
+namespace :test do
+  Rake::TestTask.new(static: 'clean:vcr') do |t|
+    t.description = <<-EOD
+      Run static tests, which are those that have static request/responses.
+      These are tests that are typically read-only and do not require heavy
+      matches on the json-rpc request body.  Often, the only difference between
+      one execution and another is the json-rpc-id.
+    EOD
+    t.libs << 'test'
+    t.libs << 'lib'
+    t.test_files = [
+      'test/steem/account_by_key_api_test.rb',
+      'test/steem/account_history_api_test.rb',
+      'test/steem/block_api_test.rb',
+      'test/steem/database_api_test.rb',
+      'test/steem/follow_api_test.rb',
+      'test/steem/jsonrpc_test.rb',
+      'test/steem/market_history_api_test.rb',
+      'test/steem/tags_api_test.rb',
+      'test/steem/witness_api_test.rb'
+    ]
+    t.ruby_opts << if ENV['HELL_ENABLED']
+      '-W2'
+    else
+      '-W1'
+    end
+  end
+  
+  Rake::TestTask.new(broadcast: 'clean:vcr') do |t|
+    t.description = <<-EOD
+      Run broadcast tests, which are those that only use network_broadcast_api
+      and/or database_api.verify_authority (pretend: true).
+    EOD
+    t.libs << 'test'
+    t.libs << 'lib'
+    t.test_files = [
+      'test/steem/broadcast_test.rb',
+      'test/steem/transaction_builder_test.rb'
+    ]
+    t.ruby_opts << if ENV['HELL_ENABLED']
+      '-W2'
+    else
+      '-W1'
+    end
   end
 end
 
@@ -30,7 +75,8 @@ end
 namespace :clean do
   desc 'Remove test/fixtures/vcr_cassettes/*.yml so they can be rebuilt fresh.'
   task :vcr do |t|
-    exec 'rm -v test/fixtures/vcr_cassettes/*.yml'
+    cmd = 'echo Cleaned cassettes: $(rm -v test/fixtures/vcr_cassettes/*.yml | wc -l)'
+    system cmd
   end
 end
 

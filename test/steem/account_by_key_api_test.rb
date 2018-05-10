@@ -13,7 +13,7 @@ module Steem
     end
     
     def test_inspect
-      assert_equal "#<AccountByKeyApi [@chain=steem, @url=https://api.steemit.com]>", @api.inspect
+      assert_equal "#<AccountByKeyApi [@chain=steem, @methods=<1 element>]>", @api.inspect
     end
     
     def test_method_missing
@@ -29,7 +29,7 @@ module Steem
     end
     
     def test_get_key_references
-      vcr_cassette('get_key_references') do
+      vcr_cassette('account_by_key_api_get_key_references', record: :once) do
         options = {
           accounts: ['STM5jZtLoV8YbxCxr4imnbWn61zMB24wwonpnVhfXRmv7j6fk3dTH']
         }

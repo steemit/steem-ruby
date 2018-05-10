@@ -1,12 +1,16 @@
 require 'test_helper'
 
 module Steem
+  # :nocov:
   class AccountHistoryApiTest < Steem::Test
     def setup
-      @api = Steem::AccountHistoryApi.new rescue skip('AccountHistoryApi is disabled.')
+      @api = Steem::AccountHistoryApi.new
       @jsonrpc = Jsonrpc.new
       @methods = @jsonrpc.get_api_methods[@api.class.api_name]
+    rescue UnknownApiError => e
+      skip('AccountHistoryApi is disabled.')
     end
+    
     def test_api_class_name
       assert_equal 'AccountHistoryApi', Steem::AccountHistoryApi::api_class_name
     end
@@ -28,7 +32,7 @@ module Steem
     end
     
     def test_get_account_history
-      vcr_cassette('get_account_history') do
+      vcr_cassette('account_history_api_get_account_history', record: :once) do
         options = {
           account: 'steemit',
           start: 0,
@@ -42,7 +46,7 @@ module Steem
     end
     
     def test_get_ops_in_block
-      vcr_cassette('get_ops_in_block') do
+      vcr_cassette('account_history_api_get_ops_in_block', record: :once) do
         options = {
           block_num: 0,
           only_virtual: true
@@ -55,7 +59,7 @@ module Steem
     end
     
     def test_get_transaction
-      vcr_cassette('get_transaction') do
+      vcr_cassette('account_history_api_get_transaction', record: :once) do
         options = {
           id: '0000000000000000000000000000000000000000',
         }
@@ -66,4 +70,5 @@ module Steem
       end
     end
   end
+  # :nocov:
 end

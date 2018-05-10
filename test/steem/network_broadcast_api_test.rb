@@ -12,7 +12,7 @@ module Steem
     end
     
     def test_inspect
-      assert_equal "#<NetworkBroadcastApi [@chain=steem, @url=https://api.steemit.com]>", @api.inspect
+      assert_equal "#<NetworkBroadcastApi [@chain=steem, @methods=<3 elements>]>", @api.inspect
     end
     
     def test_method_missing
@@ -41,7 +41,7 @@ module Steem
           }
         }
         
-        assert_raises RuntimeError do
+        assert_raises BlockTooOldError do
           @api.broadcast_block(options)
         end
       end
@@ -61,7 +61,7 @@ module Steem
           max_block_age: -1
         }
         
-        assert_raises RuntimeError do
+        assert_raises EmptyTransactionError do
           @api.broadcast_transaction(options)
         end
       end
@@ -81,7 +81,7 @@ module Steem
           max_block_age: -1
         }
         
-        assert_raises RuntimeError do
+        assert_raises EmptyTransactionError do
           @api.broadcast_transaction_synchronous(options)
         end
       end

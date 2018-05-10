@@ -25,20 +25,28 @@ class Minitest::Test
   parallelize_me! unless defined? WebMock
 end
 
+# before tests, outside test threads
+VCR.insert_cassette('global_cassette', record: :once, match_requests_on: [:method, :uri, :body])
+@jsonrpc = Steem::Jsonrpc.new
+@jsonrpc.get_api_methods # caches up methods
+
 class Steem::Test < MiniTest::Test
   defined? prove_it! and prove_it!
   
   # Most likely modes: 'once' and 'new_episodes'
   VCR_RECORD_MODE = (ENV['VCR_RECORD_MODE'] || 'new_episodes').to_sym
   
-  def vcr_cassette(name, &block)
-    VCR.use_cassette(name, record: VCR_RECORD_MODE, match_requests_on: [:method, :uri, :body]) do
-      yield
+  def vcr_cassette(name, options = {match_requests_on: [:method, :uri, :body]}, &block)
+    options[:record] ||= VCR_RECORD_MODE
+    
+    VCR.use_cassette(name, options) do
+      begin
+        yield
+      rescue Steem::BaseError => e
+        skip 'Probably just a node acting up.'
+      rescue Psych::SyntaxError => e
+        skip 'This happens when we try to get fancy and disable thread-safety.'
+      end
     end
-  end
-  
-  VCR.use_cassette('global_cassette', record: VCR_RECORD_MODE, match_requests_on: [:method, :uri, :body]) do
-    @jsonrpc = Steem::Jsonrpc.new
-    @jsonrpc.get_api_methods[Steem::Api.api_name] # caches up methods
   end
 end

@@ -12,7 +12,7 @@ module Steem
     end
     
     def test_inspect
-      assert_equal "#<DatabaseApi [@chain=steem, @url=https://api.steemit.com]>", @api.inspect
+      assert_equal "#<DatabaseApi [@chain=steem, @methods=<46 elements>]>", @api.inspect
     end
     
     def test_method_missing
@@ -28,7 +28,7 @@ module Steem
     end
     
     def test_find_account_recovery_requests
-      vcr_cassette('find_account_recovery_requests') do
+      vcr_cassette('database_api_find_account_recovery_requests', record: :once) do
         @api.find_account_recovery_requests(accounts: ['steemit']) do |result|
           assert_equal Hashie::Array, result.requests.class
         end
@@ -36,7 +36,7 @@ module Steem
     end
     
     def test_find_accounts
-      vcr_cassette('find_accounts') do
+      vcr_cassette('database_api_find_accounts', record: :once) do
         @api.find_accounts(accounts: ['steemit']) do |result|
           assert_equal Hashie::Array, result.accounts.class
         end
@@ -44,7 +44,7 @@ module Steem
     end
     
     def test_find_change_recovery_account_requests
-      vcr_cassette('find_change_recovery_account_requests') do
+      vcr_cassette('database_api_find_change_recovery_account_requests', record: :once) do
         @api.find_change_recovery_account_requests(accounts: ['steemit']) do |result|
           assert_equal Hashie::Array, result.requests.class
         end
@@ -52,7 +52,7 @@ module Steem
     end
     
     def test_find_comments
-      vcr_cassette('find_comments') do
+      vcr_cassette('database_api_find_comments', record: :once) do
         @api.find_comments(comments: [['steemit', 'firstpost']]) do |result|
           assert_equal Hashie::Array, result.comments.class
         end
@@ -60,7 +60,7 @@ module Steem
     end
     
     def test_find_decline_voting_rights_requests
-      vcr_cassette('find_decline_voting_rights_requests') do
+      vcr_cassette('database_api_find_decline_voting_rights_requests', record: :once) do
         @api.find_decline_voting_rights_requests(accounts: ['steemit']) do |result|
           assert_equal Hashie::Array, result.requests.class
         end
@@ -68,7 +68,7 @@ module Steem
     end
     
     def test_find_escrows
-      vcr_cassette('find_escrows') do
+      vcr_cassette('database_api_find_escrows', record: :once) do
         @api.find_escrows(from: 'steemit') do |result|
           assert_equal Hashie::Array, result.escrows.class
         end
@@ -76,7 +76,7 @@ module Steem
     end
     
     def test_find_limit_orders
-      vcr_cassette('find_limit_orders') do
+      vcr_cassette('database_api_find_limit_orders', record: :once) do
         @api.find_limit_orders(account: 'steemit') do |result|
           assert_equal Hashie::Array, result.orders.class
         end
@@ -84,7 +84,7 @@ module Steem
     end
     
     def test_find_owner_histories
-      vcr_cassette('find_owner_histories') do
+      vcr_cassette('database_api_find_owner_histories', record: :once) do
         @api.find_owner_histories(owner: 'steemit') do |result|
           assert_equal Hashie::Array, result.owner_auths.class
         end
@@ -92,7 +92,7 @@ module Steem
     end
     
     def test_find_savings_withdrawals
-      vcr_cassette('find_savings_withdrawals') do
+      vcr_cassette('database_api_find_savings_withdrawals', record: :once) do
         @api.find_savings_withdrawals(account: 'steemit') do |result|
           assert_equal Hashie::Array, result.withdrawals.class
         end
@@ -100,7 +100,7 @@ module Steem
     end
     
     def test_find_sbd_conversion_requests
-      vcr_cassette('find_sbd_conversion_requests') do
+      vcr_cassette('database_api_find_sbd_conversion_requests', record: :once) do
         @api.find_sbd_conversion_requests(account: 'steemit') do |result|
           assert_equal Hashie::Array, result.requests.class
         end
@@ -108,7 +108,7 @@ module Steem
     end
     
     def test_find_vesting_delegation_expirations
-      vcr_cassette('find_vesting_delegation_expirations') do
+      vcr_cassette('database_api_find_vesting_delegation_expirations', record: :once) do
         @api.find_vesting_delegation_expirations(account: 'steemit') do |result|
           assert_equal Hashie::Array, result.delegations.class
         end
@@ -116,7 +116,7 @@ module Steem
     end
     
     def test_find_vesting_delegations
-      vcr_cassette('find_vesting_delegations') do
+      vcr_cassette('database_api_find_vesting_delegations', record: :once) do
         @api.find_vesting_delegations(account: 'steemit') do |result|
           assert_equal Hashie::Array, result.delegations.class
         end
@@ -124,7 +124,7 @@ module Steem
     end
     
     def test_find_votes
-      vcr_cassette('find_votes') do
+      vcr_cassette('database_api_find_votes', record: :once) do
         @api.find_votes(author: 'steemit', permlink: 'firstpost') do |result|
           assert_equal Hashie::Array, result.votes.class
         end
@@ -132,7 +132,7 @@ module Steem
     end
     
     def test_find_withdraw_vesting_routes
-      vcr_cassette('find_withdraw_vesting_routes') do
+      vcr_cassette('database_api_find_withdraw_vesting_routes', record: :once) do
         # Other order types are listed here:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L607
         options = {
@@ -147,7 +147,7 @@ module Steem
     end
     
     def test_find_witnesses
-      vcr_cassette('find_witnesses') do
+      vcr_cassette('database_api_find_witnesses', record: :once) do
         @api.find_witnesses(owners: ['steemit']) do |result|
           assert_equal Hashie::Array, result.witnesses.class
         end
@@ -155,7 +155,7 @@ module Steem
     end
     
     def test_get_active_witnesses
-      vcr_cassette('get_active_witnesses') do
+      vcr_cassette('database_api_get_active_witnesses', record: :once) do
         @api.get_active_witnesses do |result|
           assert_equal Hashie::Array, result.witnesses.class
         end
@@ -163,7 +163,7 @@ module Steem
     end
     
     def test_get_config
-      vcr_cassette('get_config') do
+      vcr_cassette('database_api_get_config', record: :once) do
         @api.get_config do |result|
           assert_equal Hashie::Mash, result.class
         end
@@ -171,7 +171,7 @@ module Steem
     end
     
     def test_get_current_price_feed
-      vcr_cassette('get_current_price_feed') do
+      vcr_cassette('database_api_get_current_price_feed', record: :once) do
         @api.get_current_price_feed do |result|
           assert_equal Hashie::Mash, result.class
         end
@@ -179,7 +179,7 @@ module Steem
     end
     
     def test_get_dynamic_global_properties
-      vcr_cassette('get_dynamic_global_properties') do
+      vcr_cassette('database_api_get_dynamic_global_properties', record: :once) do
         @api.get_dynamic_global_properties do |result|
           assert_equal Hashie::Mash, result.class
         end
@@ -187,7 +187,7 @@ module Steem
     end
     
     def test_get_feed_history
-      vcr_cassette('get_feed_history') do
+      vcr_cassette('database_api_get_feed_history', record: :once) do
         @api.get_feed_history do |result|
           assert_equal Hashie::Mash, result.class
         end
@@ -195,7 +195,7 @@ module Steem
     end
     
     def test_get_hardfork_properties
-      vcr_cassette('get_hardfork_properties') do
+      vcr_cassette('database_api_get_hardfork_properties', record: :once) do
         @api.get_hardfork_properties do |result|
           assert_equal Hashie::Mash, result.class
         end
@@ -203,7 +203,7 @@ module Steem
     end
     
     def test_get_order_book
-      vcr_cassette('get_order_book') do
+      vcr_cassette('database_api_get_order_book', record: :once) do
         @api.get_order_book do |result|
           assert_equal Hashie::Mash, result.class
         end
@@ -211,7 +211,7 @@ module Steem
     end
     
     def test_get_potential_signatures
-      vcr_cassette('get_potential_signatures') do
+      vcr_cassette('database_api_get_potential_signatures', record: :once) do
         options = {
           trx:{
             ref_block_num: 0,
@@ -230,7 +230,7 @@ module Steem
     end
     
     def test_get_required_signatures
-      vcr_cassette('get_required_signatures') do
+      vcr_cassette('database_api_get_required_signatures', record: :once) do
         options = {
           trx:{
             ref_block_num: 0,
@@ -249,7 +249,7 @@ module Steem
     end
     
     def test_get_reward_funds
-      vcr_cassette('get_reward_funds') do
+      vcr_cassette('database_api_get_reward_funds', record: :once) do
         @api.get_reward_funds do |result|
           assert_equal Hashie::Mash, result.class
         end
@@ -257,7 +257,7 @@ module Steem
     end
     
     def test_get_transaction_hex
-      vcr_cassette('get_transaction_hex') do
+      vcr_cassette('database_api_get_transaction_hex', record: :once) do
         trx = {
           ref_block_num: 0,
           ref_block_prefix: 0,
@@ -275,7 +275,7 @@ module Steem
     end
     
     def test_get_transaction_hex_account_create
-      vcr_cassette('get_transaction_hex') do
+      vcr_cassette('database_api_get_transaction_hex_account_create', record: :once) do
         trx = {
           ref_block_num: 19297,
           ref_block_prefix: 1608085982,
@@ -327,7 +327,7 @@ module Steem
     end
     
     def test_get_witness_schedule
-      vcr_cassette('get_witness_schedule') do
+      vcr_cassette('database_api_get_witness_schedule', record: :once) do
         @api.get_witness_schedule do |result|
           assert_equal Hashie::Mash, result.class
         end
@@ -335,7 +335,7 @@ module Steem
     end
     
     def test_list_account_recovery_requests
-      vcr_cassette('list_account_recovery_requests') do
+      vcr_cassette('database_api_list_account_recovery_requests', record: :once) do
         # Other order types are listed here:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L406
         options = {
@@ -351,7 +351,7 @@ module Steem
     end
     
     def test_list_accounts
-      vcr_cassette('list_accounts') do
+      vcr_cassette('database_api_list_accounts', record: :once) do
         # Other order types are listed here:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L307
         options = {
@@ -367,7 +367,7 @@ module Steem
     end
     
     def test_list_change_recovery_account_requests
-      vcr_cassette('list_change_recovery_account_requests') do
+      vcr_cassette('database_api_list_change_recovery_account_requests', record: :once) do
         # Other order types are listed here:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L460
         options = {
@@ -383,7 +383,7 @@ module Steem
     end
     
     def test_list_comments
-      vcr_cassette('list_comments') do
+      vcr_cassette('database_api_list_comments', record: :once) do
         # Other order types are listed here:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L941
         options = {
@@ -399,7 +399,7 @@ module Steem
     end
     
     def test_list_decline_voting_rights_requests
-      vcr_cassette('list_decline_voting_rights_requests') do
+      vcr_cassette('database_api_list_decline_voting_rights_requests', record: :once) do
         # Other order types are listed here:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L867
         options = {
@@ -415,7 +415,7 @@ module Steem
     end
     
     def test_list_escrows
-      vcr_cassette('list_escrows') do
+      vcr_cassette('database_api_list_escrows', record: :once) do
         # Other order types are listed here:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L515
         options = {
@@ -431,7 +431,7 @@ module Steem
     end
     
     def test_list_limit_orders
-      vcr_cassette('list_limit_orders') do
+      vcr_cassette('database_api_list_limit_orders', record: :once) do
         # Other order types are listed here:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L1278
         options = {
@@ -447,7 +447,7 @@ module Steem
     end
     
     def test_list_owner_histories
-      vcr_cassette('list_owner_histories') do
+      vcr_cassette('database_api_list_owner_histories', record: :once) do
         @api.list_owner_histories(start: [], limit: 0) do |result|
           assert_equal Hashie::Array, result.owner_auths.class
         end
@@ -455,7 +455,7 @@ module Steem
     end
     
     def test_list_sbd_conversion_requests
-      vcr_cassette('list_sbd_conversion_requests') do
+      vcr_cassette('database_api_list_sbd_conversion_requests', record: :once) do
         # Other order types are listed here:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L814
         options = {
@@ -471,7 +471,7 @@ module Steem
     end
     
     def test_list_vesting_delegation_expirations
-      vcr_cassette('list_vesting_delegation_expirations') do
+      vcr_cassette('database_api_list_vesting_delegation_expirations', record: :once) do
         # Other order types are listed here:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L759
         options = {
@@ -487,7 +487,7 @@ module Steem
     end
     
     def test_list_vesting_delegations
-      vcr_cassette('list_vesting_delegations') do
+      vcr_cassette('database_api_list_vesting_delegations', record: :once) do
         # by_delegation is the only known order types:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L705
         options = {
@@ -503,7 +503,7 @@ module Steem
     end
     
     def test_list_votes
-      vcr_cassette('list_votes') do
+      vcr_cassette('database_api_list_votes', record: :once) do
         # Other order types are listed here:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L1125
         options = {
@@ -519,7 +519,7 @@ module Steem
     end
     
     def test_list_withdraw_vesting_routes
-      vcr_cassette('list_withdraw_vesting_routes') do
+      vcr_cassette('database_api_list_withdraw_vesting_routes', record: :once) do
         # Other order types are listed here:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L759
         options = {
@@ -535,7 +535,7 @@ module Steem
     end
     
     def test_list_witness_votes
-      vcr_cassette('list_witness_votes') do
+      vcr_cassette('database_api_list_witness_votes', record: :once) do
         # Other order types are listed here:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L252
         options = {
@@ -551,7 +551,7 @@ module Steem
     end
     
     def test_list_witnesses
-      vcr_cassette('list_witnesses') do
+      vcr_cassette('database_api_list_witnesses', record: :once) do
         # Other order types are listed here:
         # https://github.com/steemit/steem/blob/1cfdf8101ec415156b155c9ec90b0a4d439a039f/libraries/plugins/apis/database_api/database_api.cpp#L188
         options = {
@@ -567,20 +567,20 @@ module Steem
     end
     
     def test_verify_account_authority
-      vcr_cassette('verify_account_authority') do
+      vcr_cassette('database_api_verify_account_authority', record: :once) do
         options = {
           account: 'steemit',
           signers: ['STM7Q2rLBqzPzFeteQZewv9Lu3NLE69fZoLeL6YK59t7UmssCBNTU']
         }
         
-        assert_raises RuntimeError do
+        assert_raises MissingActiveAuthorityError do
           @api.verify_account_authority(options)
         end
       end
     end
     
     def test_verify_authority
-      vcr_cassette('verify_authority') do
+      vcr_cassette('database_api_verify_authority', record: :once) do
         options = {
           trx:{
             ref_block_num: 0,
@@ -599,7 +599,7 @@ module Steem
     end
     
     def test_verify_signatures
-      vcr_cassette('verify_signatures') do
+      vcr_cassette('database_api_verify_signatures', record: :once) do
         options = {
           hash: "0000000000000000000000000000000000000000000000000000000000000000",
           signatures: [],

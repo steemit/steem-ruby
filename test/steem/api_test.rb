@@ -2,9 +2,6 @@ require 'test_helper'
 
 module Steem
   class ApiTest < Steem::Test
-    METHOD_NAMES_VOID_ARGS = %i(broadcast_block broadcast_transaction
-      broadcast_transaction_synchronous)
-    
     METHOD_NAMES_1_ARG = %i(get_account_votes get_block get_block_header
       get_blog_authors get_comment_discussions_by_payout
       get_conversion_requests get_discussions_by_active
@@ -48,10 +45,9 @@ module Steem
     # Plugins not enabled, or similar.
     SKIP_METHOD_NAMES = %i(get_transaction)
     
-    ALL_METHOD_NAMES = METHOD_NAMES_VOID_ARGS + METHOD_NAMES_1_ARG +
-      METHOD_NAMES_2_ARGS + METHOD_NAMES_3_ARGS + METHOD_NAMES_4_ARGS +
-      METHOD_NAMES_UNIMPLEMENTED + METHOD_NAMES_1_ARG_NO_ERROR +
-      METHOD_NAMES_0_ARGS + SKIP_METHOD_NAMES
+    ALL_METHOD_NAMES = METHOD_NAMES_1_ARG + METHOD_NAMES_2_ARGS +
+      METHOD_NAMES_3_ARGS + METHOD_NAMES_4_ARGS + METHOD_NAMES_UNIMPLEMENTED +
+      METHOD_NAMES_1_ARG_NO_ERROR + METHOD_NAMES_0_ARGS + SKIP_METHOD_NAMES
     
     def setup
       @api = Api.new
@@ -64,19 +60,27 @@ module Steem
     end
     
     def test_unknown_api_name
-      assert_raises RemoteNodeError, 'expect unknown api error' do
+      assert_raises UnknownApiError, 'expect unknown api error' do
         Steem::FakeApi.new
       end
     end
     
     def test_inspect
-      assert_equal "#<CondenserApi [@chain=steem, @url=https://api.steemit.com]>", @api.inspect
+      assert_equal "#<CondenserApi [@chain=steem, @methods=<85 elements>]>", @api.inspect
     end
     
     def test_inspect_testnet
       vcr_cassette("#{@api.class.api_name}_testnet") do
         api = Api.new(chain: :test)
-        assert_equal "#<CondenserApi [@chain=test, @url=https://testnet.steemitdev.com]>", api.inspect
+        assert_equal "#<CondenserApi [@chain=test, @methods=<85 elements>]>", api.inspect
+      end
+    end
+    
+    def test_unsupported_chain
+      vcr_cassette("#{@api.class.api_name}_unsupported_chain") do
+        assert_raises UnsupportedChainError do
+          Api.new(chain: :golos)
+        end
       end
     end
     
@@ -96,9 +100,16 @@ module Steem
       vcr_cassette("#{@api.class.api_name}_all_methods") do
         @methods.each do |key|
           case key
-          when *METHOD_NAMES_VOID_ARGS
-          then
-            assert_raises RuntimeError, "expect void arguments to raise RuntimeError for: #{key}" do
+          when :broadcast_block then
+            assert_raises BlockTooOldError, "expect void arguments to raise BlockTooOldError for: #{key}" do
+              assert @api.send key, {}
+            end
+          when :broadcast_transaction then
+            assert_raises IncorrectResponseIdError, "expect void arguments to raise IncorrectResponseIdError for: #{key}" do
+              assert @api.send key, {}
+            end
+          when :broadcast_transaction_synchronous then
+            assert_raises IncorrectResponseIdError, "expect void arguments to raise IncorrectResponseIdError for: #{key}" do
               assert @api.send key, {}
             end
           when *METHOD_NAMES_1_ARG
@@ -133,7 +144,7 @@ module Steem
     end
     
     def test_get_account_count
-      vcr_cassette('get_account_count') do
+      vcr_cassette('condenser_api_get_account_count') do
         @api.get_account_count do |count|
           refute_nil count, 'did not expect nil count'
         end
@@ -141,7 +152,7 @@ module Steem
     end
     
     def test_get_content_wrong_arguments
-      vcr_cassette('get_content_wrong_arguments') do
+      vcr_cassette('condenser_api_get_content_wrong_arguments') do
         assert_raises Steem::ArgumentError, 'expect argument error' do
           @api.get_content
         end

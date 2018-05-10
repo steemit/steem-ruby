@@ -12,7 +12,7 @@ module Steem
     end
     
     def test_inspect
-      assert_equal "#<TagsApi [@chain=steem, @url=https://api.steemit.com]>", @api.inspect
+      assert_equal "#<TagsApi [@chain=steem, @methods=<20 elements>]>", @api.inspect
     end
     
     def test_method_missing
@@ -28,7 +28,7 @@ module Steem
     end
     
     def test_get_active_votes
-      vcr_cassette('get_active_votes') do
+      vcr_cassette('tags_api_get_active_votes', record: :once) do
         options = {
           author: 'steemit',
           permlink: 'firstpost'
@@ -41,7 +41,7 @@ module Steem
     end
     
     def test_get_comment_discussions_by_payout
-      vcr_cassette('get_comment_discussions_by_payout') do
+      vcr_cassette('tags_api_get_comment_discussions_by_payout', record: :once) do
         options = {
           tag: "",
           limit: 0,
@@ -58,7 +58,7 @@ module Steem
     end
     
     def test_get_content_replies
-      vcr_cassette('get_content_replies') do
+      vcr_cassette('tags_api_get_content_replies', record: :once) do
         options = {
           author: 'steemit',
           permlink: 'firstpost'
@@ -71,7 +71,7 @@ module Steem
     end
     
     def test_get_discussion
-      vcr_cassette('get_discussion') do
+      vcr_cassette('tags_api_get_discussion', record: :once) do
         options = {
           author: 'steemit',
           permlink: 'firstpost'
@@ -84,7 +84,7 @@ module Steem
     end
     
     def test_get_discussions_by_active
-      vcr_cassette('get_discussions_by_active') do
+      vcr_cassette('tags_api_get_discussions_by_active', record: :once) do
         options = {
           tag: "",
           limit: 0,
@@ -101,7 +101,7 @@ module Steem
     end
     
     def test_get_discussions_by_author_before_date
-      vcr_cassette('get_discussions_by_author_before_date') do
+      vcr_cassette('tags_api_get_discussions_by_author_before_date', record: :once) do
         options = {
           author: 'steemit',
           permlink: 'firstpost'
@@ -114,7 +114,7 @@ module Steem
     end
     
     def test_get_discussions_by_blog
-      vcr_cassette('get_discussions_by_blog') do
+      vcr_cassette('tags_api_get_discussions_by_blog', record: :once) do
         options = {
           tag: 'steemit',
           limit: 0
@@ -127,7 +127,7 @@ module Steem
     end
     
     def test_get_discussions_by_cashout
-      vcr_cassette('get_discussions_by_cashout') do
+      vcr_cassette('tags_api_get_discussions_by_cashout', record: :once) do
         options = {
           tag: 'steem',
           limit: 0
@@ -140,7 +140,7 @@ module Steem
     end
     
     def test_get_discussions_by_children
-      vcr_cassette('get_discussions_by_children') do
+      vcr_cassette('tags_api_get_discussions_by_children', record: :once) do
         options = {
           tag: 'steem',
           limit: 0
@@ -153,7 +153,7 @@ module Steem
     end
     
     def test_get_discussions_by_comments
-      vcr_cassette('get_discussions_by_comments') do
+      vcr_cassette('tags_api_get_discussions_by_comments', record: :once) do
         options = {
           start_author: 'steemit',
           start_permlink: 'firstpost',
@@ -167,7 +167,7 @@ module Steem
     end
     
     def test_get_discussions_by_created
-      vcr_cassette('get_discussions_by_created') do
+      vcr_cassette('tags_api_get_discussions_by_created', record: :once) do
         options = {
           tag: 'steem',
           limit: 0
@@ -180,7 +180,7 @@ module Steem
     end
     
     def test_get_discussions_by_feed
-      vcr_cassette('get_discussions_by_feed') do
+      vcr_cassette('tags_api_get_discussions_by_feed', record: :once) do
         options = {
           tag: 'steem',
           limit: 0
@@ -193,7 +193,7 @@ module Steem
     end
     
     def test_get_discussions_by_hot
-      vcr_cassette('get_discussions_by_hot') do
+      vcr_cassette('tags_api_get_discussions_by_hot', record: :once) do
         options = {
           tag: 'steem',
           limit: 0
@@ -206,7 +206,7 @@ module Steem
     end
     
     def test_get_discussions_by_promoted
-      vcr_cassette('get_discussions_by_promoted') do
+      vcr_cassette('tags_api_get_discussions_by_promoted', record: :once) do
         options = {
           tag: 'steem',
           limit: 0
@@ -219,7 +219,7 @@ module Steem
     end
     
     def test_get_discussions_by_trending
-      vcr_cassette('get_discussions_by_trending') do
+      vcr_cassette('tags_api_get_discussions_by_trending', record: :once) do
         options = {
           tag: 'steem',
           limit: 0
@@ -232,7 +232,7 @@ module Steem
     end
     
     def test_get_discussions_by_votes
-      vcr_cassette('get_discussions_by_votes') do
+      vcr_cassette('tags_api_get_discussions_by_votes', record: :once) do
         options = {
           tag: 'steem',
           limit: 0
@@ -245,7 +245,7 @@ module Steem
     end
     
     def test_get_post_discussions_by_payout
-      vcr_cassette('get_post_discussions_by_payout') do
+      vcr_cassette('tags_api_get_post_discussions_by_payout', record: :once) do
         options = {
           tag: 'steem',
           limit: 0
@@ -258,7 +258,7 @@ module Steem
     end
     
     def test_get_replies_by_last_update
-      vcr_cassette('get_replies_by_last_update') do
+      vcr_cassette('tags_api_get_replies_by_last_update', record: :once) do
         options = {
           start_parent_author: 'steemit',
           start_permlink: 'firstpost',
@@ -272,7 +272,7 @@ module Steem
     end
     
     def test_get_tags_used_by_author
-      vcr_cassette('get_tags_used_by_author') do
+      vcr_cassette('tags_api_get_tags_used_by_author', record: :once) do
         @api.get_tags_used_by_author(author: 'steemit') do |result|
           assert_equal Hashie::Array, result.tags.class
         end
@@ -280,15 +280,15 @@ module Steem
     end
     
     def test_get_tags_used_by_author_bad_account
-      vcr_cassette('get_tags_used_by_author') do
-        assert_raises RuntimeError do
+      vcr_cassette('tags_api_get_tags_used_by_author_bad_account', record: :once) do
+        assert_raises AuthorNotFoundError do
           @api.get_tags_used_by_author(author: 'ste emit')
         end
       end
     end
     
     def test_get_trending_tags
-      vcr_cassette('get_trending_tags') do
+      vcr_cassette('tags_api_get_trending_tags', record: :once) do
         @api.get_trending_tags(start_tag: '', limit: 0) do |result|
           assert_equal Hashie::Array, result.tags.class
         end

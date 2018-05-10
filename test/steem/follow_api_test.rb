@@ -12,7 +12,7 @@ module Steem
     end
     
     def test_inspect
-      assert_equal "#<FollowApi [@chain=steem, @url=https://api.steemit.com]>", @api.inspect
+      assert_equal "#<FollowApi [@chain=steem, @methods=<10 elements>]>", @api.inspect
     end
     
     def test_method_missing
@@ -28,7 +28,7 @@ module Steem
     end
     
     def test_get_account_reputations
-      vcr_cassette('get_account_reputations') do
+      vcr_cassette('follow_api_get_account_reputations', record: :once) do
         options = {
           account_lower_bound: 'steemit',
           limit: 0
@@ -41,7 +41,7 @@ module Steem
     end
     
     def test_get_blog
-      vcr_cassette('get_blog') do
+      vcr_cassette('follow_api_get_blog', record: :once) do
         options = {
           account: 'steemit',
           start_entry_id: 0,
@@ -55,7 +55,7 @@ module Steem
     end
     
     def test_get_blog_authors
-      vcr_cassette('get_blog_authors') do
+      vcr_cassette('follow_api_get_blog_authors', record: :once) do
         options = {
           blog_account: 'steemit'
         }
@@ -67,7 +67,7 @@ module Steem
     end
     
     def test_get_blog_entries
-      vcr_cassette('get_blog_entries') do
+      vcr_cassette('follow_api_get_blog_entries', record: :once) do
         options = {
           account: 'steemit',
           start_entry_id: 0,
@@ -81,7 +81,7 @@ module Steem
     end
     
     def test_get_feed
-      vcr_cassette('get_feed') do
+      vcr_cassette('follow_api_get_feed', record: :once) do
         options = {
           account: 'steemit',
           start_entry_id: 0,
@@ -95,7 +95,7 @@ module Steem
     end
     
     def test_get_feed_entries
-      vcr_cassette('get_feed_entries') do
+      vcr_cassette('follow_api_get_feed_entries', record: :once) do
         options = {
           account: 'steemit',
           start_entry_id: 0,
@@ -109,7 +109,7 @@ module Steem
     end
     
     def test_get_follow_count
-      vcr_cassette('get_follow_count') do
+      vcr_cassette('follow_api_get_follow_count', record: :once) do
         options = {
           account: 'steemit'
         }
@@ -124,7 +124,7 @@ module Steem
     end
     
     def test_get_followers
-      vcr_cassette('get_followers') do
+      vcr_cassette('follow_api_get_followers', record: :once) do
         options = {
           account: 'steemit',
           start: nil,
@@ -139,7 +139,7 @@ module Steem
     end
     
     def test_get_following
-      vcr_cassette('get_following') do
+      vcr_cassette('follow_api_get_following', record: :once) do
         options = {
           account: 'steemit',
           start: nil,
@@ -154,7 +154,7 @@ module Steem
     end
     
     def test_get_reblogged_by
-      vcr_cassette('get_reblogged_by') do
+      vcr_cassette('follow_api_get_reblogged_by', record: :once) do
         options = {
           author: 'steemit',
           permlink: 'firstpost'
