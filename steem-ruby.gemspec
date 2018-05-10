@@ -27,11 +27,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'vcr', '~> 4.0', '>= 4.0.0'
   spec.add_development_dependency 'yard', '~> 0.9', '>= 0.9.12'
   spec.add_development_dependency 'pry', '~> 0.11', '>= 0.11.3'
+  spec.add_development_dependency 'awesome_print', '~> 1.8', '>= 1.8.0'
   
   spec.add_dependency 'json', '~> 2.1', '>= 2.1.0'
   spec.add_dependency 'logging', '~> 2.2', '>= 2.2.0'
   spec.add_dependency 'hashie', '~> 3.5', '>= 3.5.7'
   spec.add_dependency 'bitcoin-ruby', '~> 0.0', '>= 0.0.18'
   spec.add_dependency 'ffi', '~> 1.9', '>= 1.9.23'
-  spec.add_dependency 'awesome_print', '~> 1.8', '>= 1.8.0'
 end
