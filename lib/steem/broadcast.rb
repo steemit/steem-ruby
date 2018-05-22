@@ -105,6 +105,24 @@ module Steem
     #     }
     #     
     #     Steem::Broadcast.comment(options)
+    # 
+    # In addition to the above denormalized `comment_options` fields, the author
+    # can also vote for the content in the same transaction by setting `author_vote_weight`:
+    # 
+    #     options = {
+    #       wif: wif,
+    #       params: {
+    #         author: author,
+    #         title: 'This is my fancy post title.',
+    #         body: 'This is my fancy post body.',
+    #         metadata: {
+    #           tags: %w(these are my fancy tags)
+    #         },
+    #         author_vote_weight: 10000
+    #       }
+    #     }
+    #     
+    #     Steem::Broadcast.comment(options)
     #
     # @param options [Hash] options
     # @option options [String] :wif Posting wif
@@ -113,6 +131,7 @@ module Steem
     #   * :title (String) Title of the content.
     #   * :body (String) Body of the content.
     #   * :metadata (Hash) Metadata of the content, becomes `json_metadata`.
+    #   * :json_metadata (String) String version of `metadata` (use one or the other).
     #   * :permlink (String) (automatic) Permlink of the content, defaults to formatted title.
     #   * :parent_permlink (String) (automatic) Parent permlink of the content, defaults to first tag.
     #   * :parent_author (String) (optional) Parent author of the content (only used if reply).
@@ -121,12 +140,19 @@ module Steem
     #   * :allow_votes (Numeric) (true) Allow votes for this content.
     #   * :allow_curation_rewards (Numeric) (true) Allow curation rewards for this content.
     #   * :beneficiaries (Array<Hash>) Sets the beneficiaries of this content.
+    #   * :author_vote_weight (Number) (optional) Cast a vote by the author in the same transaction.
     #   * :pretend (Boolean) Just validate, do not broadcast.
     # @see https://developers.steem.io/apidefinitions/broadcast-ops#broadcast_ops_comment
     def self.comment(options, &block)
       required_fields = %i(author body permlink parent_permlink)
       params = options[:params]
-      metadata = (params[:metadata] rescue nil) || {}
+      
+      if !!params[:metadata] && !!params[:json_metadata]
+        raise Steem::ArgumentError, 'Assign either metadata or json_metadata, not both.'
+      end
+      
+      metadata = params[:metadata] || {}
+      metadata ||= (JSON[params[:json_metadata]] || nil) || {}
       metadata['app'] ||= Steem::AGENT_ID
       tags = metadata['tags'] || []
       params[:parent_permlink] ||= tags.first
@@ -180,6 +206,17 @@ module Steem
       end
       
       ops << [:comment_options, comment_options]
+      
+      if !!params[:author_vote_weight]
+        author_vote = {
+          voter: params[:author],
+          author: params[:author],
+          permlink: params[:permlink],
+          weight: params[:author_vote_weight]
+        }
+        
+        ops << [:vote, author_vote]
+      end
       
       process(options.merge(ops: ops), &block)
     end
@@ -374,7 +411,7 @@ module Steem
       params = options[:params]
       check_required_fields(params, *required_fields)
       
-      exchange_rate = params[:exchange_rate] rescue {}
+      exchange_rate = params[:exchange_rate] rescue nil || {}
       base = exchange_rate[:base]
       quote = exchange_rate[:quote]
       params[:exchange_rate][:base] = Type::Amount.to_nia(base)
@@ -447,12 +484,22 @@ module Steem
     #   * :active (Hash)
     #   * :posting (Hash)
     #   * :memo_key (String)
-    #   * :json_metadata (String)
+    #   * :metadata (Hash) Metadata of the account, becomes `json_metadata`.
+    #   * :json_metadata (String) String version of `metadata` (use one or the other).
     # @option options [Boolean] :pretend Just validate, do not broadcast.
     # @see https://developers.steem.io/apidefinitions/broadcast-ops#broadcast_ops_account_create
     def self.account_create(options, &block)
       required_fields = %i(fee creator new_account_name owner active posting memo_key json_metadata)
       params = options[:params]
+      
+      if !!params[:metadata] && !!params[:json_metadata]
+        raise Steem::ArgumentError, 'Assign either metadata or json_metadata, not both.'
+      end
+      
+      metadata = params.delete(:metadata) || {}
+      metadata ||= (JSON[params[:json_metadata]] || nil) || {}
+      params[:json_metadata] = metadata.to_json
+      
       check_required_fields(params, *required_fields)
       
       params[:fee] = Type::Amount.to_nia(params[:fee])
@@ -497,12 +544,22 @@ module Steem
     #   * :active (Hash) (optional)
     #   * :posting (Hash) (optional)
     #   * :memo_key (String) (optional)
-    # @option options [String] :json_metadata (optional)
+    #   * :metadata (Hash) Metadata of the account, becomes `json_metadata`.
+    #   * :json_metadata (String) String version of `metadata` (use one or the other).
     # @option options [Boolean] :pretend Just validate, do not broadcast.
     # @see https://developers.steem.io/apidefinitions/broadcast-ops#broadcast_ops_account_update
     def self.account_update(options, &block)
       required_fields = %i(account)
       params = options[:params]
+      
+      if !!params[:metadata] && !!params[:json_metadata]
+        raise Steem::ArgumentError, 'Assign either metadata or json_metadata, not both.'
+      end
+      
+      metadata = params.delete(:metadata) || {}
+      metadata ||= (JSON[params[:json_metadata]] || nil) || {}
+      params[:json_metadata] = metadata.to_json
+      
       check_required_fields(params, *required_fields)
       
       ops = [[:account_update, params]]
@@ -642,12 +699,22 @@ module Steem
     #   * :required_auths (Array<String>)
     #   * :required_posting_auths (Arrat<String>)
     #   * :id (String)
-    #   * :json (String)
+    #   * :data (Hash) Data of the custom json, becomes `json`.
+    #   * :json (String) String version of `data` (use one or the other).
     # @option options [Boolean] :pretend Just validate, do not broadcast.
     # @see https://developers.steem.io/apidefinitions/broadcast-ops#broadcast_ops_custom_json
     def self.custom_json(options, &block)
-      required_fields = %i(id json)
+      required_fields = %i(id)
       params = options[:params]
+      
+      if !!params[:data] && !!params[:json]
+        raise Steem::ArgumentError, 'Assign either data or json, not both.'
+      end
+      
+      data = params.delete(:data) || {}
+      data ||= (JSON[params[:json]] || nil) || {}
+      params[:json] = data.to_json
+      
       check_required_fields(params, *required_fields)
       
       params[:required_auths] ||= []
@@ -759,12 +826,22 @@ module Steem
     #   * :fee (String)
     #   * :ratification_deadline (String)
     #   * :escrow_expiration (String)
-    #   * :json_meta (String)
+    #   * :meta (Hash) Meta of the escrow transfer, becomes `json_meta`.
+    #   * :json_meta (String) String version of `metadata` (use one or the other).
     # @option options [Boolean] :pretend Just validate, do not broadcast.
     # @see https://developers.steem.io/apidefinitions/broadcast-ops#broadcast_ops_escrow_transfer
     def self.escrow_transfer(options, &block)
-      required_fields = %i(from to agent escrow_id fee ratification_deadline json_meta)
+      required_fields = %i(from to agent escrow_id fee ratification_deadline)
       params = options[:params]
+      
+      if !!params[:meta] && !!params[:json_meta]
+        raise Steem::ArgumentError, 'Assign either meta or json_meta, not both.'
+      end
+      
+      meta = params.delete(:meta) || {}
+      meta ||= (JSON[params[:json_meta]] || nil) || {}
+      params[:json_meta] = meta.to_json
+      
       check_required_fields(params, *required_fields)
       
       params[:sbd_amount] = Type::Amount.to_nia(params[:sbd_amount])
@@ -979,13 +1056,23 @@ module Steem
     #   * :active (String)
     #   * :posting (String)
     #   * :memo_key (String)
-    #   * :json_metadata (String)
+    #   * :metadata (Hash) Metadata of the account, becomes `json_metadata`.
+    #   * :json_metadata (String) String version of `metadata` (use one or the other).
     #   * :extensions (Array)
     # @option options [Boolean] :pretend Just validate, do not broadcast.
     # @see https://developers.steem.io/apidefinitions/broadcast-ops#broadcast_ops_account_create_with_delegation
     def self.account_create_with_delegation(options, &block)
-      required_fields = %i(fee delegation creator new_account_name owner active posting memo_key json_metadata)
+      required_fields = %i(fee delegation creator new_account_name owner active posting memo_key)
       params = options[:params]
+      
+      if !!params[:metadata] && !!params[:json_metadata]
+        raise Steem::ArgumentError, 'Assign either metadata or json_metadata, not both.'
+      end
+      
+      metadata = params.delete(:metadata) || {}
+      metadata ||= (JSON[params[:json_metadata]] || nil) || {}
+      params[:json_metadata] = metadata.to_json
+      
       check_required_fields(params, *required_fields)
       
       params[:fee] = Type::Amount.to_nia(params[:fee])
@@ -1032,14 +1119,17 @@ module Steem
       end
     end
   private
+    # @private
     def self.database_api(options)
       options[:database_api] ||= Steem::DatabaseApi.new(options)
     end
     
+    # @private
     def self.network_broadcast_api(options)
       options[:network_broadcast_api] ||= Steem::NetworkBroadcastApi.new(options)
     end
     
+    # @private
     def self.check_required_fields(hash, *fields)
       fields.each do |field|
         value = hash[field]
