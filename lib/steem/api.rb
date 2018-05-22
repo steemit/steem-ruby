@@ -1,6 +1,6 @@
 module Steem
   # This ruby API works with
-  # {https://github.com/steemit/steem/releases steemd-0.19.4} and other Appbase
+  # {https://github.com/steemit/steem/releases steemd-0.19.4} and other AppBase
   # compatible upstreams.  To access different API namespaces, use the
   # following:
   #
@@ -103,16 +103,19 @@ module Steem
       "#<#{self.class.api_class_name} [#{properties}]>"
     end
   private
+    # @private
     def self.args_keys_to_s(rpc_method_name)
       args = signature(rpc_method_name).args
       args_keys = JSON[args.to_json]
     end
     
+    # @private
     def self.signature(rpc_method_name)
       @@signatures ||= {}
       @@signatures[rpc_method_name] ||= jsonrpc.get_signature(method: rpc_method_name).result
     end
     
+    # @private
     def self.raise_error_response(rpc_method_name, rpc_args, response)
       raise UnknownError, "#{rpc_method_name}: #{response}" if response.error.nil?
       
@@ -125,10 +128,12 @@ module Steem
       BaseError.build_error(error, rpc_method_name)
     end
     
+    # @private
     def respond_to_missing?(m, include_private = false)
       methods.nil? ? false : methods.include?(m.to_sym)
     end
     
+    # @private
     def method_missing(m, *args, &block)
       super unless respond_to_missing?(m)
       

@@ -138,6 +138,22 @@ module Steem
     def put(type, op = nil)
       @expiration = nil
       
+      ## Saving this for later.  This block, or something like it, might replace
+      ## API broadcast operation structure.
+      # case type
+      # when Symbol, String
+      #   type_value = "#{type}_operation"
+      #   @operations << {type: type_value, value: op}
+      # when Hash
+      #   type_value = "#{type.keys.first}_operation"
+      #   @operations << {type: type_value, value: type.values.first}
+      # when Array
+      #   type_value = "#{type[0]}_operation"
+      #   @operations << {type: type_value, value: type[1]}
+      # else
+      #   # don't know what to do with it, skipped
+      # end
+      
       case type
       when Symbol then @operations << [type, op]
       when String then @operations << [type.to_sym, op]
@@ -252,6 +268,7 @@ module Steem
     end
   private
     # See: https://github.com/steemit/steem/issues/1944
+    # @private
     def canonical?(sig)
       sig = sig.unpack('C*')
       
