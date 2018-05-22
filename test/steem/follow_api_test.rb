@@ -3,8 +3,8 @@ require 'test_helper'
 module Steem
   class FollowApiTest < Steem::Test
     def setup
-      @api = Steem::FollowApi.new
-      @jsonrpc = Jsonrpc.new
+      @api = Steem::FollowApi.new(url: TEST_NODE)
+      @jsonrpc = Jsonrpc.new(url: TEST_NODE)
       @methods = @jsonrpc.get_api_methods[@api.class.api_name]
     end
     def test_api_class_name
@@ -117,8 +117,11 @@ module Steem
         @api.get_follow_count(options) do |result|
           assert_equal Hashie::Mash, result.class
           assert_equal 'steemit', result.account
-          assert_equal Integer, result.follower_count.class
-          assert_equal Integer, result.following_count.class
+          follower_count = result.follower_count
+          following_count = result.following_count
+          skip "Fixnum is deprecated." if follower_count.class.to_s == 'Fixnum'
+          assert_equal Integer, follower_count.class
+          assert_equal Integer, following_count.class
         end
       end
     end

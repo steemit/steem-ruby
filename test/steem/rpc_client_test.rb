@@ -3,7 +3,7 @@ require 'test_helper'
 module Steem
   class RpcClientTest < Steem::Test
     def setup
-      @rpc_client = Steem::RPC::BaseClient.new
+      @rpc_client = RPC::HttpClient.new(url: TEST_NODE)
     end
     
     def test_http_request
@@ -15,7 +15,7 @@ module Steem
       stderr = STDERR.clone
       stderr.reopen File.new('/dev/null', 'w')
       
-      rpc_client = Steem::RPC::BaseClient.new(error_pipe: stderr)
+      rpc_client = RPC::BaseClient.new(error_pipe: stderr)
       options = {
         debug: true,
         request: Hashie::Mash.new({'id' => 1}),
@@ -33,7 +33,7 @@ module Steem
       stderr = STDERR.clone
       stderr.reopen File.new('/dev/null', 'w')
       
-      rpc_client = Steem::RPC::ThreadSafeClient.new(error_pipe: stderr)
+      rpc_client = RPC::ThreadSafeHttpClient.new(error_pipe: stderr)
       options = {
         debug: true,
         request: Hashie::Mash.new({'id' => 1}),

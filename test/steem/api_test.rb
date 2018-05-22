@@ -50,8 +50,8 @@ module Steem
       METHOD_NAMES_1_ARG_NO_ERROR + METHOD_NAMES_0_ARGS + SKIP_METHOD_NAMES
     
     def setup
-      @api = Api.new
-      @jsonrpc = Jsonrpc.new
+      @api = Api.new(url: TEST_NODE)
+      @jsonrpc = Jsonrpc.new(url: TEST_NODE)
       @methods = @jsonrpc.get_api_methods[@api.class.api_name]
     end
     

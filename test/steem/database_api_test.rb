@@ -3,8 +3,8 @@ require 'test_helper'
 module Steem
   class DatabaseApiTest < Steem::Test
     def setup
-      @api = Steem::DatabaseApi.new
-      @jsonrpc = Jsonrpc.new
+      @api = Steem::DatabaseApi.new(url: TEST_NODE)
+      @jsonrpc = Jsonrpc.new(url: TEST_NODE)
       @methods = @jsonrpc.get_api_methods[@api.class.api_name]
     end
     def test_api_class_name

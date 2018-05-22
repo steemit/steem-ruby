@@ -4,8 +4,8 @@ module Steem
   # :nocov:
   class AccountHistoryApiTest < Steem::Test
     def setup
-      @api = Steem::AccountHistoryApi.new
-      @jsonrpc = Jsonrpc.new
+      @api = Steem::AccountHistoryApi.new(url: TEST_NODE)
+      @jsonrpc = Jsonrpc.new(url: TEST_NODE)
       @methods = @jsonrpc.get_api_methods[@api.class.api_name]
     rescue UnknownApiError => e
       skip('AccountHistoryApi is disabled.')
@@ -16,7 +16,7 @@ module Steem
     end
     
     def test_inspect
-      assert_equal "#<AccountHistoryApi [@chain=steem, @url=https://api.steemit.com]>", @api.inspect
+      assert_equal "#<AccountHistoryApi [@chain=steem, @methods=<3 elements>]>", @api.inspect
     end
     
     def test_method_missing
@@ -53,7 +53,7 @@ module Steem
         }
         
         @api.get_ops_in_block(options) do |result|
-          assert_equal Hashie::Array, result.history.class
+          assert_equal Hashie::Array, result.ops.class
         end
       end
     end
@@ -61,7 +61,7 @@ module Steem
     def test_get_transaction
       vcr_cassette('account_history_api_get_transaction', record: :once) do
         options = {
-          id: '0000000000000000000000000000000000000000',
+          id: 'ef73d8fadf17e2590c6d96efc1ca868edd7dd613',
         }
         
         @api.get_transaction(options) do |result|

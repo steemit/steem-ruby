@@ -3,8 +3,8 @@ require 'test_helper'
 module Steem
   class BlockApiTest < Steem::Test
     def setup
-      @block_api = BlockApi.new
-      @jsonrpc = Jsonrpc.new
+      @block_api = BlockApi.new(url: TEST_NODE)
+      @jsonrpc = Jsonrpc.new(url: TEST_NODE)
       @methods = @jsonrpc.get_api_methods[@block_api.class.api_name]
     end
     
@@ -19,13 +19,7 @@ module Steem
     def test_get_blocks_no_closure
       vcr_cassette('block_api_blocks_no_closure', record: :once) do
         blocks = @block_api.get_blocks(block_range: 9001..9010)
-        assert_equal Hashie::Array, blocks.class
-      end
-    end
-    
-    def test_get_blocks_too_many
-      assert_raises ArgumentError, 'expect argument error' do
-        @block_api.get_blocks(block_range: 9001..19010)
+        assert_equal Array, blocks.class
       end
     end
     
@@ -77,8 +71,8 @@ module Steem
           # :nocov:
           fail 'please review this test'
           # :nocov:
-        rescue Steem::ArgumentError => e
-          assert e.to_s, 'expect string from argument error'
+        rescue UnknownError => e
+          assert e.to_s, 'expect string from unknown error'
         end
       end
     end

@@ -3,8 +3,8 @@ require 'test_helper'
 module Steem
   class NetworkBroadcastApiTest < Steem::Test
     def setup
-      @api = Steem::NetworkBroadcastApi.new
-      @jsonrpc = Jsonrpc.new
+      @api = Steem::NetworkBroadcastApi.new(url: TEST_NODE)
+      @jsonrpc = Jsonrpc.new(url: TEST_NODE)
       @methods = @jsonrpc.get_api_methods[@api.class.api_name]
     end
     def test_api_class_name

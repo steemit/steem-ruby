@@ -3,8 +3,8 @@ require 'test_helper'
 module Steem
   class MarketHistoryApiTest < Steem::Test
     def setup
-      @api = Steem::MarketHistoryApi.new
-      @jsonrpc = Jsonrpc.new
+      @api = Steem::MarketHistoryApi.new(url: TEST_NODE)
+      @jsonrpc = Jsonrpc.new(url: TEST_NODE)
       @methods = @jsonrpc.get_api_methods[@api.class.api_name]
     end
     

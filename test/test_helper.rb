@@ -33,6 +33,9 @@ VCR.insert_cassette('global_cassette', record: :once, match_requests_on: [:metho
 class Steem::Test < MiniTest::Test
   defined? prove_it! and prove_it!
   
+  TEST_NODE = Steem::ChainConfig::NETWORKS_STEEM_DEFAULT_NODE
+  # TEST_NODE = Steem::ChainConfig::NETWORKS_TEST_DEFAULT_NODE
+  
   # Most likely modes: 'once' and 'new_episodes'
   VCR_RECORD_MODE = (ENV['VCR_RECORD_MODE'] || 'new_episodes').to_sym
   
@@ -43,7 +46,7 @@ class Steem::Test < MiniTest::Test
       begin
         yield
       rescue Steem::BaseError => e
-        skip 'Probably just a node acting up.'
+        skip "Probably just a node acting up: #{e}"
       rescue Psych::SyntaxError => e
         skip 'This happens when we try to get fancy and disable thread-safety.'
       end
