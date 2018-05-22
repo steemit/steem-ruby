@@ -47,6 +47,30 @@ module Steem
       end
     end
     
+    # Originally tested this without setting `pretend: true` and got this, so
+    # we know it works:
+    # https://steemd.com/tx/1ab30d6fef305121ee82e53b04605a641a79459d
+    def test_vote_multisig
+      options = {
+        wif: [
+          '5K2LA2ucS8b1GuFvVgZK6itKNE6fFMbDMX4GDtNHiczJESLGRd8',
+          '5JRaypasxMx1L97ZUX7YuC5Psb5EAbF821kkAGtBj7xCJFQcbLg'
+        ],
+        params: {
+          voter: 'sisilafamille',
+          author: 'siol',
+          permlink: 'test',
+          weight: 1000
+        }
+      }
+      
+      vcr_cassette('broadcast_vote_multisig') do
+        Broadcast.vote(@broadcast_options.merge(options)) do |result|
+          assert result.valid
+        end
+      end
+    end
+    
     def test_vote_wrong_permlink
       options = {
         params: {

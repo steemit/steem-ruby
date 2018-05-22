@@ -91,6 +91,29 @@ module Steem
       end
     end
     
+    # Just like: https://github.com/steemit/steem-js/blob/1a0f872b81399cd98c1a86bed2f67e7cf8a279da/examples/multisig.js
+    def test_sign_multisig
+      wifs = [
+        '5K2LA2ucS8b1GuFvVgZK6itKNE6fFMbDMX4GDtNHiczJESLGRd8',
+        '5JRaypasxMx1L97ZUX7YuC5Psb5EAbF821kkAGtBj7xCJFQcbLg'
+      ]
+      builder = TransactionBuilder.new(wif: wifs)
+      
+      vcr_cassette 'transaction_builder_sign' do
+        builder.put(vote: {
+          voter: 'sisilafamille',
+          author: 'siol',
+          permlink: 'test',
+          weight: 1000
+        })
+        
+        assert builder.sign
+        signatures = builder.transaction.signatures
+        assert_equal 2, signatures.size
+        refute_equal *signatures
+      end
+    end
+    
     def test_put
       builder = TransactionBuilder.new
       

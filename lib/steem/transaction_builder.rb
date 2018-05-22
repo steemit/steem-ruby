@@ -18,6 +18,9 @@ module Steem
   #     network_broadcast_api = Steem::NetworkBroadcastApi.new
   #     network_broadcast_api.broadcast_transaction_synchronous(trx: trx)
   #
+  #
+  # The `wif` value may also be an array, when signing with multiple signatures
+  # (multisig).
   class TransactionBuilder
     include Retriable
     include ChainConfig
@@ -28,7 +31,7 @@ module Steem
     def initialize(options = {})
       @database_api = options[:database_api] || Steem::DatabaseApi.new(options)
       @block_api = options[:block_api] || Steem::BlockApi.new(options)
-      @wif = options[:wif]
+      @wif = [options[:wif]].flatten
       @ref_block_num = options[:ref_block_num]
       @ref_block_prefix = options[:ref_block_prefix]
       @expiration = nil
@@ -196,7 +199,7 @@ module Steem
     #
     # @return {Hash | TransactionBuilder} The fully signed transaction if a `wif` is provided or the instance of the {TransactionBuilder} if a `wif` has not yet been provided.
     def sign
-      return self unless !!@wif
+      return self if @wif.empty?
       return self if expired?
       
       trx = {
@@ -213,22 +216,28 @@ module Steem
           hex = @chain_id + result.hex[0..-4] # Why do we have to chop the last two bytes?
           digest = unhexlify(hex)
           digest_hex = Digest::SHA256.digest(digest)
-          private_key = Bitcoin::Key.from_base58 @wif
-          public_key_hex = private_key.pub
+          private_keys = @wif.map{ |wif| Bitcoin::Key.from_base58 wif}
           ec = Bitcoin::OpenSSL_EC
           count = 0
-          sig = nil
+          sigs = []
           
-          loop do
-            count += 1
-            @error_pipe.puts "#{count} attempts to find canonical signature" if count % 40 == 0
-            sig = ec.sign_compact(digest_hex, private_key.priv, public_key_hex, false)
+          private_keys.each do |private_key|
+            sig = nil
             
-            next if public_key_hex != ec.recover_compact(digest_hex, sig)
-            break if canonical? sig
+            loop do
+              count += 1
+              @error_pipe.puts "#{count} attempts to find canonical signature" if count % 40 == 0
+              public_key_hex = private_key.pub
+              sig = ec.sign_compact(digest_hex, private_key.priv, public_key_hex, false)
+              
+              next if public_key_hex != ec.recover_compact(digest_hex, sig)
+              break if canonical? sig
+            end
+            
+            sigs << sig
           end
           
-          trx[:signatures] = @signatures = [hexlify(sig)]
+          trx[:signatures] = @signatures = sigs.map { |sig| hexlify(sig) }
         end
       rescue => e
         if can_retry? e
@@ -239,7 +248,7 @@ module Steem
         end
       end; end
       
-      trx
+      Hashie::Mash.new trx
     end
     
     # @return [Array] All public keys that could possibly sign for a given transaction.

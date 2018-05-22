@@ -68,6 +68,23 @@ end
 
 *See: [Broadcast](https://www.rubydoc.info/gems/steem-ruby/Steem/Broadcast)*
 
+### Multisig
+
+You can use multisignature to broadcast an operation.
+
+```ruby
+params = {
+  voter: voter,
+  author: author,
+  permlink: permlink,
+  weight: weight
+}
+
+Steem::Broadcast.vote(wif: [wif1, wif2], params: params) do |result|
+  puts result
+end
+```
+
 ### Get Accounts
 
 ```ruby
