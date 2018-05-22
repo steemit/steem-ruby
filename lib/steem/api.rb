@@ -34,13 +34,13 @@ module Steem
   # * {TagsApi}
   # * {WitnessApi}
   #
-  # Also see: {https://developers.steem.io/apidefinitions.html Complete API Definitions}
+  # Also see: {https://developers.steem.io/apidefinitions/ Complete API Definitions}
   class Api
     attr_accessor :chain, :methods
     
     # Use this for debugging naive thread handler.
     # DEFAULT_RPC_CLIENT = RPC::BaseClient
-    DEFAULT_RPC_CLIENT = RPC::ThreadSafeClient
+    DEFAULT_RPC_CLIENT = RPC::ThreadSafeHttpClient
     
     def self.api_name=(api_name)
       @api_name = api_name.to_s.
@@ -150,19 +150,19 @@ module Steem
           # Some argument are optional, but if the arguments passed are greater
           # than the expected arguments size, we can warn.
           if args_size > expected_args_size
-            error_pipe.puts "Warning #{rpc_method_name} expects arguments: #{expected_args_size}, got: #{args_size}"
+            @error_pipe.puts "Warning #{rpc_method_name} expects arguments: #{expected_args_size}, got: #{args_size}"
           end
         rescue NoMethodError => e
           error = Steem::ArgumentError.new("#{rpc_method_name} expects arguments: #{expected_args_size}", e)
           raise error
-        rescue
-          raise Steem::ArgumentError, "#{rpc_method_name} expects arguments: #{expected_args_size}"
+        rescue => e
+          raise UnknownError.new("#{rpc_method_name} unknown error.", e)
         end
         
         args
       end
       
-      response = @rpc_client.rpc_post(@api_name, m, rpc_args)
+      response = @rpc_client.rpc_execute(@api_name, m, rpc_args)
       
       if defined?(response.error) && !!response.error
         if !!response.error.message

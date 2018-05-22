@@ -5,7 +5,7 @@ module Steem
   #
   # Also see: {https://developers.steem.io/apidefinitions/block-api Block API Definitions}
   class BlockApi < Api
-    MAX_RANGE_SIZE = 3000
+    MAX_RANGE_SIZE = 50
     
     def initialize(options = {})
       self.class.api_name = :block_api
@@ -16,30 +16,43 @@ module Steem
     #
     # @param options [Hash] The attributes to get a block range with.
     # @option options [Range] :block_range starting on one block number and ending on an higher block number.
-    def get_blocks(options = {block_range: [0..0]}, &block)
-      block_range = options[:block_range] || [0..0]
+    def get_blocks(options = {block_range: (0..0)}, &block)
+      block_range = options[:block_range] || (0..0)
       
-      if block_range.size > MAX_RANGE_SIZE
-        raise Steem::ArgumentError, "Too many blocks requested: #{block_range.size}; maximum request size: #{MAX_RANGE_SIZE}."
+      if (start = block_range.first) < 1
+        raise Steem::ArgumentError, "Invalid starting block: #{start}"
       end
       
-      request_body = []
-      
-      for i in block_range do
-        @rpc_client.put(self.class.api_name, :get_block, block_num: i, request_body: request_body)
-      end
-      
-      if !!block
-        @rpc_client.rpc_post(nil, nil, request_body: request_body) do |result, error, id|
-          yield result.nil? ? nil : result.block, error, id
-        end
+      chunks = if block_range.size > MAX_RANGE_SIZE
+        block_range.each_slice(MAX_RANGE_SIZE)
       else
-        blocks = []
+        [block_range]
+      end
+      
+      for sub_range in chunks do
+        request_object = []
         
-        @rpc_client.rpc_post(nil, nil, request_body: request_body) do |result, error, id|
-          blocks << result
+        for i in sub_range do
+          @rpc_client.put(self.class.api_name, :get_block, block_num: i, request_object: request_object)
+        end
+        
+        if !!block
+          index = 0
+          @rpc_client.rpc_batch_execute(request_object: request_object) do |result, error, id|
+            block_num = sub_range.to_a[index]
+            index = index += 1
+            yield(result.nil? ? nil : result.block, block_num)
+          end
+        else
+          blocks = []
+          
+          @rpc_client.rpc_batch_execute(request_object: request_object) do |result, error, id|
+            blocks << result
+          end
         end
       end
+      
+      blocks
     end
   end
 end

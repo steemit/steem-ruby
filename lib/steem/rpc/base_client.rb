@@ -6,10 +6,14 @@ module Steem
       attr_accessor :chain, :error_pipe
       
       # @private
-      POST_HEADERS = {
-        'Content-Type' => 'application/json; charset=utf-8',
-        'User-Agent' => Steem::AGENT_ID
-      }
+      MAX_TIMEOUT_RETRY_COUNT = 100
+      
+      # @private
+      MAX_TIMEOUT_BACKOFF = 30
+      
+      # @private
+      TIMEOUT_ERRORS = [Net::ReadTimeout, Errno::EBADF, Errno::ECONNREFUSED,
+        IOError]
       
       def initialize(options = {})
         @chain = options[:chain] || :steem
@@ -26,38 +30,67 @@ module Steem
         @uri ||= URI.parse(@url)
       end
       
-      def http
-        @http ||= Net::HTTP.new(uri.host, uri.port).tap do |http|
-          http.use_ssl = true
-          http.keep_alive_timeout = 2 # seconds
-          
-          # WARNING This method opens a serious security hole. Never use this
-          # method in production code.
-          # http.set_debug_output(STDOUT) if !!ENV['DEBUG']
-        end
-      end
-      
-      def http_post
-        @http_post ||= Net::HTTP::Post.new(uri.request_uri, POST_HEADERS)
-      end
-      
+      # Adds a request object to the stack.  Usually, this method is called
+      # internally by {BaseClient#rpc_execute}.  If you want to create a batched
+      # request, use this method to add to the batch then execute {BaseClient#rpc_batch_execute}.
       def put(api_name = @api_name, api_method = nil, options = {})
         current_rpc_id = rpc_id
         rpc_method_name = "#{api_name}.#{api_method}"
         options ||= {}
-        request_body = defined?(options.delete) ? options.delete(:request_body) : []
-        request_body ||= []
+        request_object = defined?(options.delete) ? options.delete(:request_object) : []
+        request_object ||= []
         
-        request_body << {
+        request_object << {
           jsonrpc: '2.0',
           id: current_rpc_id,
           method: rpc_method_name,
           params: options
         }
         
-        request_body
+        request_object
       end
-
+      
+      # @abstract Subclass is expected to implement #rpc_execute.
+      # @!method rpc_execute
+      
+      # @abstract Subclass is expected to implement #rpc_batch_execute.
+      # @!method rpc_batch_execute
+      
+      # To be called by {BaseClient#rpc_execute} and {BaseClient#rpc_batch_execute}
+      # when a response has been consructed.
+      def yield_response(response, &block)
+        if !!block
+          case response
+          when Hashie::Mash then yield response.result, response.error, response.id
+          when Hashie::Array
+            response.each do |r|
+              r = Hashie::Mash.new(r)
+              block.call r.result, r.error, r.id
+            end
+          else; block.call response
+          end
+        end
+        
+        response
+      end
+      
+      # Checks json-rpc request/response for corrilated id.  If they do not
+      # match, {IncorrectResponseIdError} is thrown.  This is usually caused by
+      # the client, involving thread safety.  It can also be caused by the node
+      # responding without an id.
+      # 
+      # To avoid {IncorrectResponseIdError}, make sure you implement your client
+      # correctly.
+      # 
+      # Setting DEBUG=true in the envrionment will cause this method to output
+      # both the request and response json.
+      # 
+      # @param options [Hash] options
+      # @option options [Boolean] :debug Enable or disable debug output.
+      # @option options [Hash] :request to compare id
+      # @option options [Hash] :response to compare id
+      # @option options [String] :api_method
+      # @see {ThreadSafeHttpClient}
       def evaluate_id(options = {})
         debug = options[:debug] || ENV['DEBUG'] == 'true'
         request = options[:request]
@@ -89,65 +122,45 @@ module Steem
         end
       end
       
-      def http_request(request)
-        http.request(request)
-      end
-      
-      def rpc_post(api_name = @api_name, api_method = nil, options = {}, &block)
-        request = http_post
-        
-        request_body = if !!api_name && !!api_method
-          put(api_name, api_method, options)
-        elsif !!options && defined?(options.delete)
-          options.delete(:request_body)
-        end
-        
-        request.body = if request_body.size == 1
-          request_body.first.to_json
-        else
-          request_body.to_json
-        end
-        
-        response = http_request(request)
-        
-        case response.code
-        when '200'
-          response = JSON[response.body]
-          response = case response
-          when Hash
-            Hashie::Mash.new(response).tap do |r|
-              evaluate_id(request: request_body.first, response: r, api_method: api_method)
-            end
-          when Array
-            Hashie::Array.new(response).tap do |r|
-              request_body.each_with_index do |req, index|
-                evaluate_id(request: req, response: r[index], api_method: api_method)
-              end
-            end
-          else; response
-          end
-          
-          if !!block
-            case response
-            when Hashie::Mash then yield response.result, response.error, response.id
-            when Hashie::Array
-              response.each do |r|
-                r = Hashie::Mash.new(r)
-                yield r.result, r.error, r.id
-              end
-            else; yield response
-            end
-          else
-            return response
-          end
-        else
-          raise UnknownError, "#{api_name}.#{api_method}: #{response.body}"
-        end
-      end
-      
+      # Current json-rpc id used for a request.  This version auto-increments
+      # for each call.  Subclasses can use their own strategy.
       def rpc_id
         @rpc_id ||= 0
         @rpc_id += 1
+      end
+    private
+      # @private
+      def reset_timeout
+        @timeout_retry_count = 0
+        @back_off = 0.1
+      end
+      
+      # @private
+      def retry_timeout(context, cause = nil)
+        @timeout_retry_count += 1
+        
+        if @timeout_retry_count > MAX_TIMEOUT_RETRY_COUNT
+          raise TooManyTimeoutsError.new("Too many timeouts for: #{context}", cause)
+        elsif @timeout_retry_count % 10 == 0
+          msg = "#{@timeout_retry_count} retry attempts for: #{context}"
+          msg += "; cause: #{e}" if !!cause
+          error_pipe.puts msg
+        end
+        
+        backoff_timeout
+        
+        context
+      end
+      
+      # Expontential backoff.
+      #
+      # @private
+      def backoff_timeout
+        @backoff ||= 0.1
+        @backoff *= 2
+        @backoff = 0.1 if @backoff > MAX_TIMEOUT_BACKOFF
+        
+        sleep @backoff
       end
     end
   end

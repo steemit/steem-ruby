@@ -54,14 +54,14 @@ module Steem
     end
     
     def get_all_signatures(&block)
-      request_body = []
+      request_object = []
       method_names = []
       method_map = {}
       signatures = {}
       offset = 0
       
       get_api_methods do |api, methods|
-        request_body += methods.map do |method|
+        request_object += methods.map do |method|
           method_name = "#{api}.#{method}"
           method_names << method_name
           current_rpc_id = @rpc_client.rpc_id
@@ -77,22 +77,30 @@ module Steem
         end
       end
       
-      @rpc_client.rpc_post(nil, nil, {request_body: request_body}) do |result, error, id|
-        api, method = method_map[id]
-        api = api.to_sym
-        method = method.to_sym
-        
-        signatures[api] ||= {}
-        signatures[api][method] = result
+      chunks = if request_object.size > Steem::RPC::HttpClient::JSON_RPC_BATCH_SIZE_MAXIMUM
+        request_object.each_slice(Steem::RPC::HttpClient::JSON_RPC_BATCH_SIZE_MAXIMUM)
+      else
+        request_object
       end
       
-      if !!block
-        signatures.each do |api, methods|
-          yield api, methods
+      for request_object in chunks do
+        @rpc_client.rpc_batch_execute(request_object: request_object) do |result, error, id|
+          api, method = method_map[id]
+          api = api.to_sym
+          method = method.to_sym
+          
+          signatures[api] ||= {}
+          signatures[api][method] = result
         end
-      else
-        return signatures
+        
+        if !!block
+          signatures.each do |api, methods|
+            yield api, methods
+          end
+        end
       end
+      
+      return signatures unless !!block
     end
   end
 end

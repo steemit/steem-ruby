@@ -10,8 +10,7 @@ module Steem
     
     RETRYABLE_EXCEPTIONS = [
       NonCanonicalSignatureError, IncorrectRequestIdError,
-      IncorrectResponseIdError, Errno::EBADF, Errno::ECONNREFUSED,
-      JSON::ParserError, IOError, Net::OpenTimeout
+      IncorrectResponseIdError, RemoteDatabaseLockError
     ]
     
     # Expontential backoff.
@@ -41,10 +40,7 @@ module Steem
       @retry_count += 1
       
       can_retry = case e
-      when *RETRYABLE_EXCEPTIONS
-        true
-      when RemoteNodeError
-        e.inspect.include?('Unable to acquire database lock')
+      when *RETRYABLE_EXCEPTIONS then true
       else; false
       end
       
