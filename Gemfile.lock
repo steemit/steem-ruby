@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    steem-ruby (0.1.0)
+    steem-ruby (0.1.1)
       bitcoin-ruby (~> 0.0, >= 0.0.18)
       ffi (~> 1.9, >= 1.9.23)
       hashie (~> 3.5, >= 3.5.7)
