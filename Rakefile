@@ -146,7 +146,7 @@ namespace :stream do
     loop do
       api.get_dynamic_global_properties do |properties|
         current_block_num = properties.last_irreversible_block_num
-        # First pass replays latest 100 blocks.
+        # First pass replays latest a random number of blocks to test chunking.
         first_block_num ||= current_block_num - (rand * 200).to_i
         
         if current_block_num >= first_block_num
