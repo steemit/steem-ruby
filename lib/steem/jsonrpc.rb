@@ -19,7 +19,7 @@ module Steem
     end
     
     def initialize(options = {})
-      self.class.api_name = :jsonrpc
+      @api_name = self.class.api_name = :jsonrpc
       @methods = API_METHODS
       super
     end
@@ -29,6 +29,8 @@ module Steem
       
       if api_methods.nil?
         get_methods do |result, error, rpc_id|
+          raise NotAppBaseError, "#{@rpc_client.uri} does not appear to run AppBase" unless defined? result.map
+          
           methods = result.map do |method|
             method.split('.').map(&:to_sym)
           end
