@@ -16,7 +16,8 @@ module Steem
       # http status code of 200 and HTML page.
       # 
       # @private
-      TIMEOUT_ERRORS = [Net::OpenTimeout, Net::ReadTimeout, JSON::ParserError]
+      TIMEOUT_ERRORS = [Net::OpenTimeout, JSON::ParserError, Net::ReadTimeout,
+        Errno::EBADF, Errno::ECONNREFUSED, IOError]
       
       # @private
       POST_HEADERS = {
@@ -66,7 +67,7 @@ module Steem
           end
           
           if request_object.size > JSON_RPC_BATCH_SIZE_MAXIMUM
-            raise JsonRpcBatchMaximumSizeExceededError, 'Maximum json-rpc-batch is 50 elements.'
+            raise JsonRpcBatchMaximumSizeExceededError, "Maximum json-rpc-batch is #{JSON_RPC_BATCH_SIZE_MAXIMUM} elements."
           end
           
           request.body = if request_object.class == Hash

@@ -3,7 +3,7 @@ module Steem
     class BaseClient
       include ChainConfig
       
-      attr_accessor :chain, :error_pipe
+      attr_accessor :url, :chain, :error_pipe
       
       # @private
       MAX_TIMEOUT_RETRY_COUNT = 100
@@ -27,7 +27,7 @@ module Steem
       end
       
       def uri
-        @uri ||= URI.parse(@url)
+        @uri ||= URI.parse(url)
       end
       
       # Adds a request object to the stack.  Usually, this method is called

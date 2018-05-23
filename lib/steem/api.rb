@@ -39,8 +39,8 @@ module Steem
     attr_accessor :chain, :methods
     
     # Use this for debugging naive thread handler.
-    # DEFAULT_RPC_CLIENT = RPC::BaseClient
-    DEFAULT_RPC_CLIENT = RPC::ThreadSafeHttpClient
+    # DEFAULT_RPC_CLIENT_CLASS = RPC::BaseClient
+    DEFAULT_RPC_CLIENT_CLASS = RPC::ThreadSafeHttpClient
     
     def self.api_name=(api_name)
       @api_name = api_name.to_s.
@@ -65,11 +65,22 @@ module Steem
       @jsonrpc
     end
     
+    # Override this if you want to use your own client.
+    def self.default_rpc_client_class
+      DEFAULT_RPC_CLIENT_CLASS
+    end
+    
     def initialize(options = {})
       @chain = options[:chain] || :steem
       @error_pipe = options[:error_pipe] || STDERR
       @api_name = self.class.api_name ||= :condenser_api
-      @rpc_client = options[:rpc_client] || DEFAULT_RPC_CLIENT.new(options.merge(api_name: @api_name))
+      
+      @rpc_client = if !!options[:rpc_client]
+        options[:rpc_client]
+      else
+        rpc_client_class = self.class.default_rpc_client_class
+        rpc_client_class.new(options.merge(api_name: @api_name))
+      end
       
       if @api_name == :jsonrpc
         Api::jsonrpc = self
