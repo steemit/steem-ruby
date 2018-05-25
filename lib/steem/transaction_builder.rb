@@ -276,7 +276,7 @@ module Steem
       end
     end
   private
-    # See: https://github.com/steemit/steem/issues/1944
+    # See: https://github.com/steemit/steem/pull/2500
     # @private
     def canonical?(sig)
       sig = sig.unpack('C*')
