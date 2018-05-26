@@ -19,6 +19,7 @@ require 'steem/jsonrpc'
 require 'steem/block_api'
 require 'steem/formatter'
 require 'steem/broadcast'
+require 'steem/auth/memo'
 
 module Steem
   def self.api_classes

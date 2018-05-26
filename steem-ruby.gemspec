@@ -34,4 +34,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'hashie', '~> 3.5', '>= 3.5.7'
   spec.add_dependency 'bitcoin-ruby', '~> 0.0', '>= 0.0.18'
   spec.add_dependency 'ffi', '~> 1.9', '>= 1.9.23'
+  spec.add_dependency 'base58', '~> 0.2', '>= 0.2.3'
 end
