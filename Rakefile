@@ -79,6 +79,8 @@ namespace :test do
   
   desc 'Tests the API using multiple threads.'
   task :threads do
+    next if !!ENV['TEST']
+    
     threads = []
     api = Steem::Api.new(url: ENV['TEST_NODE'])
     database_api = Steem::DatabaseApi.new(url: ENV['TEST_NODE'])
