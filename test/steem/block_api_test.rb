@@ -76,5 +76,57 @@ module Steem
         end
       end
     end
+    
+    def test_oddballs
+      oddballs = [994240]
+      api = Steem::Api.new(url: TEST_NODE)
+      
+      vcr_cassette('block_api_oddballs', record: :once) do
+        oddballs.each do |block_num|
+          @block_api.get_block(block_num: block_num) do |b1|
+            b1 = b1.block
+            
+            api.get_block(block_num) do |b2|
+              b2.keys.each do |key|
+                case key.to_sym
+                when :transactions
+                  b2[:transactions].each_with_index do |trx2, trx_index|
+                    trx1 = b1[:transactions][trx_index]
+                    
+                    trx2.keys.each do |key|
+                      case key.to_sym
+                      when :operations
+                        trx2[:operations].each_with_index do |op1, op_index|
+                          op2 = trx2[:operations][op_index]
+                          
+                          op1[1].keys.each do |key|
+                            case key.to_sym
+                            when :fee
+                              fee1 = Type::Amount.new(op1[1][:fee])
+                              fee2 = Type::Amount.new(op2[1][:fee])
+                              
+                              assert_equal fee2.to_nia, fee1.to_nia, "expect the same fee"
+                            else
+                              assert_equal op2[1][key], op1[1][key], "expect the same operation #{key}"
+                            end
+                          end
+                        end
+                      when :transaction_id, :block_num, :transaction_num
+                        assert_nil trx1[key], "did not expect nil #{key}"
+                        refute_nil trx2[key], "expect nil #{key}"
+                      else
+                        assert_equal trx2[key], trx1[key], "expect the same transaction #{key}"
+                      end
+                    end
+                  end
+                else
+                  assert_equal b2[key], b1[key], "expect the same #{key}"
+                end
+              end
+            end
+          end
+        end
+      end
+    end
   end
 end
