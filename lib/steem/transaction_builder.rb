@@ -26,18 +26,44 @@ module Steem
     include ChainConfig
     include Utils
     
-    attr_accessor :database_api, :block_api, :wif, :expiration, :operations
+    attr_accessor :database_api, :block_api, :expiration, :operations
+    attr_writer :wif
+    attr_reader :signed
     
     def initialize(options = {})
       @database_api = options[:database_api] || Steem::DatabaseApi.new(options)
       @block_api = options[:block_api] || Steem::BlockApi.new(options)
       @wif = [options[:wif]].flatten
+      @signed = false
+      
+      if !!(trx = options[:trx])
+        trx = case trx
+        when String then JSON[trx]
+        else; trx
+        end
+        
+        trx_options = {
+          ref_block_num: trx['ref_block_num'],
+          ref_block_prefix: trx['ref_block_prefix'],
+          extensions: (trx['extensions']),
+          operations: trx['operations'],
+          signatures: (trx['signatures']),
+        }
+        
+        trx_options[:expiration] = case trx['expiration']
+        when String then Time.parse(trx['expiration'] + 'Z')
+        else; trx['expiration']
+        end
+        
+        options = options.merge(trx_options)
+      end
+      
       @ref_block_num = options[:ref_block_num]
       @ref_block_prefix = options[:ref_block_prefix]
-      @expiration = nil
       @operations = options[:operations] || []
-      @extensions = []
-      @signatures = []
+      @expiration = options[:expiration]
+      @extensions = options[:extensions] || []
+      @signatures = options[:signatures] || []
       @chain = options[:chain] || :steem
       @error_pipe = options[:error_pipe] || STDERR
       @chain_id = case @chain
@@ -49,8 +75,8 @@ module Steem
     
     def inspect
       properties = %w(
-        ref_block_num ref_block_prefix expiration operations
-        extensions signatures
+        ref_block_num ref_block_prefix expiration operations extensions
+        signatures
       ).map do |prop|
         if !!(v = instance_variable_get("@#{prop}"))
           "@#{prop}=#{v}" 
@@ -67,6 +93,7 @@ module Steem
       @operations = []
       @extensions = []
       @signatures = []
+      @signed = false
       
       self
     end
@@ -93,7 +120,7 @@ module Steem
               
               @ref_block_num = (block_number - 1) & 0xFFFF
               @ref_block_prefix = unhexlify(header.previous[8..-1]).unpack('V*')[0]
-              @expiration = (Time.parse(properties.time + 'Z') + EXPIRE_IN_SECS).utc
+              @expiration ||= (Time.parse(properties.time + 'Z') + EXPIRE_IN_SECS).utc
             end
           end
         rescue => e
@@ -211,43 +238,46 @@ module Steem
         signatures: @signatures
       }
       
-      catch :serialize do; begin
-        @database_api.get_transaction_hex(trx: trx) do |result|
-          hex = @chain_id + result.hex[0..-4] # Why do we have to chop the last two bytes?
-          digest = unhexlify(hex)
-          digest_hex = Digest::SHA256.digest(digest)
-          private_keys = @wif.map{ |wif| Bitcoin::Key.from_base58 wif}
-          ec = Bitcoin::OpenSSL_EC
-          count = 0
-          sigs = []
-          
-          private_keys.each do |private_key|
-            sig = nil
+      unless @signed
+        catch :serialize do; begin
+          @database_api.get_transaction_hex(trx: trx) do |result|
+            hex = @chain_id + result.hex[0..-4] # Why do we have to chop the last two bytes?
+            digest = unhexlify(hex)
+            digest_hex = Digest::SHA256.digest(digest)
+            private_keys = @wif.map{ |wif| Bitcoin::Key.from_base58 wif }
+            ec = Bitcoin::OpenSSL_EC
+            count = 0
+            sigs = []
             
-            loop do
-              count += 1
-              @error_pipe.puts "#{count} attempts to find canonical signature" if count % 40 == 0
-              public_key_hex = private_key.pub
-              sig = ec.sign_compact(digest_hex, private_key.priv, public_key_hex, false)
+            private_keys.each do |private_key|
+              sig = nil
               
-              next if public_key_hex != ec.recover_compact(digest_hex, sig)
-              break if canonical? sig
+              loop do
+                count += 1
+                @error_pipe.puts "#{count} attempts to find canonical signature" if count % 40 == 0
+                public_key_hex = private_key.pub
+                sig = ec.sign_compact(digest_hex, private_key.priv, public_key_hex, false)
+                
+                next if public_key_hex != ec.recover_compact(digest_hex, sig)
+                break if canonical? sig
+              end
+              
+              @signatures << hexlify(sig)
             end
             
-            sigs << sig
+            @signed = true
+            trx[:signatures] = @signatures
           end
-          
-          trx[:signatures] = @signatures = sigs.map { |sig| hexlify(sig) }
-        end
-      rescue => e
-        if can_retry? e
-          @error_pipe.puts "#{e} ... retrying."
-          throw :serialize
-        else
-          raise e
-        end
-      end; end
-      
+        rescue => e
+          if can_retry? e
+            @error_pipe.puts "#{e} ... retrying."
+            throw :serialize
+          else
+            raise e
+          end
+        end; end
+      end
+        
       Hashie::Mash.new trx
     end
     

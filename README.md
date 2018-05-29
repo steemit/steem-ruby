@@ -7,6 +7,8 @@ Steem-ruby the Ruby API for Steem blockchain.
 
 Full documentation: http://www.rubydoc.info/gems/steem-ruby
 
+**Note:** *This library depends on AppBase methods that are a work in progress.*
+
 ## `radiator` vs. `steem-ruby`
 
 The `steem-ruby` gem was written from the ground up by `@inertia`, who is also the author of [`radiator`](https://github.com/inertia186/radiator).
@@ -83,6 +85,35 @@ params = {
 Steem::Broadcast.vote(wif: [wif1, wif2], params: params) do |result|
   puts result
 end
+```
+
+In addition to signing with multiple `wif` private keys, it is possible to also export a partially signed transaction to have signing completed by someone else.
+
+```ruby
+builder = TransactionBuilder.new(wif: wif1)
+
+builder.put(vote: {
+  voter: voter,
+  author: author,
+  permlink: permlink,
+  weight: weight
+})
+
+trx = builder.sign.to_json
+
+File.open('trx.json', 'w') do |f|
+  f.write(trx)
+end
+```
+
+Then send the contents of `trx.json` to the other signing party so they can privately sign and broadcast the transaction.
+
+```ruby
+trx = open('trx.json').read
+builder = TransactionBuilder.new(wif: wif2, trx: trx)
+api = Steem::NetworkBroadcastApi.new
+trx = builder.transaction
+api.broadcast_transaction_synchronous(trx: trx)
 ```
 
 ### Get Accounts

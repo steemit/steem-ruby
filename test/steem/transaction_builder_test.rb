@@ -43,7 +43,7 @@ module Steem
     def test_valid
       builder = TransactionBuilder.new(wif: @wif)
       
-      vcr_cassette 'transaction_builder_sign' do
+      vcr_cassette 'transaction_builder_valid' do
         builder.put(vote: {
           voter: 'social',
           author: 'steemit',
@@ -58,7 +58,7 @@ module Steem
     def test_valid_irrelevant
       builder = TransactionBuilder.new(wif: @wif)
       
-      vcr_cassette 'transaction_builder_valid' do
+      vcr_cassette 'transaction_builder_valid_irrelevant' do
         assert_raises IrrelevantSignatureError, "did not expect valid transaction: #{builder.inspect}" do
           builder.valid?
         end
@@ -99,7 +99,7 @@ module Steem
       ]
       builder = TransactionBuilder.new(wif: wifs)
       
-      vcr_cassette 'transaction_builder_sign' do
+      vcr_cassette 'transaction_builder_sign_multisig' do
         builder.put(vote: {
           voter: 'sisilafamille',
           author: 'siol',
@@ -112,6 +112,32 @@ module Steem
         assert_equal 2, signatures.size
         refute_equal *signatures
       end
+    end
+    
+    def test_sign_multisig_deferred
+      initial_wif = '5K2LA2ucS8b1GuFvVgZK6itKNE6fFMbDMX4GDtNHiczJESLGRd8'
+      deferred_wif = '5JRaypasxMx1L97ZUX7YuC5Psb5EAbF821kkAGtBj7xCJFQcbLg'
+      builder = TransactionBuilder.new(wif: initial_wif)
+      transaction = nil
+      
+      vcr_cassette 'transaction_builder_sign_multisig_deferred' do
+        builder.put(vote: {
+          voter: 'sisilafamille',
+          author: 'siol',
+          permlink: 'test',
+          weight: 1000
+        })
+        
+        transaction = builder.sign
+        signatures = builder.transaction.signatures
+        assert_equal 1, signatures.size
+      end
+      
+      builder = TransactionBuilder.new(wif: deferred_wif, trx: transaction.to_json)
+      assert builder.sign
+      signatures = builder.transaction.signatures
+      assert_equal 2, signatures.size
+      refute_equal *signatures
     end
     
     def test_put
