@@ -29,7 +29,7 @@ module Steem
       
       def http
         @http ||= Net::HTTP.new(uri.host, uri.port).tap do |http|
-          http.use_ssl = true
+          http.use_ssl = true if uri.to_s =~ /^https/i
           http.keep_alive_timeout = 2 # seconds
           
           # WARNING This method opens a serious security hole. Never use this
