@@ -13,7 +13,7 @@ Full documentation: http://www.rubydoc.info/gems/steem-ruby
 
 The `steem-ruby` gem was written from the ground up by `@inertia`, who is also the author of [`radiator`](https://github.com/inertia186/radiator).
 
-> "I intend to continue work on `radiator` indefinitely. But in `radiator-0.5`, I intend to refactor `radiator` so that is uses `steem-ruby` as its core. This means that some features of `radiator` like Serialization will become redundant. I think it's still useful for radiator to do its own serialzation because it reduces the number of API requests." - @inertia
+> "I intend to continue work on `radiator` indefinitely. But in `radiator-0.5`, I intend to refactor `radiator` so that is uses `steem-ruby` as its core. This means that some features of `radiator` like Serialization will become redundant. I think it's still useful for radiator to do its own serialization because it reduces the number of API requests." - @inertia
 
 | `radiator` | `steem-ruby` |
 |-|-|
@@ -90,7 +90,7 @@ end
 In addition to signing with multiple `wif` private keys, it is possible to also export a partially signed transaction to have signing completed by someone else.
 
 ```ruby
-builder = TransactionBuilder.new(wif: wif1)
+builder = Steem::TransactionBuilder.new(wif: wif1)
 
 builder.put(vote: {
   voter: voter,
@@ -110,7 +110,7 @@ Then send the contents of `trx.json` to the other signing party so they can priv
 
 ```ruby
 trx = open('trx.json').read
-builder = TransactionBuilder.new(wif: wif2, trx: trx)
+builder = Steem::TransactionBuilder.new(wif: wif2, trx: trx)
 api = Steem::NetworkBroadcastApi.new
 trx = builder.transaction
 api.broadcast_transaction_synchronous(trx: trx)
