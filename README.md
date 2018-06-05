@@ -111,7 +111,7 @@ Then send the contents of `trx.json` to the other signing party so they can priv
 ```ruby
 trx = open('trx.json').read
 builder = Steem::TransactionBuilder.new(wif: wif2, trx: trx)
-api = Steem::NetworkBroadcastApi.new
+api = Steem::CondenserApi.new
 trx = builder.transaction
 api.broadcast_transaction_synchronous(trx: trx)
 ```
