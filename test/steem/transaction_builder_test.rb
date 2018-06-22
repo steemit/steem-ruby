@@ -4,6 +4,9 @@ module Steem
   class TransactionBuilderTest < Steem::Test
     def setup
       @wif = '5JrvPrQeBBvCRdjv29iDvkwn3EQYZ9jqfAHzrCyUvfbEbRkrYFC'
+      @options = {
+        app_base: false
+      }
     end
     
     def test_transaction_builder_initialize
@@ -17,7 +20,7 @@ module Steem
         chain: :test
       }
       
-      assert TransactionBuilder.new(options)
+      assert TransactionBuilder.new(@options.merge options)
     end
     
     def test_transaction_builder_initialize_unsupported_chain
@@ -27,21 +30,21 @@ module Steem
         chain: :bogus
       }
       assert_raises UnsupportedChainError do
-        TransactionBuilder.new(options)
+        TransactionBuilder.new(@options.merge options)
       end
     end
     
     def test_reset
-      assert TransactionBuilder.new.reset
+      assert TransactionBuilder.new(@options).reset
     end
     
     def test_inspect
-      assert TransactionBuilder.new.inspect
+      assert TransactionBuilder.new(@options).inspect
     end
     
     
     def test_valid
-      builder = TransactionBuilder.new(wif: @wif)
+      builder = TransactionBuilder.new(@options.merge wif: @wif)
       
       vcr_cassette 'transaction_builder_valid' do
         builder.put(vote: {
@@ -56,7 +59,7 @@ module Steem
     end
     
     def test_valid_irrelevant
-      builder = TransactionBuilder.new(wif: @wif)
+      builder = TransactionBuilder.new(@options.merge wif: @wif)
       
       vcr_cassette 'transaction_builder_valid_irrelevant' do
         assert_raises IrrelevantSignatureError, "did not expect valid transaction: #{builder.inspect}" do
@@ -77,7 +80,7 @@ module Steem
     end
       
     def test_sign
-      builder = TransactionBuilder.new(wif: @wif)
+      builder = TransactionBuilder.new(@options.merge wif: @wif)
       
       vcr_cassette 'transaction_builder_sign' do
         builder.put(vote: {
@@ -97,7 +100,7 @@ module Steem
         '5K2LA2ucS8b1GuFvVgZK6itKNE6fFMbDMX4GDtNHiczJESLGRd8',
         '5JRaypasxMx1L97ZUX7YuC5Psb5EAbF821kkAGtBj7xCJFQcbLg'
       ]
-      builder = TransactionBuilder.new(wif: wifs)
+      builder = TransactionBuilder.new(@options.merge wif: wifs)
       
       vcr_cassette 'transaction_builder_sign_multisig' do
         builder.put(vote: {
@@ -117,7 +120,7 @@ module Steem
     def test_sign_multisig_deferred
       initial_wif = '5K2LA2ucS8b1GuFvVgZK6itKNE6fFMbDMX4GDtNHiczJESLGRd8'
       deferred_wif = '5JRaypasxMx1L97ZUX7YuC5Psb5EAbF821kkAGtBj7xCJFQcbLg'
-      builder = TransactionBuilder.new(wif: initial_wif)
+      builder = TransactionBuilder.new(@options.merge wif: initial_wif)
       transaction = nil
       
       vcr_cassette 'transaction_builder_sign_multisig_deferred' do
@@ -133,7 +136,7 @@ module Steem
         assert_equal 1, signatures.size
       end
       
-      builder = TransactionBuilder.new(wif: deferred_wif, trx: transaction.to_json)
+      builder = TransactionBuilder.new(@options.merge wif: deferred_wif, trx: transaction.to_json)
       assert builder.sign
       signatures = builder.transaction.signatures
       assert_equal 2, signatures.size
@@ -141,7 +144,7 @@ module Steem
     end
     
     def test_put
-      builder = TransactionBuilder.new
+      builder = TransactionBuilder.new(@options)
       
       vcr_cassette 'transaction_builder_put' do
         builder.put(vote: {
@@ -156,7 +159,7 @@ module Steem
     end
     
     def test_put_array
-      builder = TransactionBuilder.new
+      builder = TransactionBuilder.new(@options)
       
       vcr_cassette 'transaction_builder_put_array' do
         builder.put([:vote, {
@@ -171,7 +174,7 @@ module Steem
     end
     
     def test_put_symbol
-      builder = TransactionBuilder.new
+      builder = TransactionBuilder.new(@options)
       
       vcr_cassette 'transaction_builder_put_symbol' do
         builder.put(:vote, {
@@ -186,7 +189,7 @@ module Steem
     end
     
     def test_put_string
-      builder = TransactionBuilder.new
+      builder = TransactionBuilder.new(@options)
       
       vcr_cassette 'transaction_builder_put_string' do
         builder.put('vote', {
@@ -201,7 +204,7 @@ module Steem
     end
     
     def test_potential_signatures
-      builder = TransactionBuilder.new(wif: @wif)
+      builder = TransactionBuilder.new(@options.merge wif: @wif)
       
       vcr_cassette 'transaction_builder_sign' do
         builder.put(vote: {
@@ -216,7 +219,7 @@ module Steem
     end
     
     def test_required_signatures
-      builder = TransactionBuilder.new(wif: @wif)
+      builder = TransactionBuilder.new(@options.merge wif: @wif)
       
       vcr_cassette 'transaction_builder_sign' do
         builder.put(vote: {
