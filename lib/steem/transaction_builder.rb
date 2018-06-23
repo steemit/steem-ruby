@@ -33,7 +33,7 @@ module Steem
     alias app_base? app_base
     
     def initialize(options = {})
-      @app_base = options[:app_base].nil? || !!options[:app_base]
+      @app_base = !!options[:app_base] # default false
       @database_api = options[:database_api]
       @block_api = options[:block_api]
       
