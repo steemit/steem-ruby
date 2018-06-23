@@ -1097,13 +1097,13 @@ module Steem
         trx = tx.transaction
         
         response = if !!options[:pretend]
-          if !!options[:app_base] || !!options[:app_base]
+          if !!options[:app_base]
             database_api(options).verify_authority(trx: trx)
           else
             database_api(options).verify_authority(trx)
           end
         else
-          if !!options[:app_base] || !!options[:app_base]
+          if !!options[:app_base]
             network_broadcast_api(options).broadcast_transaction(trx: trx)
           else
             network_broadcast_api(options).broadcast_transaction_synchronous(trx)
@@ -1129,7 +1129,7 @@ module Steem
   private
     # @private
     def self.normalize_amount(options)
-      if options[:app_base].nil? || !!options[:app_base]
+      if !!options[:app_base]
         Type::Amount.to_h(options[:amount])
       else
         Type::Amount.to_s(options[:amount])
@@ -1138,7 +1138,7 @@ module Steem
     
     # @privats
     def self.database_api(options)
-      options[:database_api] ||= if options[:app_base].nil? || !!options[:app_base]
+      options[:database_api] ||= if !!options[:app_base]
         Steem::DatabaseApi.new(options)
       else
         Steem::CondenserApi.new(options)
@@ -1147,7 +1147,7 @@ module Steem
     
     # @private
     def self.network_broadcast_api(options)
-      options[:network_broadcast_api] ||= if options[:app_base].nil? || !!options[:app_base]
+      options[:network_broadcast_api] ||= if !!options[:app_base]
         Steem::NetworkBroadcaseApi.new(options)
       else
         Steem::CondenserApi.new(options)
