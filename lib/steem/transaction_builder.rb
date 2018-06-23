@@ -15,7 +15,7 @@ module Steem
   #     })
   #     
   #     trx = builder.transaction
-  #     network_broadcast_api = Steem::NetworkBroadcastApi.new
+  #     network_broadcast_api = Steem::CondenserApi.new
   #     network_broadcast_api.broadcast_transaction_synchronous(trx: trx)
   #
   #
