@@ -10,7 +10,7 @@ module Steem
       transfer_to_vesting vote withdraw_vesting witness_update)
     
     def setup
-      app_base = true # TODO: Randomly set true or false to test differences.
+      app_base = false # TODO: Randomly set true or false to test differences.
       
       if app_base
         @database_api = Steem::DatabaseApi.new(url: TEST_NODE)

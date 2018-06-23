@@ -12,7 +12,7 @@ module Steem
     end
     
     def test_inspect
-      assert_equal "#<NetworkBroadcastApi [@chain=steem, @methods=<3 elements>]>", @api.inspect
+      assert_equal "#<NetworkBroadcastApi [@chain=steem, @methods=<2 elements>]>", @api.inspect
     end
     
     def test_method_missing
@@ -63,26 +63,6 @@ module Steem
         
         assert_raises EmptyTransactionError do
           @api.broadcast_transaction(options)
-        end
-      end
-    end
-    
-    def test_broadcast_transaction_synchronous
-      vcr_cassette('broadcast_transaction_synchronous') do
-        options = {
-          trx: {
-            ref_block_num: 0,
-            ref_block_prefix: 0,
-            expiration: "1970-01-01T00:00:00",
-            operations: [],
-            extensions: [],
-            signatures: []
-          },
-          max_block_age: -1
-        }
-        
-        assert_raises EmptyTransactionError do
-          @api.broadcast_transaction_synchronous(options)
         end
       end
     end
