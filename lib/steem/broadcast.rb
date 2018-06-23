@@ -412,8 +412,9 @@ module Steem
       check_required_fields(params, *required_fields)
       
       exchange_rate = params[:exchange_rate] rescue nil || {}
-      base = exchange_rate[:base]
-      quote = exchange_rate[:quote]
+      base = exchange_rate[:base] rescue nil
+      quote = exchange_rate[:quote] rescue nil
+      params[:exchange_rate] = {}
       params[:exchange_rate][:base] = normalize_amount(options.merge amount: base)
       params[:exchange_rate][:quote] = normalize_amount(options.merge amount: quote)
       

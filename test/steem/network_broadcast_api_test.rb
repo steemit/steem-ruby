@@ -68,22 +68,26 @@ module Steem
     end
     
     def test_broadcast_transaction_synchronous
+      skip 'work in progress'
+      
       vcr_cassette('broadcast_transaction_synchronous') do
+        builder = TransactionBuilder.new(wif: '5JrvPrQeBBvCRdjv29iDvkwn3EQYZ9jqfAHzrCyUvfbEbRkrYFC')
+        
+        builder.put(vote: {
+          voter: 'social',
+          author: 'steemit',
+          permlink: 'firstpost',
+          weight: 10000
+        })
+        
+        assert 1, builder.operations.size
+        
         options = {
-          trx: {
-            ref_block_num: 0,
-            ref_block_prefix: 0,
-            expiration: "1970-01-01T00:00:00",
-            operations: [],
-            extensions: [],
-            signatures: []
-          },
-          max_block_age: -1
+          trx: builder.transaction,
+          max_block_age: 30
         }
         
-        assert_raises EmptyTransactionError do
-          @api.broadcast_transaction_synchronous(options)
-        end
+        puts @api.broadcast_transaction_synchronous(options)
       end
     end
   end

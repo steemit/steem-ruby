@@ -17,6 +17,7 @@ require 'steem/rpc/thread_safe_http_client'
 require 'steem/api'
 require 'steem/jsonrpc'
 require 'steem/block_api'
+require 'steem/network_broadcast_api'
 require 'steem/formatter'
 require 'steem/broadcast'
 
