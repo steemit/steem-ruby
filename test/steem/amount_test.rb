@@ -16,13 +16,13 @@ module Steem
       end
     end
     
-    def test_to_nia
-      assert_equal ['0', 3, '@@000000013'], Steem::Type::Amount.to_nia('0.000 SBD')
-      assert_equal ['0', 3, '@@000000021'], Steem::Type::Amount.to_nia('0.000 STEEM')
-      assert_equal ['0', 6, '@@000000037'], Steem::Type::Amount.to_nia('0.000 VESTS')
+    def test_to_h
+      assert_equal({amount: '0', precision: 3, nai: '@@000000013'}, Steem::Type::Amount.to_h('0.000 SBD'))
+      assert_equal({amount: '0', precision: 3, nai: '@@000000021'}, Steem::Type::Amount.to_h('0.000 STEEM'))
+      assert_equal({amount: '0', precision: 6, nai: '@@000000037'}, Steem::Type::Amount.to_h('0.000000 VESTS'))
       
       assert_raises TypeError do
-        Steem::Type::Amount.to_nia('0.000 BOGUS')
+        Steem::Type::Amount.to_h('0.000 BOGUS')
       end
     end
     

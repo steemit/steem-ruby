@@ -105,7 +105,7 @@ module Steem
                               fee1 = Type::Amount.new(op1[1][:fee])
                               fee2 = Type::Amount.new(op2[1][:fee])
                               
-                              assert_equal fee2.to_nia, fee1.to_nia, "expect the same fee"
+                              assert_equal fee2.to_h, fee1.to_h, "expect the same fee"
                             else
                               assert_equal op2[1][key], op1[1][key], "expect the same operation #{key}"
                             end
