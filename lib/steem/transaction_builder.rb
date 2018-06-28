@@ -15,7 +15,7 @@ module Steem
   #     })
   #     
   #     trx = builder.transaction
-  #     network_broadcast_api = Steem::NetworkBroadcastApi.new
+  #     network_broadcast_api = Steem::CondenserApi.new
   #     network_broadcast_api.broadcast_transaction_synchronous(trx: trx)
   #
   #
@@ -26,13 +26,25 @@ module Steem
     include ChainConfig
     include Utils
     
-    attr_accessor :database_api, :block_api, :expiration, :operations
+    attr_accessor :app_base, :database_api, :block_api, :expiration, :operations
     attr_writer :wif
     attr_reader :signed
     
+    alias app_base? app_base
+    
     def initialize(options = {})
-      @database_api = options[:database_api] || Steem::DatabaseApi.new(options)
-      @block_api = options[:block_api] || Steem::BlockApi.new(options)
+      @app_base = !!options[:app_base] # default false
+      @database_api = options[:database_api]
+      @block_api = options[:block_api]
+      
+      if app_base?
+        @database_api ||= Steem::DatabaseApi.new(options)
+        @block_api ||= Steem::BlockApi.new(options)
+      else
+        @database_api ||= Steem::CondenserApi.new(options)
+        @block_api ||= Steem::CondenserApi.new(options)
+      end
+      
       @wif = [options[:wif]].flatten
       @signed = false
       
@@ -114,9 +126,18 @@ module Steem
         catch :prepare_header do; begin
           @database_api.get_dynamic_global_properties do |properties|
             block_number = properties.last_irreversible_block_num
+            block_header_args = if app_base?
+              {block_num: block_number}
+            else
+              block_number
+            end
           
-            @block_api.get_block_header(block_num: block_number) do |result|
-              header = result.header
+            @block_api.get_block_header(block_header_args) do |result|
+              header = if app_base?
+                result.header
+              else
+                result
+              end
               
               @ref_block_num = (block_number - 1) & 0xFFFF
               @ref_block_prefix = unhexlify(header.previous[8..-1]).unpack('V*')[0]
@@ -138,7 +159,7 @@ module Steem
     
     # Sets operations all at once, then prepares.
     def operations=(operations)
-      @operations = operations
+      @operations = operations.map{ |op| normalize_operation(op) }
       prepare
       @operations
     end
@@ -167,34 +188,8 @@ module Steem
     # @return {TransactionBuilder}
     def put(type, op = nil)
       @expiration = nil
-      
-      ## Saving this for later.  This block, or something like it, might replace
-      ## API broadcast operation structure.
-      # case type
-      # when Symbol, String
-      #   type_value = "#{type}_operation"
-      #   @operations << {type: type_value, value: op}
-      # when Hash
-      #   type_value = "#{type.keys.first}_operation"
-      #   @operations << {type: type_value, value: type.values.first}
-      # when Array
-      #   type_value = "#{type[0]}_operation"
-      #   @operations << {type: type_value, value: type[1]}
-      # else
-      #   # don't know what to do with it, skipped
-      # end
-      
-      case type
-      when Symbol then @operations << [type, op]
-      when String then @operations << [type.to_sym, op]
-      when Hash then @operations << [type.keys.first.to_sym, type.values.first]
-      when Array then @operations << type
-      else
-        # don't know what to do with it, skipped
-      end
-      
+      @operations << normalize_operation(type, op)
       prepare
-      
       self
     end
     
@@ -240,8 +235,20 @@ module Steem
       
       unless @signed
         catch :serialize do; begin
-          @database_api.get_transaction_hex(trx: trx) do |result|
-            hex = @chain_id + result.hex[0..-4] # Why do we have to chop the last two bytes?
+          transaction_hex_args = if app_base?
+            {trx: trx}
+          else
+            trx
+          end
+          
+          @database_api.get_transaction_hex(transaction_hex_args) do |result|
+            hex = if app_base?
+              result.hex
+            else
+              result
+            end
+            
+            hex = @chain_id + hex[0..-4] # Why do we have to chop the last two bytes?
             digest = unhexlify(hex)
             digest_hex = Digest::SHA256.digest(digest)
             private_keys = @wif.map{ |wif| Bitcoin::Key.from_base58 wif }
@@ -283,8 +290,18 @@ module Steem
     
     # @return [Array] All public keys that could possibly sign for a given transaction.
     def potential_signatures
-      @database_api.get_potential_signatures(trx: transaction) do |result|
-        result[:keys]
+      potential_signatures_args = if app_base?
+        {trx: transaction}
+      else
+        transaction
+      end
+      
+      @database_api.get_potential_signatures(potential_signatures_args) do |result|
+        if app_base?
+          result[:keys]
+        else
+          result
+        end
       end
     end
     
@@ -294,15 +311,35 @@ module Steem
     #
     # @return [Array] The minimal subset of public keys that should add signatures to the transaction.
     def required_signatures
-      @database_api.get_required_signatures(trx: transaction) do |result|
-        result[:keys]
+      required_signatures_args = if app_base?
+        {trx: transaction}
+      else
+        [transaction, []]
+      end
+      
+      @database_api.get_required_signatures(*required_signatures_args) do |result|
+        if app_base?
+          result[:keys]
+        else
+          result
+        end
       end
     end
     
     # @return [Boolean] True if the transaction has all of the required signatures.
     def valid?
-      @database_api.verify_authority(trx: transaction) do |result|
-        result.valid
+      verify_authority_args = if app_base?
+        {trx: transaction}
+      else
+        transaction
+      end
+      
+      @database_api.verify_authority(verify_authority_args) do |result|
+        if app_base?
+          result.valid
+        else
+          result
+        end
       end
     end
   private
@@ -317,6 +354,33 @@ module Steem
         ((sig[32] & 0x80 ) != 0) || ( sig[32] == 0 ) ||
         ((sig[33] & 0x80 ) != 0)
       )
+    end
+    
+    def normalize_operation(type, op = nil)
+      if app_base?
+        case type
+        when Symbol, String
+          type_value = "#{type}_operation"
+          {type: type_value, value: op}
+        when Hash
+          type_value = "#{type.keys.first}_operation"
+          {type: type_value, value: type.values.first}
+        when Array
+          type_value = "#{type[0]}_operation"
+          {type: type_value, value: type[1]}
+        else
+          raise Steem::ArgumentError, "Don't know what to do with operation type #{type.class}: #{type} (#{op})"
+        end
+      else
+        case type
+        when Symbol then [type, op]
+        when String then [type.to_sym, op]
+        when Hash then [type.keys.first.to_sym, type.values.first]
+        when Array then type
+        else
+          raise Steem::ArgumentError, "Don't know what to do with operation type #{type.class}: #{type} (#{op})"
+        end
+      end
     end
   end
 end

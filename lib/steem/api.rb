@@ -39,7 +39,7 @@ module Steem
     attr_accessor :chain, :methods
     
     # Use this for debugging naive thread handler.
-    # DEFAULT_RPC_CLIENT_CLASS = RPC::BaseClient
+    # DEFAULT_RPC_CLIENT_CLASS = RPC::HttpClient
     DEFAULT_RPC_CLIENT_CLASS = RPC::ThreadSafeHttpClient
     
     def self.api_name=(api_name)

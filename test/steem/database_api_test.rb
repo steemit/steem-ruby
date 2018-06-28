@@ -280,9 +280,9 @@ module Steem
           ref_block_num: 19297,
           ref_block_prefix: 1608085982,
           expiration: "2016-03-23T22:41:21",
-          operations: [
-            [:account_create, {
-              fee: ['0', 3, '@@000000021'], # 0.000 STEEM
+          operations: [{
+            type: :account_create_operation, value: {
+              fee: {amount: '0', precision: 3, nai: '@@000000021'}, # 0.000 STEEM
               creator: "initminer",
               new_account_name: "scott",
               owner: {
@@ -303,7 +303,7 @@ module Steem
               memo_key: "STM6ppNVEFmvBW4jEkzxXnGKuKuwYjMUrhz2WX1kHeGSchGdWJEDQ",
               json_metadata: ""
             }
-          ]],
+          }],
           extensions: [],
           signatures: []
         }

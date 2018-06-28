@@ -10,16 +10,23 @@ module Steem
       transfer_to_vesting vote withdraw_vesting witness_update)
     
     def setup
-      @database_api = Steem::DatabaseApi.new(url: TEST_NODE)
-      @block_api = BlockApi.new(url: TEST_NODE)
-      @network_broadcast_api = Steem::NetworkBroadcastApi.new(url: TEST_NODE)
-      @jsonrpc = Jsonrpc.new(url: TEST_NODE)
+      app_base = false # TODO: Randomly set true or false to test differences.
       
+      if app_base
+        @database_api = Steem::DatabaseApi.new(url: TEST_NODE)
+        @block_api = Steem::BlockApi.new(url: TEST_NODE)
+        @network_broadcast_api = Steem::NetworkBroadcastApi.new(url: TEST_NODE)
+      else
+        @database_api = @block_api = @network_broadcast_api = Steem::CondenserApi.new(url: TEST_NODE)
+      end
+      
+      @jsonrpc = Jsonrpc.new(url: TEST_NODE)
       @account_name = ENV.fetch('TEST_ACCOUNT_NAME', 'social')
       @wif = ENV.fetch('TEST_WIF', '5JrvPrQeBBvCRdjv29iDvkwn3EQYZ9jqfAHzrCyUvfbEbRkrYFC')
       @pretend = true
       
       @broadcast_options = {
+        app_base: app_base,
         database_api: @database_api,
         block_api: @block_api,
         network_broadcast_api: @network_broadcast_api,
@@ -42,7 +49,11 @@ module Steem
       
       vcr_cassette('broadcast_vote') do
         Broadcast.vote(@broadcast_options.merge(options)) do |result|
-          assert result.valid
+          if result.respond_to? :valid
+            assert result.valid
+          else
+            assert result
+          end
         end
       end
     end
@@ -66,7 +77,11 @@ module Steem
       
       vcr_cassette('broadcast_vote_multisig') do
         Broadcast.vote(@broadcast_options.merge(options)) do |result|
-          assert result.valid
+          if result.respond_to? :valid
+            assert result.valid
+          else
+            assert result
+          end
         end
       end
     end
@@ -135,7 +150,12 @@ module Steem
       }
       
       vcr_cassette('broadcast_vote_no_closure') do
-        assert Broadcast.vote(@broadcast_options.merge(options)).valid
+        result = Broadcast.vote(@broadcast_options.merge(options))
+        if result.respond_to? :valid
+          assert result.valid
+        else
+          assert result
+        end
       end
     end
     
@@ -152,7 +172,11 @@ module Steem
       
       vcr_cassette('broadcast_comment') do
         Broadcast.comment(@broadcast_options.merge(options)) do |result|
-          assert result.valid
+          if result.respond_to? :valid
+            assert result.valid
+          else
+            assert result
+          end
         end
       end
     end
@@ -171,7 +195,11 @@ module Steem
       
       vcr_cassette('broadcast_comment_with_author_vote_weight') do
         Broadcast.comment(@broadcast_options.merge(options)) do |result|
-          assert result.valid
+          if result.respond_to? :valid
+            assert result.valid
+          else
+            assert result
+          end
         end
       end
     end
@@ -190,7 +218,11 @@ module Steem
       
       vcr_cassette('broadcast_comment') do
         Broadcast.comment(@broadcast_options.merge(options)) do |result|
-          assert result.valid
+          if result.respond_to? :valid
+            assert result.valid
+          else
+            assert result
+          end
         end
       end
     end
@@ -266,7 +298,11 @@ module Steem
       
       vcr_cassette('broadcast_delete_comment') do
         Broadcast.delete_comment(@broadcast_options.merge(options)) do |result|
-          assert result.valid
+          if result.respond_to? :valid
+            assert result.valid
+          else
+            assert result
+          end
         end
       end
     end
@@ -308,7 +344,7 @@ module Steem
       options = {
         params: {
           account: @account_name,
-          vesting_shares: '0.000 VESTS'
+          vesting_shares: '0.000000 VESTS'
         }
       }
       
@@ -365,7 +401,7 @@ module Steem
       }
     
       vcr_cassette('broadcast_feed_publish') do
-        assert_raises MissingActiveAuthorityError do
+        assert_raises Steem::ArgumentError do
           Broadcast.feed_publish(@broadcast_options.merge(options))
         end
       end
@@ -650,7 +686,11 @@ module Steem
     
       vcr_cassette('broadcast_custom_json') do
         Broadcast.custom_json(@broadcast_options.merge(options)) do |result|
-          assert result.valid
+          if result.respond_to? :valid
+            assert result.valid
+          else
+            assert result
+          end
         end
       end
     end
@@ -918,7 +958,7 @@ module Steem
         params: {
           delegator: @account_name,
           delegatee: 'alice',
-          vesting_shares: '0.000 VESTS'
+          vesting_shares: '0.000000 VESTS'
         }
       }
     
@@ -933,7 +973,7 @@ module Steem
       options = {
         params: {
           fee: '0.000 STEEM',
-          delegation: '0.000 VESTS',
+          delegation: '0.000000 VESTS',
           creator: @account_name,
           new_account_name: 'alice',
           owner: {
@@ -1008,7 +1048,7 @@ module Steem
       options[:params] = fields.map do |field|
         value = [
           field.to_s, 0, Time.now.utc, true, false, [1], {a: :b}, nil,
-          ["0", 3, "@@000000021"]
+          {amount: '0', precision: 3, nai: '@@000000021'}
         ].sample
         
         [field, value]
@@ -1018,7 +1058,11 @@ module Steem
         begin
           Broadcast.send(random_op, @broadcast_options.merge(options)) do |result|
             # :nocov:
-            assert result.valid
+            if result.respond_to? :valid
+              assert result.valid
+            else
+              assert result
+            end
             # :nocov:
           end
         rescue => e

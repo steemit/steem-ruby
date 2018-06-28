@@ -118,7 +118,7 @@ module Steem
         error = response['error'].to_json if !!response['error']
               
         if req_id != res_id
-          raise IncorrectResponseIdError, "#{method}: The json-rpc id did not match.  Request was: #{req_id}, got: #{res_id.inspect}", error.nil? ? nil : error.to_json
+          raise IncorrectResponseIdError, "#{method}: The json-rpc id did not match.  Request was: #{req_id}, got: #{res_id.inspect}", BaseError.send(:build_backtrace, error)
         end
       end
       
@@ -143,7 +143,7 @@ module Steem
           raise TooManyTimeoutsError.new("Too many timeouts for: #{context}", cause)
         elsif @timeout_retry_count % 10 == 0
           msg = "#{@timeout_retry_count} retry attempts for: #{context}"
-          msg += "; cause: #{e}" if !!cause
+          msg += "; cause: #{cause}" if !!cause
           error_pipe.puts msg
         end
         
