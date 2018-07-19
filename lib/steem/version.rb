@@ -1,4 +1,4 @@
 module Steem
-  VERSION = '0.9.1'
+  VERSION = '0.9.2'
   AGENT_ID = "steem-ruby/#{VERSION}"
 end

@@ -1136,7 +1136,7 @@ module Steem
       end
     end
     
-    # @privats
+    # @private
     def self.database_api(options)
       options[:database_api] ||= if !!options[:app_base]
         Steem::DatabaseApi.new(options)
