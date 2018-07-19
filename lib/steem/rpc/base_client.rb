@@ -12,8 +12,7 @@ module Steem
       MAX_TIMEOUT_BACKOFF = 30
       
       # @private
-      TIMEOUT_ERRORS = [Net::ReadTimeout, Errno::EBADF, Errno::ECONNREFUSED,
-        IOError]
+      TIMEOUT_ERRORS = [Net::ReadTimeout, Errno::EBADF, IOError]
       
       def initialize(options = {})
         @chain = options[:chain] || :steem

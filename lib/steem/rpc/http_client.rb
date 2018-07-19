@@ -17,7 +17,7 @@ module Steem
       # 
       # @private
       TIMEOUT_ERRORS = [Net::OpenTimeout, JSON::ParserError, Net::ReadTimeout,
-        Errno::EBADF, Errno::ECONNREFUSED, IOError]
+        Errno::EBADF, IOError, Errno::ENETDOWN]
       
       # @private
       POST_HEADERS = {
