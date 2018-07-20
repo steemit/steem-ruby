@@ -70,6 +70,79 @@ end
 
 *See: [Broadcast](https://www.rubydoc.info/gems/steem-ruby/Steem/Broadcast)*
 
+### Streaming
+
+The value passed to the block is an object, with the keys: `:type` and `:value`.
+
+```ruby
+stream = Steem::Stream.new
+
+stream.operations do |op|
+  puts "#{op.type}: #{op.value}"
+end
+```
+
+To start a stream from a specific block number, pass it as an argument:
+
+```ruby
+stream = Steem::Stream.new
+
+stream.operations(at_block_num: 9001) do |op|
+  puts "#{op.type}: #{op.value}"
+end
+```
+
+You can also grab the related transaction id and block number for each operation:
+
+```ruby
+stream = Steem::Stream.new
+
+stream.operations do |op, trx_id, block_num|
+  puts "#{block_num} :: #{trx_id}"
+  puts "#{op.type}: #{op.value}"
+end
+```
+
+To stream only certain operations:
+
+```ruby
+stream = Steem::Stream.new
+
+stream.operations(types: :vote_operation) do |op|
+  puts "#{op.type}: #{op.value}"
+end
+```
+
+Or pass an array of certain operations:
+
+```ruby
+stream = Steem::Stream.new
+
+stream.operations(types: [:comment_operation, :vote_operation]) do |op|
+  puts "#{op.type}: #{op.value}"
+end
+```
+
+Or (optionally) just pass the operation(s) you want as the only arguments.  This is semantic sugar for when you want specific types and take all of the defaults.
+
+```ruby
+stream = Steem::Stream.new
+
+stream.operations(:vote_operation) do |op|
+  puts "#{op.type}: #{op.value}"
+end
+```
+
+To also include virtual operations:
+
+```ruby
+stream = Steem::Stream.new
+
+stream.operations(include_virtual: true) do |op|
+  puts "#{op.type}: #{op.value}"
+end
+```
+
 ### Multisig
 
 You can use multisignature to broadcast an operation.

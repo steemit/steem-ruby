@@ -138,44 +138,141 @@ end
   
 namespace :stream do
   desc 'Test the ability to stream a block range.'
-  task :block_range do
-    block_api = Steem::BlockApi.new(url: ENV['TEST_NODE'])
+  task :block_range, [:mode, :at_block_num] do |t, args|
+    mode = (args[:mode] || 'irreversible').to_sym
+    first_block_num = args[:at_block_num].to_i if !!args[:at_block_num]
+    stream = Steem::Stream.new(url: ENV['TEST_NODE'], mode: mode)
     api = Steem::Api.new(url: ENV['TEST_NODE'])
     last_block_num = nil
-    first_block_num = nil
     last_timestamp = nil
+    range_complete = false
     
-    loop do
-      api.get_dynamic_global_properties do |properties|
-        current_block_num = properties.last_irreversible_block_num
-        # First pass replays latest a random number of blocks to test chunking.
-        first_block_num ||= current_block_num - (rand * 200).to_i
+    api.get_dynamic_global_properties do |properties|
+      current_block_num = if mode == :head
+        properties.head_block_number
+      else
+        properties.last_irreversible_block_num
+      end
+      
+      # First pass replays latest a random number of blocks to test chunking.
+      first_block_num ||= current_block_num - (rand * 200).to_i
+      
+      range = first_block_num..current_block_num
+      puts "Initial block range: #{range.size}"
+      
+      stream.blocks(at_block_num: range.first) do |block, block_num|
+        current_timestamp = Time.parse(block.timestamp + 'Z')
         
-        if current_block_num >= first_block_num
-          range = first_block_num..current_block_num
-          puts "Got block range: #{range.size}"
-          block_api.get_blocks(block_range: range) do |block, block_num|
-            current_timestamp = Time.parse(block.timestamp + 'Z')
-            
-            if !!last_timestamp && block_num != last_block_num + 1
-              puts "Bug: Last block number was #{last_block_num} then jumped to: #{block_num}"
-              exit
-            end
-            
-            if !!last_timestamp && current_timestamp < last_timestamp
-              puts "Bug: Went back in time.  Last timestamp was #{last_timestamp}, then jumped back to #{current_timestamp}"
-              exit
-            end
-            
-            puts "\t#{block_num} Timestamp: #{current_timestamp}, witness: #{block.witness}"
-            last_block_num = block_num
-            last_timestamp = current_timestamp
-          end
-          
-          first_block_num = range.max + 1
+        if !range_complete && block_num > range.last
+          puts 'Done with initial range.'
+          range_complete = true
         end
         
-        sleep 3
+        if !!last_timestamp && block_num != last_block_num + 1
+          puts "Bug: Last block number was #{last_block_num} then jumped to: #{block_num}"
+          exit
+        end
+        
+        if !!last_timestamp && current_timestamp < last_timestamp
+          puts "Bug: Went back in time.  Last timestamp was #{last_timestamp}, then jumped back to #{current_timestamp}"
+          exit
+        end
+        
+        puts "\t#{block_num} Timestamp: #{current_timestamp}, witness: #{block.witness}"
+        last_block_num = block_num
+        last_timestamp = current_timestamp
+      end
+    end
+  end
+  
+  desc 'Test the ability to stream a block range of transactions.'
+  task :trx_range, [:mode, :at_block_num] do |t, args|
+    mode = (args[:mode] || 'irreversible').to_sym
+    first_block_num = args[:at_block_num].to_i if !!args[:at_block_num]
+    stream = Steem::Stream.new(url: ENV['TEST_NODE'], mode: mode)
+    api = Steem::Api.new(url: ENV['TEST_NODE'])
+    
+    api.get_dynamic_global_properties do |properties|
+      current_block_num = if mode == :head
+        properties.head_block_number
+      else
+        properties.last_irreversible_block_num
+      end
+      
+      # First pass replays latest a random number of blocks to test chunking.
+      first_block_num ||= current_block_num - (rand * 200).to_i
+      
+      stream.transactions(at_block_num: first_block_num) do |trx, trx_id, block_num|
+        puts "#{block_num} :: #{trx_id}; ops: #{trx.operations.map(&:type).join(', ')}"
+      end
+    end
+  end
+  
+  desc 'Test the ability to stream a block range of operations.'
+  task :op_range, [:mode, :at_block_num] do |t, args|
+    mode = (args[:mode] || 'irreversible').to_sym
+    first_block_num = args[:at_block_num].to_i if !!args[:at_block_num]
+    stream = Steem::Stream.new(url: ENV['TEST_NODE'], mode: mode)
+    api = Steem::Api.new(url: ENV['TEST_NODE'])
+    
+    api.get_dynamic_global_properties do |properties|
+      current_block_num = if mode == :head
+        properties.head_block_number
+      else
+        properties.last_irreversible_block_num
+      end
+      
+      # First pass replays latest a random number of blocks to test chunking.
+      first_block_num ||= current_block_num - (rand * 200).to_i
+      
+      stream.operations(at_block_num: first_block_num) do |op, trx_id, block_num|
+        puts "#{block_num} :: #{trx_id}; op: #{op.type}"
+      end
+    end
+  end
+  
+  desc 'Test the ability to stream a block range of virtual operations.'
+  task :vop_range, [:mode, :at_block_num] do |t, args|
+    mode = (args[:mode] || 'irreversible').to_sym
+    first_block_num = args[:at_block_num].to_i if !!args[:at_block_num]
+    stream = Steem::Stream.new(url: ENV['TEST_NODE'], mode: mode)
+    api = Steem::Api.new(url: ENV['TEST_NODE'])
+    
+    api.get_dynamic_global_properties do |properties|
+      current_block_num = if mode == :head
+        properties.head_block_number
+      else
+        properties.last_irreversible_block_num
+      end
+      
+      # First pass replays latest a random number of blocks to test chunking.
+      first_block_num ||= current_block_num - (rand * 200).to_i
+      
+      stream.operations(at_block_num: first_block_num, only_virtual: true) do |op, trx_id, block_num|
+        puts "#{block_num} :: #{trx_id}; op: #{op.type}"
+      end
+    end
+  end
+  
+  desc 'Test the ability to stream a block range of all operations (including virtual).'
+  task :all_op_range, [:mode, :at_block_num] do |t, args|
+    mode = (args[:mode] || 'irreversible').to_sym
+    first_block_num = args[:at_block_num].to_i if !!args[:at_block_num]
+    stream = Steem::Stream.new(url: ENV['TEST_NODE'], mode: mode)
+    api = Steem::Api.new(url: ENV['TEST_NODE'])
+    
+    api.get_dynamic_global_properties do |properties|
+      current_block_num = if mode == :head
+        properties.head_block_number
+      else
+        properties.last_irreversible_block_num
+      end
+      
+      # First pass replays latest a random number of blocks to test chunking.
+      first_block_num ||= current_block_num - (rand * 200).to_i
+      
+      stream.operations(at_block_num: first_block_num, include_virtual: true) do |op, trx_id, block_num|
+        puts "#{block_num} :: #{trx_id}; op: #{op.type}"
       end
     end
   end

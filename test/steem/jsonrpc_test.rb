@@ -70,6 +70,7 @@ module Steem
         assert_raises SocketError, Errno::ECONNREFUSED do
           jsonrpc = Jsonrpc.new(url: 'https://bad.node')
           jsonrpc.get_methods
+          fail 'regression detected, SocketError or Errno::ECONNREFUSED expected'
         end
       end
     end

@@ -1,6 +1,6 @@
 module Steem
   # This ruby API works with
-  # {https://github.com/steemit/steem/releases steemd-0.19.4} and other AppBase
+  # {https://github.com/steemit/steem/releases steemd-0.19.10} and other AppBase
   # compatible upstreams.  To access different API namespaces, use the
   # following:
   #
@@ -36,7 +36,7 @@ module Steem
   #
   # Also see: {https://developers.steem.io/apidefinitions/ Complete API Definitions}
   class Api
-    attr_accessor :chain, :methods
+    attr_accessor :chain, :methods, :rpc_client
     
     # Use this for debugging naive thread handler.
     # DEFAULT_RPC_CLIENT_CLASS = RPC::HttpClient
@@ -57,12 +57,17 @@ module Steem
       @api_name.to_s.split('_').map(&:capitalize).join
     end
     
-    def self.jsonrpc=(jsonrpc)
-      @jsonrpc = jsonrpc
+    def self.jsonrpc=(jsonrpc, url = nil)
+      @jsonrpc ||= {}
+      @jsonrpc[url || jsonrpc.rpc_client.uri.to_s] = jsonrpc
     end
     
-    def self.jsonrpc
-      @jsonrpc
+    def self.jsonrpc(url = nil)
+      if @jsonrpc.size < 2 && url.nil?
+        @jsonrpc.values.first
+      else
+        @jsonrpc[url]
+      end
     end
     
     # Override this if you want to use your own client.
@@ -89,7 +94,7 @@ module Steem
         # have access to instance options until now.
         
         Api::jsonrpc = Jsonrpc.new(options)
-        @methods = Api::jsonrpc.get_api_methods
+        @methods = Api::jsonrpc(rpc_client.uri.to_s).get_api_methods
         
         unless !!@methods[@api_name]
           raise UnknownApiError, "#{@api_name} (known APIs: #{@methods.keys.join(' ')})"
@@ -115,19 +120,22 @@ module Steem
     end
   private
     # @private
-    def self.args_keys_to_s(rpc_method_name)
+    def args_keys_to_s(rpc_method_name)
       args = signature(rpc_method_name).args
       args_keys = JSON[args.to_json]
     end
     
     # @private
-    def self.signature(rpc_method_name)
+    def signature(rpc_method_name)
+      url = rpc_client.uri.to_s
+      
       @@signatures ||= {}
-      @@signatures[rpc_method_name] ||= jsonrpc.get_signature(method: rpc_method_name).result
+      @@signatures[url] ||= {}
+      @@signatures[url][rpc_method_name] ||= Api::jsonrpc(url).get_signature(method: rpc_method_name).result
     end
     
     # @private
-    def self.raise_error_response(rpc_method_name, rpc_args, response)
+    def raise_error_response(rpc_method_name, rpc_args, response)
       raise UnknownError, "#{rpc_method_name}: #{response}" if response.error.nil?
       
       error = response.error
@@ -153,9 +161,9 @@ module Steem
       when :condenser_api then args
       when :jsonrpc then args.first
       else
-        expected_args = Api::signature(rpc_method_name).args || []
+        expected_args = signature(rpc_method_name).args || []
         expected_args_key_string = if expected_args.size > 0
-          " (#{Api::args_keys_to_s(rpc_method_name)})"
+          " (#{args_keys_to_s(rpc_method_name)})"
         end
         expected_args_size = expected_args.size
         
@@ -178,11 +186,11 @@ module Steem
         args
       end
       
-      response = @rpc_client.rpc_execute(@api_name, m, rpc_args)
+      response = rpc_client.rpc_execute(@api_name, m, rpc_args)
       
       if defined?(response.error) && !!response.error
         if !!response.error.message
-          Api::raise_error_response rpc_method_name, rpc_args, response
+          raise_error_response rpc_method_name, rpc_args, response
         else
           raise Steem::ArgumentError, response.error.inspect
         end

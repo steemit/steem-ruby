@@ -1084,12 +1084,16 @@ module Steem
     
     def test_can_retry
       e = NonCanonicalSignatureError.new("test")
-      assert Broadcast.send(:can_retry?, e)
+      
+      refute_nil Broadcast.send(:first_retry_at)
+      assert Broadcast.send(:can_retry?, e) unless Broadcast.send :retry_reset?
     end
     
     def test_can_retry_remote_node_error
       e = IncorrectResponseIdError.new("test: The json-rpc id did not match")
-      assert Broadcast.send(:can_retry?, e)
+      
+      refute_nil Broadcast.send(:first_retry_at)
+      assert Broadcast.send(:can_retry?, e) unless Broadcast.send :retry_reset?
     end
   end
 end

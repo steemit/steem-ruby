@@ -1,16 +1,16 @@
 module Steem
   class BaseError < StandardError
-    def initialize(error, cause = nil)
+    def initialize(error = nil, cause = nil)
       @error = error
       @cause = cause
     end
     
     def to_s
-      if !!@cause
-        JSON[error: @error, cause: @cause] rescue {error: @error, cause: @cause}.to_s
-      else
-        JSON[@error] rescue @error.to_s
-      end
+      detail = {}
+      detail[:error] = @error if !!@error
+      detail[:cause] = @cause if !!@cause
+      
+      JSON[detail] rescue detai.to_s
     end
     
     def self.build_error(error, context)
@@ -22,11 +22,19 @@ module Steem
         raise Steem::RemoteNodeError.new, error.message, build_backtrace(error)
       end
       
+      if error.message.include? 'Server error'
+        raise Steem::RemoteNodeError.new, error.message, build_backtrace(error)
+      end
+      
       if error.message.include? 'plugin not enabled'
         raise Steem::PluginNotEnabledError, error.message, build_backtrace(error)
       end
       
       if error.message.include? 'argument'
+        raise Steem::ArgumentError, "#{context}: #{error.message}", build_backtrace(error)
+      end
+      
+      if error.message.include? 'Invalid params'
         raise Steem::ArgumentError, "#{context}: #{error.message}", build_backtrace(error)
       end
       
@@ -110,6 +118,10 @@ module Steem
         raise Steem::MissingOtherAuthorityError, "#{context}: #{error.message}", build_backtrace(error)
       end
       
+      if error.message.include? 'Upstream response error'
+        raise Steem::UpstreamResponseError, "#{context}: #{error.message}", build_backtrace(error)
+      end
+      
       if error.message.include? 'Bad or missing upstream response'
         raise Steem::BadOrMissingUpstreamResponseError, "#{context}: #{error.message}", build_backtrace(error)
       end
@@ -120,6 +132,10 @@ module Steem
       
       if error.message.include? 'is_valid_account_name'
         raise Steem::InvalidAccountError, "#{context}: #{error.message}", build_backtrace(error)
+      end
+      
+      if error.message.include?('Method') && error.message.include?(' does not exist.')
+        raise Steem::UnknownMethodError, "#{context}: #{error.message}", build_backtrace(error)
       end
       
       if error.message.include? 'Invalid operation name'
@@ -162,9 +178,6 @@ module Steem
   
   class UnsupportedChainError < BaseError; end
   class ArgumentError < BaseError; end
-  class RemoteNodeError < BaseError; end
-  class RemoteDatabaseLockError < RemoteNodeError; end
-  class PluginNotEnabledError < RemoteNodeError; end
   class TypeError < BaseError; end
   class EmptyTransactionError < ArgumentError; end
   class InvalidAccountError < ArgumentError; end
@@ -186,12 +199,18 @@ module Steem
   class MissingOtherAuthorityError < MissingAuthorityError; end
   class IncorrectRequestIdError < BaseError; end
   class IncorrectResponseIdError < BaseError; end
-  class BadOrMissingUpstreamResponseError < BaseError; end
+  class RemoteNodeError < BaseError; end
+  class UpstreamResponseError < RemoteNodeError; end
+  class RemoteDatabaseLockError < UpstreamResponseError; end
+  class PluginNotEnabledError < UpstreamResponseError; end
+  class BadOrMissingUpstreamResponseError < UpstreamResponseError; end
   class TransactionIndexDisabledError < BaseError; end
   class NotAppBaseError < BaseError; end
   class UnknownApiError < BaseError; end
+  class UnknownMethodError < BaseError; end
   class UnknownOperationError < BaseError; end
   class JsonRpcBatchMaximumSizeExceededError < BaseError; end
   class TooManyTimeoutsError < BaseError; end
+  class TooManyRetriesError < BaseError; end
   class UnknownError < BaseError; end
 end
