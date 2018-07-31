@@ -65,7 +65,7 @@ module Steem
       end
     end
     
-    def test_dependancy_injection
+    def test_dependency_injection
       original_rpc_client_class = Api.default_rpc_client_class
       
       Api.register default_rpc_client_class: RPC::HttpClient
