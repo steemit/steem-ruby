@@ -65,6 +65,16 @@ module Steem
       end
     end
     
+    def test_dependancy_injection
+      original_rpc_client_class = Api.default_rpc_client_class
+      
+      Api.register default_rpc_client_class: RPC::HttpClient
+      assert_equal RPC::HttpClient, Api.default_rpc_client_class
+      
+      Api.register default_rpc_client_class: original_rpc_client_class
+      assert_equal original_rpc_client_class, Api.default_rpc_client_class
+    end
+    
     def test_inspect
       assert_equal "#<CondenserApi [@chain=steem, @methods=<85 elements>]>", @api.inspect
     end
