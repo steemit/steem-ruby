@@ -75,8 +75,8 @@ module Steem
     #
     #     Steem::Api.register default_rpc_client_class: MyClient
     def self.default_rpc_client_class
-      if !!@injected_dependancies && !!@injected_dependancies[:default_rpc_client_class]
-        @injected_dependancies[:default_rpc_client_class]
+      if !!@injected_dependencies && !!@injected_dependencies[:default_rpc_client_class]
+        @injected_dependencies[:default_rpc_client_class]
       else
         DEFAULT_RPC_CLIENT_CLASS
       end
@@ -86,8 +86,8 @@ module Steem
     # 
     # `default_rpc_client_class`
     def self.register(register)
-      @injected_dependancies ||= {}
-      @injected_dependancies = @injected_dependancies.merge register
+      @injected_dependencies ||= {}
+      @injected_dependencies = @injected_dependencies.merge register
     end
     
     def initialize(options = {})
