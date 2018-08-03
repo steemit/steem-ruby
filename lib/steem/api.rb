@@ -70,9 +70,24 @@ module Steem
       end
     end
     
-    # Override this if you want to use your own client.
+    # Override this if you want to just use your own client.  Otherwise, inject
+    # the default using:
+    #
+    #     Steem::Api.register default_rpc_client_class: MyClient
     def self.default_rpc_client_class
-      DEFAULT_RPC_CLIENT_CLASS
+      if !!@injected_dependencies && !!@injected_dependencies[:default_rpc_client_class]
+        @injected_dependencies[:default_rpc_client_class]
+      else
+        DEFAULT_RPC_CLIENT_CLASS
+      end
+    end
+    
+    # Used for dependency injection.  Currently, the only key supported is:
+    # 
+    # `default_rpc_client_class`
+    def self.register(register)
+      @injected_dependencies ||= {}
+      @injected_dependencies = @injected_dependencies.merge register
     end
     
     def initialize(options = {})
