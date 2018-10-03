@@ -10,7 +10,7 @@ module Steem
     
     RETRYABLE_EXCEPTIONS = [
       NonCanonicalSignatureError, IncorrectRequestIdError,
-      IncorrectResponseIdError, RemoteDatabaseLockError
+      IncorrectResponseIdError, RemoteDatabaseLockError, UnknownExceptionError
     ]
     
     def can_retry?(e = nil)

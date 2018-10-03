@@ -94,6 +94,14 @@ module Steem
         raise Steem::NonCanonicalSignatureError, "#{context}: #{error.message}", build_backtrace(error)
       end
       
+      if error.message.include? 'RC. Please wait to transact, or power up STEEM.'
+        raise Steem::ResourceCreditsExceededError, "#{context}: #{error.message}", build_backtrace(error)
+      end
+      
+      if error.message.include? 'gpo.available_account_subsidies >= STEEM_ACCOUNT_SUBSIDY_PRECISION'
+        raise Steem::AvailableAccountSubsidiesError, "#{context}: #{error.message}", build_backtrace(error)
+      end
+      
       if error.message.include? 'attempting to push a block that is too old'
         raise Steem::BlockTooOldError, "#{context}: #{error.message}", build_backtrace(error)
       end
@@ -120,6 +128,10 @@ module Steem
       
       if error.message.include? 'Upstream response error'
         raise Steem::UpstreamResponseError, "#{context}: #{error.message}", build_backtrace(error)
+      end
+      
+      if error.message.include? 'Unknown exception'
+        raise Steem::UnknownExceptionError, "#{context}: #{error.message}", build_backtrace(error)
       end
       
       if error.message.include? 'Bad or missing upstream response'
@@ -190,6 +202,9 @@ module Steem
   class TransactionExpiredError < BaseError; end
   class DuplicateTransactionError < TransactionExpiredError; end
   class NonCanonicalSignatureError < TransactionExpiredError; end
+  class ResourceCreditsError < BaseError; end
+  class ResourceCreditsExceededError < ResourceCreditsError; end
+  class AvailableAccountSubsidiesError < ResourceCreditsError; end
   class BlockTooOldError < BaseError; end
   class IrrelevantSignatureError < BaseError; end
   class MissingAuthorityError < BaseError; end
@@ -201,6 +216,7 @@ module Steem
   class IncorrectResponseIdError < BaseError; end
   class RemoteNodeError < BaseError; end
   class UpstreamResponseError < RemoteNodeError; end
+  class UnknownExceptionError < RemoteNodeError; end
   class RemoteDatabaseLockError < UpstreamResponseError; end
   class PluginNotEnabledError < UpstreamResponseError; end
   class BadOrMissingUpstreamResponseError < UpstreamResponseError; end
