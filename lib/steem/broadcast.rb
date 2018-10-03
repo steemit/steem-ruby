@@ -31,6 +31,7 @@ module Steem
   # For details on what to pass to these methods, check out the {https://developers.steem.io/apidefinitions/broadcast-ops Steem Developer Portal Broadcast Operations} page.
   class Broadcast
     extend Retriable
+    extend Utils
     
     DEFAULT_MAX_ACCEPTED_PAYOUT = Type::Amount.new(amount: '1000000000', precision: 3, nai: '@@000000013')
     
@@ -673,6 +674,65 @@ module Steem
       process(options.merge(ops: ops), &block)
     end
     
+    # Extensible replacement for #witness_update that supports additional
+    # properties added since HF20 and beyond.
+    #
+    #     options = {
+    #       wif: wif,
+    #       params: {
+    #         owner: witness_account_name,
+    #         props: {
+    #           account_creation_fee: '0.000 STEEM',
+    #           maximum_block_size: 131072,
+    #           sbd_interest_rate: 1000,
+    #           account_subsidy_budget: 50000,
+    #           account_subsidy_decay: 330782,
+    #           sbd_exchange_rate: '1.000 STEEM',
+    #           url: "https://steemit.com",
+    #           new_signing_key: 'STM8LoQjQqJHvotqBo7HjnqmUbFW9oJ2theyqonzUd9DdJ7YYHsvD'
+    #         }
+    #       }
+    #     }
+    # 
+    #     Steem::Broadcast.witness_set_properties(options)
+    #
+    # @param options [Hash] options
+    # @option options [String] :wif Active wif
+    # @option options [Hash] :params
+    #   * :owner (String)
+    #   * :props (String)
+    # @option options [Boolean] :pretend Just validate, do not broadcast.
+    # @see https://developers.steem.io/apidefinitions/broadcast-ops#broadcast_ops_witness_set_properties
+    # @see https://github.com/steemit/steem/blob/master/doc/witness_parameters.md
+    def self.witness_set_properties(options, &block)
+      required_fields = %i(owner props)
+      params = options[:params]
+      check_required_fields(params, *required_fields)
+      
+      if !!(account_creation_fee = params[:props][:account_creation_fee] rescue nil)
+        params[:props][:account_creation_fee] = normalize_amount(options.merge amount: account_creation_fee, serialize: true)
+      end
+      
+      if !!(sbd_exchange_rate = params[:props][:sbd_exchange_rate] rescue nil)
+        params[:props][:sbd_exchange_rate] = normalize_amount(options.merge amount: sbd_exchange_rate, serialize: true)
+      end
+      
+      %i(account_creation_fee sbd_exchange_rate url new_signing_key).each do |key|
+        next unless !!params[:props][key]
+        
+        val = params[:props][key]
+          
+        params[:props][key] = hexlify val unless val =~ /^[0-9A-F]+$/i
+      end
+      
+      params[:props] = params[:props].to_a
+      
+      params[:extensions] ||= []
+      ops = [[:witness_set_properties, params]]
+      
+      process(options.merge(ops: ops), &block)
+    end
+    
     # All accounts with a VFS (Vesting Fund Shares) can vote for or against any
     # witness.
     # 
@@ -1215,6 +1275,8 @@ module Steem
     def self.normalize_amount(options)
       if !!options[:app_base]
         Type::Amount.to_h(options[:amount])
+      elsif !!options[:serialize]
+        Type::Amount.to_s(options[:amount])
       else
         Type::Amount.to_s(options[:amount])
       end

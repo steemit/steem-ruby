@@ -645,6 +645,30 @@ module Steem
       end
     end
     
+    def test_witness_set_properties
+      options = {
+        params: {
+          owner: @account_name,
+          props: {
+            account_creation_fee: '0.000 STEEM',
+            maximum_block_size: 131072,
+            sbd_interest_rate: 1000,
+            account_subsidy_budget: 50000,
+            account_subsidy_decay: 330782,
+            sbd_exchange_rate: '1.000 STEEM',
+            url: "https://steemit.com",
+            new_signing_key: 'STM8LoQjQqJHvotqBo7HjnqmUbFW9oJ2theyqonzUd9DdJ7YYHsvD'
+          }
+        }
+      }
+    
+      vcr_cassette('broadcast_witness_set_properties') do
+        assert_raises MissingOtherAuthorityError do
+          Broadcast.witness_set_properties(@broadcast_options.merge(options))
+        end
+      end
+    end
+    
     def test_account_witness_vote
       options = {
         params: {
