@@ -3,39 +3,39 @@ require 'digest'
 require 'time'
 
 module Steem
-  
+
   # These class methods make it simple to do things like broacast a {Broadcast#vote}
   # or {Broadcast#comment} operation.  They accept all of the fields expected by
   # the blockchain plus the following additional options:
-  # 
+  #
   #     * wif
   #     * url (optional)
   #     * database_api (optional)
   #     * block_api (optional)
   #     * network_broadcast_api (optional)
   #     * pretend (optional)
-  # 
+  #
   # These options are not sent in the broadcast.  The `wif` authorities can be
   # posting, active, and owner.
-  # 
+  #
   # Setting `url` will allow you to specify a different node instead of taking
   # the default: ({ChainConfig::NETWORKS_STEEM_DEFAULT_NODE}).
-  # 
+  #
   # Setting `database_api`, `block_api`, and `network_broadcast_api` is
   # optional, doing so will allow you to override the default node and/or the
   # RPC Client.
-  # 
+  #
   # When passing the `pretend` field, if it is set to {::True}, nothing is
   # broadcasted, but the `wif` is checked for the proper authority.
-  # 
+  #
   # For details on what to pass to these methods, check out the {https://developers.steem.io/apidefinitions/broadcast-ops Steem Developer Portal Broadcast Operations} page.
   class Broadcast
     extend Retriable
-    
+
     DEFAULT_MAX_ACCEPTED_PAYOUT = Type::Amount.new(amount: '1000000000', precision: 3, nai: '@@000000013')
-    
+
     # This operation is used to cast a vote on a post/comment.
-    # 
+    #
     #     options = {
     #       wif: wif,
     #       params: {
@@ -45,7 +45,7 @@ module Steem
     #         weight: weight
     #       }
     #     }
-    #     
+    #
     #     Steem::Broadcast.vote(options) do |result|
     #       puts result
     #     end
@@ -63,12 +63,12 @@ module Steem
       required_fields = %i(voter author permlink weight)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       ops = [[:vote, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # Creates a post/comment.  This method simplifies content creation by
     # combining `comment` and `comment_options` into one transaction.
     #
@@ -80,10 +80,10 @@ module Steem
     #         body: 'This is my fancy post body.',
     #         metadata: {
     #           tags: %w(these are my fancy tags)
-    #         } 
+    #         }
     #       }
     #     }
-    #     
+    #
     #     Steem::Broadcast.comment(options)
     #
     #     options = {
@@ -103,12 +103,12 @@ module Steem
     #         ]
     #       }
     #     }
-    #     
+    #
     #     Steem::Broadcast.comment(options)
-    # 
+    #
     # In addition to the above denormalized `comment_options` fields, the author
     # can also vote for the content in the same transaction by setting `author_vote_weight`:
-    # 
+    #
     #     options = {
     #       wif: wif,
     #       params: {
@@ -121,7 +121,7 @@ module Steem
     #         author_vote_weight: 10000
     #       }
     #     }
-    #     
+    #
     #     Steem::Broadcast.comment(options)
     #
     # @param options [Hash] options
@@ -146,23 +146,23 @@ module Steem
     def self.comment(options, &block)
       required_fields = %i(author body permlink parent_permlink)
       params = options[:params]
-      
+
       if !!params[:metadata] && !!params[:json_metadata]
         raise Steem::ArgumentError, 'Assign either metadata or json_metadata, not both.'
       end
-      
+
       metadata = params[:metadata] || {}
       metadata ||= (JSON[params[:json_metadata]] || nil) || {}
       metadata['app'] ||= Steem::AGENT_ID
       tags = metadata['tags'] || []
       params[:parent_permlink] ||= tags.first
-      
+
       if !!params[:title]
         params[:permlink] ||= params[:title].downcase.gsub(/[^a-z0-9\-]+/, '-')
       end
-      
+
       check_required_fields(params, *required_fields)
-      
+
       ops = [[:comment, {
         parent_author: params[:parent_author] || '',
         parent_permlink: params[:parent_permlink],
@@ -172,25 +172,25 @@ module Steem
         body: params[:body],
         json_metadata: metadata.to_json
       }]]
-      
+
       max_accepted_payout = if params.keys.include? :max_accepted_payout
         normalize_amount(options.merge amount: params[:max_accepted_payout])
       else
         normalize_amount(options.merge amount: DEFAULT_MAX_ACCEPTED_PAYOUT)
       end
-      
+
       allow_votes = if params.keys.include? :allow_votes
         !!params[:allow_votes]
       else
         true
       end
-      
+
       allow_curation_rewards = if params.keys.include? :allow_curation_rewards
         !!params[:allow_curation_rewards]
       else
         true
       end
-      
+
       comment_options = {
         author: params[:author],
         permlink: params[:permlink],
@@ -200,13 +200,13 @@ module Steem
         allow_curation_rewards: allow_curation_rewards,
         extensions: []
       }
-      
+
       if !!params[:beneficiaries]
         comment_options[:extensions] << [0, {beneficiaries: params[:beneficiaries]}]
       end
-      
+
       ops << [:comment_options, comment_options]
-      
+
       if !!params[:author_vote_weight]
         author_vote = {
           voter: params[:author],
@@ -214,19 +214,19 @@ module Steem
           permlink: params[:permlink],
           weight: params[:author_vote_weight]
         }
-        
+
         ops << [:vote, author_vote]
       end
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # Deletes a post/comment.
-    # 
+    #
     #     Steem::Broadcast.delete_comment(wif: wif, params: {author: author, permlink: permlink}) do |result|
     #       puts result
     #     end
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Posting wif
     # @option options [Hash] :params
@@ -238,14 +238,14 @@ module Steem
       required_fields = %i(author permlink)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       ops = [[:delete_comment, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # Transfers asset from one account to another.
-    # 
+    #
     #     options = {
     #       wif: wif,
     #       params: {
@@ -255,11 +255,11 @@ module Steem
     #         memo: memo
     #       }
     #     }
-    #     
+    #
     #     Steem::Broadcast.transfer(options) do |result|
     #       puts result
     #     end
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -273,17 +273,17 @@ module Steem
       required_fields = %i(from to amount memo)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       params[:amount] = normalize_amount(options.merge amount: params[:amount])
-      
+
       ops = [[:transfer, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # This operation converts STEEM into VFS (Vesting Fund Shares) at the
     # current exchange rate.
-    # 
+    #
     #     options = {
     #       wif: wif,
     #       params: {
@@ -292,11 +292,11 @@ module Steem
     #         amount: amount,
     #       }
     #     }
-    #     
+    #
     #     Steem::Broadcast.transfer_to_vesting(options) do |result|
     #       puts result
     #     end
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -309,21 +309,21 @@ module Steem
       required_fields = %i(from to amount)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       params[:amount] = normalize_amount(options.merge amount: params[:amount])
-      
+
       ops = [[:transfer_to_vesting, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # At any given point in time an account can be withdrawing from their
     # vesting shares.
-    # 
+    #
     #     Steem::Broadcast.withdraw_vesting(wif: wif, params: {account: account, vesting_shares: vesting_shares}) do |result|
     #       puts result
     #     end
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -335,17 +335,17 @@ module Steem
       required_fields = %i(account vesting_shares)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       params[:vesting_shares] = normalize_amount(options.merge amount: params[:vesting_shares])
-      
+
       ops = [[:withdraw_vesting, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # This operation creates a limit order and matches it against existing open
     # orders.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -362,22 +362,22 @@ module Steem
         fill_or_kill)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       params[:amount_to_sell] = normalize_amount(options.merge amount: params[:amount_to_sell])
       params[:min_to_receive] = normalize_amount(options.merge amount: params[:min_to_receive])
-      
+
       if !!params[:expiration]
         params[:expiration] = Time.parse(params[:expiration].to_s)
         params[:expiration] = params[:expiration].strftime('%Y-%m-%dT%H:%M:%S')
       end
-      
+
       ops = [[:limit_order_create, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # Cancels an order and returns the balance to owner.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -389,16 +389,16 @@ module Steem
       required_fields = %i(owner orderid)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       ops = [[:limit_order_cancel, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # Feeds can only be published by the top N witnesses which are included in
     # every round and are used to define the exchange rate between steem and the
     # dollar.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -410,21 +410,21 @@ module Steem
       required_fields = %i(publisher exchange_rate)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       exchange_rate = params[:exchange_rate] rescue nil || {}
       base = exchange_rate[:base]
       quote = exchange_rate[:quote]
       params[:exchange_rate][:base] = normalize_amount(options.merge amount: base)
       params[:exchange_rate][:quote] = normalize_amount(options.merge amount: quote)
-      
+
       ops = [[:feed_publish, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # This operation instructs the blockchain to start a conversion between
     # STEEM and SBD, the funds are deposited after 3.5 days.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -437,14 +437,14 @@ module Steem
       required_fields = %i(owner requestid amount)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       params[:amount] = normalize_amount(options.merge amount: params[:amount])
-      
+
       ops = [[:convert, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # Create an account.
     #     options = {
     #       wif: wif,
@@ -471,9 +471,9 @@ module Steem
     #         json_metadata: '{}'
     #       }
     #     }
-    # 
+    #
     #     Steem::Broadcast.account_create(options)
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -491,24 +491,113 @@ module Steem
     def self.account_create(options, &block)
       required_fields = %i(fee creator new_account_name owner active posting memo_key json_metadata)
       params = options[:params]
-      
+
       if !!params[:metadata] && !!params[:json_metadata]
         raise Steem::ArgumentError, 'Assign either metadata or json_metadata, not both.'
       end
-      
+
       metadata = params.delete(:metadata) || {}
       metadata ||= (JSON[params[:json_metadata]] || nil) || {}
       params[:json_metadata] = metadata.to_json
-      
+
       check_required_fields(params, *required_fields)
-      
+
       params[:fee] = normalize_amount(options.merge amount: params[:fee])
-      
+
       ops = [[:account_create, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
+    # Claim an account.
+    #     options = {
+    #       wif: wif,
+    #       params: {
+    #         fee: '0.000 STEEM',
+    #         creator: creator_account_name
+    #       }
+    #     }
+    #
+    #     Steem::Broadcast.claim_account(options)
+    #
+    # @param options [Hash] options
+    # @option options [String] :wif Active wif
+    # @option options [Hash] :params
+    #   * :fee (String)
+    #   * :creator (String)
+    # @option options [Boolean] :pretend Just validate, do not broadcast.
+    def self.claim_account(options, &block)
+      required_fields = %i(fee creator)
+      params = options[:params]
+
+      check_required_fields(params, *required_fields)
+
+      params[:fee] = normalize_amount(options.merge amount: params[:fee])
+
+      ops = [[:claim_account, params]]
+
+      process(options.merge(ops: ops), &block)
+    end
+
+    # Create a claimed account.
+    #     options = {
+    #       wif: wif,
+    #       params: {
+    #         creator: creator_account_name,
+    #         new_account_name: new_account_name,
+    #         owner: {
+    #           weight_threshold: 1,
+    #           account_auths: [],
+    #           key_auths: [[owner_public_key, 1]],
+    #         },
+    #         active: {
+    #           weight_threshold: 1,
+    #           account_auths: [],
+    #           key_auths: [[active_public_key, 1]],
+    #         },
+    #         posting: {
+    #           weight_threshold: 1,
+    #           account_auths: [],
+    #           key_auths: [[posting_public_key, 1]],
+    #         },
+    #         memo_key: memo_public_key,
+    #         json_metadata: '{}'
+    #       }
+    #     }
+    #
+    #     Steem::Broadcast.create_claimed_account(options)
+    #
+    # @param options [Hash] options
+    # @option options [String] :wif Active wif
+    # @option options [Hash] :params
+    #   * :creator (String)
+    #   * :new_account_name (String)
+    #   * :owner (Hash)
+    #   * :active (Hash)
+    #   * :posting (Hash)
+    #   * :memo_key (String)
+    #   * :metadata (Hash) Metadata of the account, becomes `json_metadata`.
+    #   * :json_metadata (String) String version of `metadata` (use one or the other).
+    # @option options [Boolean] :pretend Just validate, do not broadcast.
+    def self.create_claimed_account(options, &block)
+      required_fields = %i(creator new_account_name owner active posting memo_key json_metadata)
+      params = options[:params]
+
+      if !!params[:metadata] && !!params[:json_metadata]
+        raise Steem::ArgumentError, 'Assign either metadata or json_metadata, not both.'
+      end
+
+      metadata = params.delete(:metadata) || {}
+      metadata ||= (JSON[params[:json_metadata]] || nil) || {}
+      params[:json_metadata] = metadata.to_json
+
+      check_required_fields(params, *required_fields)
+
+      ops = [[:create_claimed_account, params]]
+
+      process(options.merge(ops: ops), &block)
+    end
+
     # Update an account.
     #     options = {
     #       wif: wif,
@@ -533,7 +622,7 @@ module Steem
     #         json_metadata: '{}'
     #       }
     #     }
-    # 
+    #
     #     Steem::Broadcast.account_update(options)
     #
     # @param options [Hash] options
@@ -551,22 +640,22 @@ module Steem
     def self.account_update(options, &block)
       required_fields = %i(account)
       params = options[:params]
-      
+
       if !!params[:metadata] && !!params[:json_metadata]
         raise Steem::ArgumentError, 'Assign either metadata or json_metadata, not both.'
       end
-      
+
       metadata = params.delete(:metadata) || {}
       metadata ||= (JSON[params[:json_metadata]] || nil) || {}
       params[:json_metadata] = metadata.to_json
-      
+
       check_required_fields(params, *required_fields)
-      
+
       ops = [[:account_update, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # Users who wish to become a witness must pay a fee acceptable to the
     # current witnesses to apply for the position and allow voting to begin.
     #
@@ -584,7 +673,7 @@ module Steem
     #         fee: '0.000 STEEM',
     #       }
     #     }
-    # 
+    #
     #     Steem::Broadcast.witness_update(options)
     #
     # @param options [Hash] options
@@ -601,19 +690,19 @@ module Steem
       required_fields = %i(owner block_signing_key props fee)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       account_creation_fee = params[:props][:account_creation_fee] rescue nil
       params[:props][:account_creation_fee] = normalize_amount(options.merge amount: account_creation_fee)
       params[:fee] = normalize_amount(options.merge amount: params[:fee])
-      
+
       ops = [[:witness_update, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # All accounts with a VFS (Vesting Fund Shares) can vote for or against any
     # witness.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -626,12 +715,12 @@ module Steem
       required_fields = %i(account witness approve)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       ops = [[:account_witness_vote, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -643,15 +732,15 @@ module Steem
       required_fields = %i(account proxy)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       ops = [[:account_witness_proxy, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # Provides a generic way to add higher level protocols on top of witness
     # consensus.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -664,15 +753,15 @@ module Steem
       required_fields = %i(required_auths id data)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       ops = [[:custom, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # The semmantics for this operation are the same as the {Broadcast#custom_json}
     # operation, but with a binary payload.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Posting wif
     # @option options [Hash] :params
@@ -684,15 +773,15 @@ module Steem
       required_fields = %i(id data)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       ops = [[:custom_binary, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # Serves the same purpose as {Broadcast#custom} but also supports required
     # posting authorities.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Posting wif
     # @option options [Hash] :params
@@ -706,28 +795,28 @@ module Steem
     def self.custom_json(options, &block)
       required_fields = %i(id)
       params = options[:params]
-      
+
       if !!params[:data] && !!params[:json]
         raise Steem::ArgumentError, 'Assign either data or json, not both.'
       end
-      
+
       data = params.delete(:data) || {}
       data ||= (JSON[params[:json]] || nil) || {}
       params[:json] = data.to_json
-      
+
       check_required_fields(params, *required_fields)
-      
+
       params[:required_auths] ||= []
       params[:required_posting_auths] ||= []
       ops = [[:custom_json, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # Allows an account to setup a vesting withdraw but with the additional
     # request for the funds to be transferred directly to another account’s
     # balance rather than the withdrawing account.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -741,14 +830,14 @@ module Steem
       required_fields = %i(from_account to_account percent auto_vest)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       ops = [[:set_withdraw_vesting_route, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # All account recovery requests come from a listed recovery account.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -762,13 +851,13 @@ module Steem
       required_fields = %i(recovery_account account_to_recover new_owner_authority)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       params[:extensions] ||= []
       ops = [[:request_account_recovery, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -782,15 +871,15 @@ module Steem
       required_fields = %i(account_to_recover new_owner_authority recent_owner_authority)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       params[:extensions] ||= []
       ops = [[:recover_account, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # Each account lists another account as their recovery account.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Posting wif
     # @option options [Hash] :params
@@ -803,17 +892,17 @@ module Steem
       required_fields = %i(account_to_recover)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       params[:new_recovery_account] ||= ''
       params[:extensions] ||= []
       ops = [[:change_recovery_account, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # The purpose of this operation is to enable someone to send money
     # contingently to another individual.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -833,37 +922,37 @@ module Steem
     def self.escrow_transfer(options, &block)
       required_fields = %i(from to agent escrow_id fee ratification_deadline)
       params = options[:params]
-      
+
       if !!params[:meta] && !!params[:json_meta]
         raise Steem::ArgumentError, 'Assign either meta or json_meta, not both.'
       end
-      
+
       meta = params.delete(:meta) || {}
       meta ||= (JSON[params[:json_meta]] || nil) || {}
       params[:json_meta] = meta.to_json
-      
+
       check_required_fields(params, *required_fields)
-      
+
       params[:sbd_amount] = normalize_amount(options.merge amount: params[:sbd_amount])
       params[:steem_amount] = normalize_amount(options.merge amount: params[:steem_amount])
       params[:fee] = normalize_amount(options.merge amount: params[:fee])
-      
+
       params[:ratification_deadline] = Time.parse(params[:ratification_deadline].to_s)
       params[:ratification_deadline] = params[:ratification_deadline].strftime('%Y-%m-%dT%H:%M:%S')
-      
+
       if !!params[:escrow_expiration]
         params[:escrow_expiration] = Time.parse(params[:escrow_expiration].to_s)
         params[:escrow_expiration] = params[:escrow_expiration].strftime('%Y-%m-%dT%H:%M:%S')
       end
 
       ops = [[:escrow_transfer, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # If either the sender or receiver of an escrow payment has an issue, they
     # can raise it for dispute.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -878,15 +967,15 @@ module Steem
       required_fields = %i(from to agent who escrow_id)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       ops = [[:escrow_dispute, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # This operation can be used by anyone associated with the escrow transfer
     # to release funds if they have permission.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -904,18 +993,18 @@ module Steem
       required_fields = %i(from to agent who receiver escrow_id)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       params[:sbd_amount] = normalize_amount(options.merge amount: params[:sbd_amount])
       params[:steem_amount] = normalize_amount(options.merge amount: params[:steem_amount])
 
       ops = [[:escrow_release, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # The agent and to accounts must approve an escrow transaction for it to be
     # valid on the blockchain.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -931,14 +1020,14 @@ module Steem
       required_fields = %i(from to agent who escrow_id approve)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       ops = [[:escrow_approve, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # For time locked savings accounts.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -952,15 +1041,15 @@ module Steem
       required_fields = %i(from to amount)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       params[:memo] ||= ''
       params[:amount] = normalize_amount(options.merge amount: params[:amount])
 
       ops = [[:transfer_to_savings, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -975,15 +1064,15 @@ module Steem
       required_fields = %i(from request_id to amount)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       params[:memo] ||= ''
       params[:amount] = normalize_amount(options.merge amount: params[:amount])
 
       ops = [[:transfer_from_savings, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -995,12 +1084,12 @@ module Steem
       required_fields = %i(from request_id)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       ops = [[:cancel_transfer_from_savings, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # An account can chose to decline their voting rights after a 30 day delay.
     # This includes voting on content and witnesses. **The voting rights cannot
     # be acquired again once they have been declined.** This is only to
@@ -1018,14 +1107,14 @@ module Steem
       required_fields = %i(account decline)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       ops = [[:decline_voting_rights, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # Delegate vesting shares from one account to the other.
-    # 
+    #
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -1038,13 +1127,13 @@ module Steem
       required_fields = %i(delegator delegatee vesting_shares)
       params = options[:params]
       check_required_fields(params, *required_fields)
-      
+
       params[:vesting_shares] = normalize_amount(options.merge amount: params[:vesting_shares])
       ops = [[:delegate_vesting_shares, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # @param options [Hash] options
     # @option options [String] :wif Active wif
     # @option options [Hash] :params
@@ -1064,26 +1153,26 @@ module Steem
     def self.account_create_with_delegation(options, &block)
       required_fields = %i(fee delegation creator new_account_name owner active posting memo_key)
       params = options[:params]
-      
+
       if !!params[:metadata] && !!params[:json_metadata]
         raise Steem::ArgumentError, 'Assign either metadata or json_metadata, not both.'
       end
-      
+
       metadata = params.delete(:metadata) || {}
       metadata ||= (JSON[params[:json_metadata]] || nil) || {}
       params[:json_metadata] = metadata.to_json
-      
+
       check_required_fields(params, *required_fields)
-      
+
       params[:fee] = normalize_amount(options.merge amount: params[:fee])
       params[:delegation] = normalize_amount(options.merge amount: params[:delegation])
       params[:extensions] ||= []
-      
+
       ops = [[:account_create_with_delegation, params]]
-      
+
       process(options.merge(ops: ops), &block)
     end
-    
+
     # @param options [Hash] options
     # @option options [Array<Array<Hash>] :ops Operations to process.
     # @option options [Boolean] :pretend Just validate, do not broadcast.
@@ -1091,11 +1180,11 @@ module Steem
       ops = options[:ops]
       tx = TransactionBuilder.new(options)
       response = nil
-      
+
       loop do; begin
         tx.operations = ops
         trx = tx.transaction
-        
+
         response = if !!options[:pretend]
           if !!options[:app_base]
             database_api(options).verify_authority(trx: trx)
@@ -1109,17 +1198,17 @@ module Steem
             network_broadcast_api(options).broadcast_transaction_synchronous(trx)
           end
         end
-        
+
         break
       rescue => e
         if can_retry? e
           tx.expiration = nil
           redo
         end
-        
+
         raise e
       end; end
-      
+
       if !!block
         block.call response.result
       else
@@ -1135,7 +1224,7 @@ module Steem
         Type::Amount.to_s(options[:amount])
       end
     end
-    
+
     # @private
     def self.database_api(options)
       options[:database_api] ||= if !!options[:app_base]
@@ -1144,7 +1233,7 @@ module Steem
         Steem::CondenserApi.new(options)
       end
     end
-    
+
     # @private
     def self.network_broadcast_api(options)
       options[:network_broadcast_api] ||= if !!options[:app_base]
@@ -1153,14 +1242,14 @@ module Steem
         Steem::CondenserApi.new(options)
       end
     end
-    
+
     # @private
     def self.check_required_fields(hash, *fields)
       fields.each do |field|
         value = hash[field]
-        
+
         raise Steem::ArgumentError, "#{field}: required" if value.nil?
-        
+
         case value
         when String, Array, Hash
           raise Steem::ArgumentError, "#{field}: required" if value.empty?
