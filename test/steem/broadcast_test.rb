@@ -7,7 +7,8 @@ module Steem
       custom_binary custom_json delete_comment escrow_dispute escrow_transfer
       feed_publish limit_order_cancel limit_order_create recover_account
       request_account_recovery set_withdraw_vesting_route transfer
-      transfer_to_vesting vote withdraw_vesting witness_update)
+      transfer_to_vesting vote withdraw_vesting witness_update
+      witness_set_properties create_claimed_account claim_account)
     
     def setup
       app_base = false # TODO: Randomly set true or false to test differences.
@@ -466,6 +467,38 @@ module Steem
       
       assert_raises Steem::ArgumentError do
         Broadcast.account_create(@broadcast_options.merge(options))
+      end
+    end
+    
+    def test_create_claimed_account
+      options = {
+        params: {
+          creator: @account_name,
+          new_account_name: 'alice',
+          owner: {
+            weight_threshold: 1,
+            account_auths: [],
+            key_auths: [['STM8ZSyzjPm48GmUuMSRufkVYkwYbZzbxeMysAVp7KFQwbTf98TcG', 1]],
+          },
+          active: {
+            weight_threshold: 1,
+            account_auths: [],
+            key_auths: [['STM8ZSyzjPm48GmUuMSRufkVYkwYbZzbxeMysAVp7KFQwbTf98TcG', 1]],
+          },
+          posting: {
+            weight_threshold: 1,
+            account_auths: [],
+            key_auths: [['STM8ZSyzjPm48GmUuMSRufkVYkwYbZzbxeMysAVp7KFQwbTf98TcG', 1]],
+          },
+          memo_key: 'STM8ZSyzjPm48GmUuMSRufkVYkwYbZzbxeMysAVp7KFQwbTf98TcG',
+          json_metadata: '{}'
+        }
+      }
+      
+      vcr_cassette('broadcast_create_claimed_account') do
+        assert_raises MissingActiveAuthorityError do
+          Broadcast.create_claimed_account(@broadcast_options.merge(options))
+        end
       end
     end
     
@@ -1014,6 +1047,22 @@ module Steem
     
       assert_raises Steem::ArgumentError do
         Broadcast.account_create_with_delegation(@broadcast_options.merge(options))
+      end
+    end
+    
+    def test_claim_account
+      options = {
+        params: {
+          creator: @account_name,
+          fee: '0.000 STEEM',
+          extensions: []
+        }
+      }
+    
+      vcr_cassette('broadcast_claim_account') do
+        assert_raises MissingActiveAuthorityError do
+          Broadcast.claim_account(@broadcast_options.merge(options))
+        end
       end
     end
     

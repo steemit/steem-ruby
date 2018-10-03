@@ -509,6 +509,68 @@ module Steem
       process(options.merge(ops: ops), &block)
     end
     
+    # Create a claimed account.
+    #     options = {
+    #       wif: wif,
+    #       params: {
+    #         creator: creator_account_name,
+    #         new_account_name: new_account_name,
+    #         owner: {
+    #           weight_threshold: 1,
+    #           account_auths: [],
+    #           key_auths: [[owner_public_key, 1]],
+    #         },
+    #         active: {
+    #           weight_threshold: 1,
+    #           account_auths: [],
+    #           key_auths: [[active_public_key, 1]],
+    #         },
+    #         posting: {
+    #           weight_threshold: 1,
+    #           account_auths: [],
+    #           key_auths: [[posting_public_key, 1]],
+    #         },
+    #         memo_key: memo_public_key,
+    #         json_metadata: '{}'
+    #       }
+    #     }
+    # 
+    #     Steem::Broadcast.create_claimed_account(options)
+    # 
+    # @param options [Hash] options
+    # @option options [String] :wif Active wif
+    # @option options [Hash] :params
+    #   * :creator (String)
+    #   * :new_account_name (String)
+    #   * :owner (Hash)
+    #   * :active (Hash)
+    #   * :posting (Hash)
+    #   * :memo_key (String)
+    #   * :metadata (Hash) Metadata of the account, becomes `json_metadata`.
+    #   * :json_metadata (String) String version of `metadata` (use one or the other).
+    #   * :extensions (Array) (optional)
+    # @option options [Boolean] :pretend Just validate, do not broadcast.
+    # @see https://developers.steem.io/apidefinitions/broadcast-ops#broadcast_ops_create_claimed_account
+    def self.create_claimed_account(options, &block)
+      required_fields = %i(creator new_account_name owner active posting memo_key json_metadata)
+      params = options[:params]
+      
+      if !!params[:metadata] && !!params[:json_metadata]
+        raise Steem::ArgumentError, 'Assign either metadata or json_metadata, not both.'
+      end
+      
+      metadata = params.delete(:metadata) || {}
+      metadata ||= (JSON[params[:json_metadata]] || nil) || {}
+      params[:json_metadata] = metadata.to_json
+      
+      check_required_fields(params, *required_fields)
+      
+      params[:extensions] ||= []
+      ops = [[:account_create, params]]
+      
+      process(options.merge(ops: ops), &block)
+    end
+    
     # Update an account.
     #     options = {
     #       wif: wif,
@@ -1084,6 +1146,28 @@ module Steem
       process(options.merge(ops: ops), &block)
     end
     
+    # @param options [Hash] options
+    # @option options [String] :wif Active wif
+    # @option options [Hash] :params
+    #   * :creator (String)
+    #   * :fee (String)
+    #   * :extensions (Array)
+    # @option options [Boolean] :pretend Just validate, do not broadcast.
+    # @see https://developers.steem.io/apidefinitions/broadcast-ops#broadcast_ops_claim_account
+    def self.claim_account(options, &block)
+      required_fields = %i(creator fee)
+      params = options[:params]
+      
+      check_required_fields(params, *required_fields)
+      
+      params[:fee] = normalize_amount(options.merge amount: params[:fee])
+      params[:extensions] ||= []
+      
+      ops = [[:claim_account, params]]
+      
+      process(options.merge(ops: ops), &block)
+    end
+        
     # @param options [Hash] options
     # @option options [Array<Array<Hash>] :ops Operations to process.
     # @option options [Boolean] :pretend Just validate, do not broadcast.
