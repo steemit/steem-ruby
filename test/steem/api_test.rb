@@ -115,12 +115,26 @@ module Steem
               assert @api.send key, {}
             end
           when :broadcast_transaction then
-            assert_raises IncorrectResponseIdError, "expect void arguments to raise IncorrectResponseIdError for: #{key}" do
-              assert @api.send key, {}
+            assert_raises EmptyTransactionError, "expect void arguments to raise EmptyTransactionError for: #{key}" do
+              assert @api.send key, {
+                ref_block_num: 0,
+                ref_block_prefix: 0,
+                expiration: "1970-01-01T00:00:00",
+                operations: [],
+                extensions: [],
+                signatures: []
+              }
             end
           when :broadcast_transaction_synchronous then
-            assert_raises IncorrectResponseIdError, "expect void arguments to raise IncorrectResponseIdError for: #{key}" do
-              assert @api.send key, {}
+            assert_raises EmptyTransactionError, "expect void arguments to raise EmptyTransactionError for: #{key}" do
+              assert @api.send key, {
+                ref_block_num: 0,
+                ref_block_prefix: 0,
+                expiration: "1970-01-01T00:00:00",
+                operations: [],
+                extensions: [],
+                signatures: []
+              }
             end
           when *METHOD_NAMES_1_ARG
           then

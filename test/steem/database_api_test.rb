@@ -12,7 +12,7 @@ module Steem
     end
     
     def test_inspect
-      assert_equal "#<DatabaseApi [@chain=steem, @methods=<46 elements>]>", @api.inspect
+      assert_equal "#<DatabaseApi [@chain=steem, @methods=<47 elements>]>", @api.inspect
     end
     
     def test_method_missing
@@ -568,13 +568,16 @@ module Steem
     
     def test_verify_account_authority
       vcr_cassette('database_api_verify_account_authority', record: :once) do
-        options = {
-          account: 'steemit',
-          signers: ['STM7Q2rLBqzPzFeteQZewv9Lu3NLE69fZoLeL6YK59t7UmssCBNTU']
-        }
-        
-        assert_raises MissingActiveAuthorityError do
-          @api.verify_account_authority(options)
+        @api.get_config do |config|
+          prefix = config.STEEM_ADDRESS_PREFIX
+          options = {
+            account: 'steemit',
+            signers: ["#{prefix}7Q2rLBqzPzFeteQZewv9Lu3NLE69fZoLeL6YK59t7UmssCBNTU"]
+          }
+          
+          assert_raises MissingActiveAuthorityError do
+            @api.verify_account_authority(options)
+          end
         end
       end
     end
@@ -611,6 +614,22 @@ module Steem
         
         @api.verify_signatures(options) do |result|
           assert_equal TrueClass, result.valid.class
+        end
+      end
+    end
+    
+    def test_version
+      @api.get_hardfork_properties do |hf_properties|
+        case hf_properties.current_hardfork_version
+        when '0.19.0'
+          assert_raises NoMethodError do
+            @api.get_version
+          end
+        when '0.20.0'
+          @api.get_version do |version|
+            assert version.chain_id
+          end
+        else; fail("Unknown hardfork: #{hf_properties.current_hardfork_version}")
         end
       end
     end
