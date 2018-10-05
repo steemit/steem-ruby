@@ -13,6 +13,10 @@ module Steem
         new(amount).to_s
       end
       
+      def self.to_bytes(amount)
+        new(amount).to_bytes
+      end
+      
       def initialize(value)
         super(:amount, value)
         

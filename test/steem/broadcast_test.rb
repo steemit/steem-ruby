@@ -7,7 +7,8 @@ module Steem
       custom_binary custom_json delete_comment escrow_dispute escrow_transfer
       feed_publish limit_order_cancel limit_order_create recover_account
       request_account_recovery set_withdraw_vesting_route transfer
-      transfer_to_vesting vote withdraw_vesting witness_update)
+      transfer_to_vesting vote withdraw_vesting witness_update
+      witness_set_properties create_claimed_account claim_account)
     
     def setup
       app_base = false # TODO: Randomly set true or false to test differences.
@@ -469,6 +470,38 @@ module Steem
       end
     end
     
+    def test_create_claimed_account
+      options = {
+        params: {
+          creator: @account_name,
+          new_account_name: 'alice',
+          owner: {
+            weight_threshold: 1,
+            account_auths: [],
+            key_auths: [['STM8ZSyzjPm48GmUuMSRufkVYkwYbZzbxeMysAVp7KFQwbTf98TcG', 1]],
+          },
+          active: {
+            weight_threshold: 1,
+            account_auths: [],
+            key_auths: [['STM8ZSyzjPm48GmUuMSRufkVYkwYbZzbxeMysAVp7KFQwbTf98TcG', 1]],
+          },
+          posting: {
+            weight_threshold: 1,
+            account_auths: [],
+            key_auths: [['STM8ZSyzjPm48GmUuMSRufkVYkwYbZzbxeMysAVp7KFQwbTf98TcG', 1]],
+          },
+          memo_key: 'STM8ZSyzjPm48GmUuMSRufkVYkwYbZzbxeMysAVp7KFQwbTf98TcG',
+          json_metadata: '{}'
+        }
+      }
+      
+      vcr_cassette('broadcast_create_claimed_account') do
+        assert_raises MissingActiveAuthorityError do
+          Broadcast.create_claimed_account(@broadcast_options.merge(options))
+        end
+      end
+    end
+    
     def test_account_update
       options = {
         params: {
@@ -608,6 +641,30 @@ module Steem
       vcr_cassette('broadcast_witness_update') do
         assert_raises MissingActiveAuthorityError do
           Broadcast.witness_update(@broadcast_options.merge(options))
+        end
+      end
+    end
+    
+    def test_witness_set_properties
+      options = {
+        params: {
+          owner: @account_name,
+          props: {
+            account_creation_fee: '0.000 STEEM',
+            maximum_block_size: 131072,
+            sbd_interest_rate: 1000,
+            account_subsidy_budget: 50000,
+            account_subsidy_decay: 330782,
+            sbd_exchange_rate: '1.000 STEEM',
+            url: "https://steemit.com",
+            new_signing_key: 'STM8LoQjQqJHvotqBo7HjnqmUbFW9oJ2theyqonzUd9DdJ7YYHsvD'
+          }
+        }
+      }
+    
+      vcr_cassette('broadcast_witness_set_properties') do
+        assert_raises MissingOtherAuthorityError do
+          Broadcast.witness_set_properties(@broadcast_options.merge(options))
         end
       end
     end
@@ -1014,6 +1071,22 @@ module Steem
     
       assert_raises Steem::ArgumentError do
         Broadcast.account_create_with_delegation(@broadcast_options.merge(options))
+      end
+    end
+    
+    def test_claim_account
+      options = {
+        params: {
+          creator: @account_name,
+          fee: '0.000 STEEM',
+          extensions: []
+        }
+      }
+    
+      vcr_cassette('broadcast_claim_account') do
+        assert_raises MissingActiveAuthorityError do
+          Broadcast.claim_account(@broadcast_options.merge(options))
+        end
       end
     end
     

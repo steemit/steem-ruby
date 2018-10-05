@@ -31,6 +31,7 @@ module Steem
   # For details on what to pass to these methods, check out the {https://developers.steem.io/apidefinitions/broadcast-ops Steem Developer Portal Broadcast Operations} page.
   class Broadcast
     extend Retriable
+    extend Utils
     
     DEFAULT_MAX_ACCEPTED_PAYOUT = Type::Amount.new(amount: '1000000000', precision: 3, nai: '@@000000013')
     
@@ -509,6 +510,68 @@ module Steem
       process(options.merge(ops: ops), &block)
     end
     
+    # Create a claimed account.
+    #     options = {
+    #       wif: wif,
+    #       params: {
+    #         creator: creator_account_name,
+    #         new_account_name: new_account_name,
+    #         owner: {
+    #           weight_threshold: 1,
+    #           account_auths: [],
+    #           key_auths: [[owner_public_key, 1]],
+    #         },
+    #         active: {
+    #           weight_threshold: 1,
+    #           account_auths: [],
+    #           key_auths: [[active_public_key, 1]],
+    #         },
+    #         posting: {
+    #           weight_threshold: 1,
+    #           account_auths: [],
+    #           key_auths: [[posting_public_key, 1]],
+    #         },
+    #         memo_key: memo_public_key,
+    #         json_metadata: '{}'
+    #       }
+    #     }
+    # 
+    #     Steem::Broadcast.create_claimed_account(options)
+    # 
+    # @param options [Hash] options
+    # @option options [String] :wif Active wif
+    # @option options [Hash] :params
+    #   * :creator (String)
+    #   * :new_account_name (String)
+    #   * :owner (Hash)
+    #   * :active (Hash)
+    #   * :posting (Hash)
+    #   * :memo_key (String)
+    #   * :metadata (Hash) Metadata of the account, becomes `json_metadata`.
+    #   * :json_metadata (String) String version of `metadata` (use one or the other).
+    #   * :extensions (Array) (optional)
+    # @option options [Boolean] :pretend Just validate, do not broadcast.
+    # @see https://developers.steem.io/apidefinitions/broadcast-ops#broadcast_ops_create_claimed_account
+    def self.create_claimed_account(options, &block)
+      required_fields = %i(creator new_account_name owner active posting memo_key json_metadata)
+      params = options[:params]
+      
+      if !!params[:metadata] && !!params[:json_metadata]
+        raise Steem::ArgumentError, 'Assign either metadata or json_metadata, not both.'
+      end
+      
+      metadata = params.delete(:metadata) || {}
+      metadata ||= (JSON[params[:json_metadata]] || nil) || {}
+      params[:json_metadata] = metadata.to_json
+      
+      check_required_fields(params, *required_fields)
+      
+      params[:extensions] ||= []
+      ops = [[:account_create, params]]
+      
+      process(options.merge(ops: ops), &block)
+    end
+    
     # Update an account.
     #     options = {
     #       wif: wif,
@@ -607,6 +670,65 @@ module Steem
       params[:fee] = normalize_amount(options.merge amount: params[:fee])
       
       ops = [[:witness_update, params]]
+      
+      process(options.merge(ops: ops), &block)
+    end
+    
+    # Extensible replacement for #witness_update that supports additional
+    # properties added since HF20 and beyond.
+    #
+    #     options = {
+    #       wif: wif,
+    #       params: {
+    #         owner: witness_account_name,
+    #         props: {
+    #           account_creation_fee: '0.000 STEEM',
+    #           maximum_block_size: 131072,
+    #           sbd_interest_rate: 1000,
+    #           account_subsidy_budget: 50000,
+    #           account_subsidy_decay: 330782,
+    #           sbd_exchange_rate: '1.000 STEEM',
+    #           url: "https://steemit.com",
+    #           new_signing_key: 'STM8LoQjQqJHvotqBo7HjnqmUbFW9oJ2theyqonzUd9DdJ7YYHsvD'
+    #         }
+    #       }
+    #     }
+    # 
+    #     Steem::Broadcast.witness_set_properties(options)
+    #
+    # @param options [Hash] options
+    # @option options [String] :wif Active wif
+    # @option options [Hash] :params
+    #   * :owner (String)
+    #   * :props (String)
+    # @option options [Boolean] :pretend Just validate, do not broadcast.
+    # @see https://developers.steem.io/apidefinitions/broadcast-ops#broadcast_ops_witness_set_properties
+    # @see https://github.com/steemit/steem/blob/master/doc/witness_parameters.md
+    def self.witness_set_properties(options, &block)
+      required_fields = %i(owner props)
+      params = options[:params]
+      check_required_fields(params, *required_fields)
+      
+      if !!(account_creation_fee = params[:props][:account_creation_fee] rescue nil)
+        params[:props][:account_creation_fee] = normalize_amount(options.merge amount: account_creation_fee, serialize: true)
+      end
+      
+      if !!(sbd_exchange_rate = params[:props][:sbd_exchange_rate] rescue nil)
+        params[:props][:sbd_exchange_rate] = normalize_amount(options.merge amount: sbd_exchange_rate, serialize: true)
+      end
+      
+      %i(account_creation_fee sbd_exchange_rate url new_signing_key).each do |key|
+        next unless !!params[:props][key]
+        
+        val = params[:props][key]
+          
+        params[:props][key] = hexlify val unless val =~ /^[0-9A-F]+$/i
+      end
+      
+      params[:props] = params[:props].to_a
+      
+      params[:extensions] ||= []
+      ops = [[:witness_set_properties, params]]
       
       process(options.merge(ops: ops), &block)
     end
@@ -1085,6 +1207,28 @@ module Steem
     end
     
     # @param options [Hash] options
+    # @option options [String] :wif Active wif
+    # @option options [Hash] :params
+    #   * :creator (String)
+    #   * :fee (String)
+    #   * :extensions (Array)
+    # @option options [Boolean] :pretend Just validate, do not broadcast.
+    # @see https://developers.steem.io/apidefinitions/broadcast-ops#broadcast_ops_claim_account
+    def self.claim_account(options, &block)
+      required_fields = %i(creator fee)
+      params = options[:params]
+      
+      check_required_fields(params, *required_fields)
+      
+      params[:fee] = normalize_amount(options.merge amount: params[:fee])
+      params[:extensions] ||= []
+      
+      ops = [[:claim_account, params]]
+      
+      process(options.merge(ops: ops), &block)
+    end
+        
+    # @param options [Hash] options
     # @option options [Array<Array<Hash>] :ops Operations to process.
     # @option options [Boolean] :pretend Just validate, do not broadcast.
     def self.process(options, &block)
@@ -1131,6 +1275,8 @@ module Steem
     def self.normalize_amount(options)
       if !!options[:app_base]
         Type::Amount.to_h(options[:amount])
+      elsif !!options[:serialize]
+        Type::Amount.to_s(options[:amount])
       else
         Type::Amount.to_s(options[:amount])
       end

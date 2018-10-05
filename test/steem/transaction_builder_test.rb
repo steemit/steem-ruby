@@ -2,6 +2,8 @@ require 'test_helper'
 
 module Steem
   class TransactionBuilderTest < Steem::Test
+    include ChainConfig
+    
     def setup
       @wif = '5JrvPrQeBBvCRdjv29iDvkwn3EQYZ9jqfAHzrCyUvfbEbRkrYFC'
       @options = {
@@ -28,6 +30,18 @@ module Steem
         database_api: :bogus_api,
         block_api: :bogus_api,
         chain: :bogus
+      }
+      assert_raises UnsupportedChainError do
+        TransactionBuilder.new(@options.merge options)
+      end
+    end
+    
+    def test_transaction_builder_initialize_bad_mainnet_injection
+      options = {
+        database_api: :bogus_api,
+        block_api: :bogus_api,
+        testnet: true,
+        chain_id: NETWORKS_STEEM_CHAIN_ID
       }
       assert_raises UnsupportedChainError do
         TransactionBuilder.new(@options.merge options)
