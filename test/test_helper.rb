@@ -46,7 +46,11 @@ class Steem::Test < MiniTest::Test
       begin
         yield
       rescue Steem::BaseError => e
-        skip "Probably just a node acting up: #{e}"
+        if !!ENV['HELL_ENABLED']
+          raise e
+        else
+          skip "Probably just a node acting up: #{e}"
+        end
       rescue Psych::SyntaxError => e
         skip 'This happens when we try to get fancy and disable thread-safety.'
       end

@@ -237,6 +237,14 @@ If you want to point to any node for tests, instead of letting the test suite pi
 $ TEST_NODE=https://api.steemitdev.com bundle exec rake test
 ```
 
+#### Hell Enabled
+
+There is an additional testing environment variables to enable additional lint checks and tighter testing conditions:
+
+`HELL_ENABLED=true bundle exec rake`
+
+The `HELL_ENABLED=true` flag tells the `minitest/hell` gem to generate lint reports and will allow tests to fail if certain conditions are detected.  These are useful in finding design problems that manifest during parallelization.
+
 ## Contributions
 
 Patches are welcome! Contributors are listed in the `steem-ruby.gemspec` file. Please run the tests (`rake test`) before opening a pull request and make sure that you are passing all of them. If you would like to contribute, but don't know what to work on, check the issues list.

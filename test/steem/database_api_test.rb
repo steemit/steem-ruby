@@ -204,7 +204,7 @@ module Steem
     
     def test_get_order_book
       vcr_cassette('database_api_get_order_book', record: :once) do
-        @api.get_order_book do |result|
+        @api.get_order_book(limit: 1) do |result|
           assert_equal Hashie::Mash, result.class
         end
       end

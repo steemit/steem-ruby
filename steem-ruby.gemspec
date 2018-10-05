@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary = %q{Steem Ruby Client}
   spec.description = %q{Client for accessing the Steem blockchain.}
-  spec.homepage = 'https://github.com/steem/steem-ruby'
+  spec.homepage = 'https://github.com/steemit/steem-ruby'
   spec.license = 'MIT'
 
   spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test)/}) }
