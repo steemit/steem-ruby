@@ -567,7 +567,7 @@ module Steem
       check_required_fields(params, *required_fields)
       
       params[:extensions] ||= []
-      ops = [[:account_create, params]]
+      ops = [[:create_claimed_account, params]]
       
       process(options.merge(ops: ops), &block)
     end
