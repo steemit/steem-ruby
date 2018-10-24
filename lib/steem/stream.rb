@@ -91,6 +91,14 @@ module Steem
     # @option options [Integer] :until_block_num Ends the stream at the given block number.  Default: nil.
     def transactions(options = {}, &block)
       blocks(options) do |block, block_num|
+        if block.nil?
+          warn "Batch missing block_num: #{block_num}, retrying ..."
+          
+          block = block_api.get_block(block_num: block_num) do |result|
+            result.block
+          end
+        end
+        
         block.transactions.each_with_index do |transaction, index|
           trx_id = block.transaction_ids[index]
           
@@ -332,9 +340,8 @@ module Steem
         end
         
         response = account_history_api.get_ops_in_block(*get_ops_in_block_options)
-        result = response.result
         
-        if result.nil?
+        if response.nil? || (result = response.result).nil?
           if retries < MAX_RETRY_COUNT
             warn "Retrying get_ops_in_block on block #{block_num}" unless @no_warn
             retries = retries + 1
@@ -360,7 +367,8 @@ module Steem
             retries = retries + 1
             redo
           else
-            raise TooManyRetriesError, "unable to find virtual operations for block: #{block_num}"
+            warn "unable to find virtual operations for block: #{block_num}"
+            # raise TooManyRetriesError, "unable to find virtual operations for block: #{block_num}"
           end
         end
         
