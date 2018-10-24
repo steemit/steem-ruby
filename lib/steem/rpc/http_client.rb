@@ -17,7 +17,7 @@ module Steem
       # 
       # @private
       TIMEOUT_ERRORS = [Net::OpenTimeout, JSON::ParserError, Net::ReadTimeout,
-        Errno::EBADF, IOError, Errno::ENETDOWN]
+        Errno::EBADF, IOError, Errno::ENETDOWN, Steem::RemoteDatabaseLockError]
       
       # @private
       POST_HEADERS = {
@@ -106,6 +106,22 @@ module Steem
                 end
               end
             else; response
+            end
+            
+            [response].flatten.each_with_index do |r, i|
+              if defined?(r.error) && !!r.error
+                if !!r.error.message
+                  begin
+                    rpc_method_name = "#{api_name}.#{api_method}"
+                    rpc_args = [request_object].flatten[i]
+                    raise_error_response rpc_method_name, rpc_args, r
+                  rescue *TIMEOUT_ERRORS => e
+                    throw retry_timeout(:tota_cera_pila, e)
+                  end
+                else
+                  raise Steem::ArgumentError, r.error.inspect
+                end
+              end
             end
             
             yield_response response, &block
