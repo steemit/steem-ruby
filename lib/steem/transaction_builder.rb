@@ -28,9 +28,10 @@ module Steem
     
     attr_accessor :app_base, :database_api, :block_api, :expiration, :operations
     attr_writer :wif
-    attr_reader :signed
+    attr_reader :signed, :testnet
     
     alias app_base? app_base
+    alias testnet? testnet
     
     def initialize(options = {})
       @app_base = !!options[:app_base] # default false
@@ -47,6 +48,7 @@ module Steem
       
       @wif = [options[:wif]].flatten
       @signed = false
+      @testnet = !!options[:testnet]
       
       if !!(trx = options[:trx])
         trx = case trx
@@ -78,10 +80,15 @@ module Steem
       @signatures = options[:signatures] || []
       @chain = options[:chain] || :steem
       @error_pipe = options[:error_pipe] || STDERR
-      @chain_id = case @chain
+      @chain_id = options[:chain_id]
+      @chain_id ||= case @chain
       when :steem then NETWORKS_STEEM_CHAIN_ID
       when :test then NETWORKS_TEST_CHAIN_ID
       else; raise UnsupportedChainError, "Unsupported chain: #{@chain}"
+      end
+      
+      if testnet? && @chain_id == NETWORKS_STEEM_CHAIN_ID
+        raise UnsupportedChainError, "Unsupported testnet chain id: #{@chain_id}"
       end
     end
     
