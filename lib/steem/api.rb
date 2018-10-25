@@ -150,19 +150,6 @@ module Steem
     end
     
     # @private
-    def raise_error_response(rpc_method_name, rpc_args, response)
-      raise UnknownError, "#{rpc_method_name}: #{response}" if response.error.nil?
-      
-      error = response.error
-      
-      if error.message == 'Invalid Request'
-        raise Steem::ArgumentError, "Unexpected arguments: #{rpc_args.inspect}.  Expected: #{rpc_method_name} (#{args_keys_to_s(rpc_method_name)})"
-      end
-      
-      BaseError.build_error(error, rpc_method_name)
-    end
-    
-    # @private
     def respond_to_missing?(m, include_private = false)
       methods.nil? ? false : methods.include?(m.to_sym)
     end
@@ -202,14 +189,6 @@ module Steem
       end
       
       response = rpc_client.rpc_execute(@api_name, m, rpc_args)
-      
-      if defined?(response.error) && !!response.error
-        if !!response.error.message
-          raise_error_response rpc_method_name, rpc_args, response
-        else
-          raise Steem::ArgumentError, response.error.inspect
-        end
-      end
       
       if !!block
         case response
