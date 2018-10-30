@@ -104,7 +104,9 @@ module Steem
           weight: 10000
         })
         
-        assert builder.sign
+        trx = builder.sign
+        assert trx
+        assert trx[:id]
       end
     end
     
@@ -169,7 +171,7 @@ module Steem
         })
       end
       
-      assert 1, builder.operations.size
+      assert 1, builder.transaction(sign: false).operations.size
     end
     
     def test_put_array
@@ -184,7 +186,7 @@ module Steem
         }])
       end
       
-      assert 1, builder.operations.size
+      assert 1, builder.transaction(sign: false).operations.size
     end
     
     def test_put_symbol
@@ -199,7 +201,7 @@ module Steem
         })
       end
       
-      assert 1, builder.operations.size
+      assert 1, builder.transaction(sign: false).operations.size
     end
     
     def test_put_string
@@ -214,7 +216,7 @@ module Steem
         })
       end
       
-      assert 1, builder.operations.size
+      assert 1, builder.transaction(sign: false).operations.size
     end
     
     def test_potential_signatures

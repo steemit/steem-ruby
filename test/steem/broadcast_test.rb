@@ -217,7 +217,7 @@ module Steem
         }
       }
       
-      vcr_cassette('broadcast_comment') do
+      vcr_cassette('broadcast_comment_with_metadata') do
         Broadcast.comment(@broadcast_options.merge(options)) do |result|
           if result.respond_to? :valid
             assert result.valid
@@ -655,8 +655,8 @@ module Steem
             sbd_interest_rate: 1000,
             account_subsidy_budget: 50000,
             account_subsidy_decay: 330782,
-            sbd_exchange_rate: '1.000 STEEM',
-            url: "https://steemit.com",
+            sbd_exchange_rate: {base: '1.000 SBD', quote: '1.000 STEEM'},
+            url: 'https://steemit.com',
             new_signing_key: 'STM8LoQjQqJHvotqBo7HjnqmUbFW9oJ2theyqonzUd9DdJ7YYHsvD'
           }
         }
@@ -853,7 +853,7 @@ module Steem
           from: @account_name,
           to: 'alice',
           agent: 'bob',
-          escrow_id: '1234',
+          escrow_id: 1234,
           sbd_amount: '0.000 SBD',
           steem_amount: '0.000 STEEM',
           fee: '0.000 STEEM',

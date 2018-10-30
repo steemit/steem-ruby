@@ -55,6 +55,8 @@ module Steem
           when 'STEEM' then 3
           when 'VESTS' then 6
           when 'SBD' then 3
+          when 'TESTS' then 3
+          when 'TBD' then 3
           else; raise TypeError, "Asset #{@asset} unknown."
           end
         end

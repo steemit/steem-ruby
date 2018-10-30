@@ -186,7 +186,7 @@ trx = open('trx.json').read
 builder = Steem::TransactionBuilder.new(wif: wif2, trx: trx)
 api = Steem::CondenserApi.new
 trx = builder.transaction
-api.broadcast_transaction_synchronous(trx: trx)
+api.broadcast_transaction_synchronous(trx)
 ```
 
 ### Get Accounts

@@ -203,7 +203,7 @@ module Steem
       }
       
       if !!params[:beneficiaries]
-        comment_options[:extensions] << [0, {beneficiaries: params[:beneficiaries]}]
+        comment_options[:extensions] << [comment_options[:extensions].size, normalize_beneficiaries(options.merge(beneficiaries: params[:beneficiaries]))]
       end
       
       ops << [:comment_options, comment_options]
@@ -714,13 +714,21 @@ module Steem
       end
       
       if !!(sbd_exchange_rate = params[:props][:sbd_exchange_rate] rescue nil)
-        params[:props][:sbd_exchange_rate] = normalize_amount(options.merge amount: sbd_exchange_rate, serialize: true)
+        params[:props][:sbd_exchange_rate][:base] = normalize_amount(options.merge amount: sbd_exchange_rate[:base], serialize: true)
+        params[:props][:sbd_exchange_rate][:quote] = normalize_amount(options.merge amount: sbd_exchange_rate[:quote], serialize: true)
+        params[:props][:sbd_exchange_rate] = params[:props][:sbd_exchange_rate].to_json
+      end
+      
+      %i(key new_signing_key).each do |key|
+        if !!params[key] && params[key].size == 53
+          params[key] = params[key][3..-1]
+        end
       end
       
       %i(account_creation_fee sbd_exchange_rate url new_signing_key).each do |key|
         next unless !!params[:props][key]
         
-        val = params[:props][key]
+        val = params[:props][key].to_s
           
         params[:props][key] = hexlify val unless val =~ /^[0-9A-F]+$/i
       end
@@ -1280,6 +1288,11 @@ module Steem
       else
         Type::Amount.to_s(options[:amount])
       end
+    end
+    
+    def self.normalize_beneficiaries(options)
+      # Type::Beneficiaries.new(options[:beneficiaries])
+      {beneficiaries: options[:beneficiaries]}
     end
     
     # @private

@@ -10,7 +10,7 @@ module Steem
       detail[:error] = @error if !!@error
       detail[:cause] = @cause if !!@cause
       
-      JSON[detail] rescue detai.to_s
+      JSON[detail] rescue detail.to_s
     end
     
     def self.build_error(error, context)
@@ -19,11 +19,11 @@ module Steem
       end
       
       if error.message.include? 'Internal Error'
-        raise Steem::RemoteNodeError.new, error.message, build_backtrace(error)
+        raise Steem::RemoteNodeError, error.message, build_backtrace(error)
       end
       
       if error.message.include? 'Server error'
-        raise Steem::RemoteNodeError.new, error.message, build_backtrace(error)
+        raise Steem::RemoteNodeError, error.message, build_backtrace(error)
       end
       
       if error.message.include? 'plugin not enabled'
@@ -176,6 +176,8 @@ module Steem
     end
   end
   
+  class DeserializationError < BaseError; end
+  class SerializationMismatchError < BaseError; end
   class UnsupportedChainError < BaseError; end
   class ArgumentError < BaseError; end
   class TypeError < BaseError; end

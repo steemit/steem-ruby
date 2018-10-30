@@ -2,6 +2,8 @@ require 'test_helper'
 
 module Steem
   class DatabaseApiTest < Steem::Test
+    include Utils
+    
     def setup
       @api = Steem::DatabaseApi.new(url: TEST_NODE)
       @jsonrpc = Jsonrpc.new(url: TEST_NODE)
@@ -631,6 +633,40 @@ module Steem
           end
         else; fail("Unknown hardfork: #{hf_properties.current_hardfork_version}")
         end
+      end
+    end
+    
+    def test_computed_trx_id
+      trx = {
+        ref_block_num: 20,
+        ref_block_prefix: 2890012981,
+        expiration: '2018-10-15T19:52:09',
+        operations: [{type: :account_create_operation, value: {
+          fee: {amount: '0', precision: 3, nai: '@@000000021'},
+          creator: 'porter',
+          new_account_name: 'a2i-06e13981',
+          owner: {weight_threshold: 1, account_auths: [['porter', 1]], key_auths: []},
+          active: {weight_threshold: 1, account_auths: [['porter', 1]], key_auths: []},
+          posting: {weight_threshold: 1, account_auths: [['porter', 1]], key_auths: []},
+          memo_key: 'TST77yiRp7pgK52V7BPgq8mEYtyi9XLHKxCH6TDgKA86inFRYgWju',
+          json_metadata: ''
+        }}, {type: :transfer_to_vesting_operation, value: {
+          from: 'porter',
+          to: 'a2i-06e13981',
+          amount: {amount: '8204', precision: 3, nai: '@@000000021'}
+        }}],
+        extensions: []
+      }
+      
+      api = Steem::DatabaseApi.new(url: 'https://testnet.steemitdev.com')
+      
+      api.get_transaction_hex(trx: trx) do |result|
+        expected_hex = '1400351942ace9efc45b02090000000000000000035445535453000006706f727465720c6132692d3036653133393831010000000106706f72746572010000010000000106706f72746572010000010000000106706f7274657201000003260545a135c05a8adec1ad4676d046cd1312f16f41b2fb1c01cb2276cf2536e8000306706f727465720c6132692d30366531333938310c2000000000000003544553545300000000'
+        assert_equal expected_hex, result.hex
+        
+        hex = result.hex[0..-4] # drop empty signature array
+        trx_id = Digest::SHA256.hexdigest(unhexlify(hex))[0..39]
+        assert_equal trx_id, 'c68ad4eb64b3deb1033e002546481a2c9dfd9e9e'
       end
     end
   end
