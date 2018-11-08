@@ -197,13 +197,17 @@ module Steem
         permlink: params[:permlink],
         max_accepted_payout: max_accepted_payout,
         percent_steem_dollars: params[:percent_steem_dollars] || 10000,
+        # allow_replies: allow_replies,
         allow_votes: allow_votes,
         allow_curation_rewards: allow_curation_rewards,
         extensions: []
       }
       
       if !!params[:beneficiaries]
-        comment_options[:extensions] << [comment_options[:extensions].size, normalize_beneficiaries(options.merge(beneficiaries: params[:beneficiaries]))]
+        comment_options[:extensions] << [
+          comment_options[:extensions].size,
+          normalize_beneficiaries(options.merge(beneficiaries: params[:beneficiaries]))
+        ]
       end
       
       ops << [:comment_options, comment_options]

@@ -18,8 +18,12 @@ module Steem
       serialized = Hash.new
       
       self.class.attributes.each do |attribute|
-        if !!(value = self.public_send attribute)
-          serialized[attribute] = value
+        unless (value = self.public_send attribute).nil?
+          serialized[attribute] = if value.respond_to? :strftime
+            value.strftime('%Y-%m-%dT%H:%M:%S')
+          else
+            value
+          end
         end
       end
       

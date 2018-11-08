@@ -97,8 +97,14 @@ module Steem
 
     def inspect
       properties = self.class.attributes.map do |prop|
-        if !!(v = instance_variable_get("@#{prop}"))
-          "@#{prop}=#{v}" 
+        unless (v = instance_variable_get("@#{prop}")).nil?
+          v = if v.respond_to? :strftime
+            v.strftime('%Y-%m-%dT%H:%M:%S')
+          else
+            v
+          end
+          
+          "@#{prop}=#{v}"
         end
       end.compact.join(', ')
       
@@ -112,7 +118,24 @@ module Steem
 
     def []=(key, value)
       key = key.to_sym
-      send("#{key}=", value) if self.class.attributes.include?(key)
-    end    
+      
+      if self.class.attributes.include?(key)
+        if self.class.numeric? key
+          send("#{key}=", value.to_i)
+        else
+          send("#{key}=", value)
+        end
+      end
+    end
+    
+    def ==(other_op)
+      return false if self.class != other_op.class
+      
+      self.class.attributes.each do |prop|
+        return false if self[prop] != other_op[prop]
+      end
+      
+      true
+    end
   end
 end

@@ -273,6 +273,7 @@ module Steem
         permlink: 'permlink',
         max_accepted_payout: '1000000.000 SBD',
         percent_steem_dollars: 10000,
+        # allow_replies: true,
         allow_votes: true,
         allow_curation_rewards: true,
         extensions: []
@@ -307,15 +308,54 @@ module Steem
       assert_equal 'permlink', marshal.string, 'expect permlink: permlink'
       assert_equal '1000000.000 SBD', marshal.amount.to_s, 'expect max_accepted_payout: 1000000.000 SBD'
       assert_equal 10000, marshal.uint16, 'expect percent_steem_dollars: 10000'
-      assert_equal false, marshal.boolean, 'expect allow_replies: false'
-      assert_equal false, marshal.boolean, 'expect allow_votes: false'
-      assert_equal false, marshal.boolean, 'expect allow_curation_rewards: false'
-      
+      # assert_equal true, marshal.boolean, 'expect allow_replies: true'
+      assert_equal true, marshal.boolean, 'expect allow_votes: true'
+      assert_equal true, marshal.boolean, 'expect allow_curation_rewards: true'
+      assert_equal [], marshal.comment_options_extensions, 'expect valid comment options extensions'
+
       assert_equal :vote_operation, marshal.operation_type, 'expect operation type: vote_operation'
       assert_equal 'alice', marshal.string, 'expect voter: alice'
       assert_equal 'alice', marshal.string, 'expect author: alice'
       assert_equal 'permlink', marshal.string, 'expect permlink: permlink'
       assert_equal 10000, marshal.int16, 'expect weight: 10000'
+    end
+    
+    def test_trx_ad_hoc_7
+      builder = Steem::TransactionBuilder.new
+      
+      builder.put(comment_options: { # FIXME Why do we have to use comment_options and not :comment_options_operation here?
+        author: 'alice',
+        permlink: 'permlink',
+        max_accepted_payout: '1000000.000 SBD',
+        percent_steem_dollars: 10000,
+        # allow_replies: true,
+        allow_votes: true,
+        allow_curation_rewards: true,
+        extensions: [[0, {
+          beneficiaries: [
+            {account: 'alice', weight: 5000},
+            {account: 'bob', weight: 5000}
+          ]
+        }]]
+      })
+      
+      marshal = Marshal.new(hex: builder.transaction_hex)
+      
+      assert marshal.uint16, 'expect ref_block_num'
+      assert marshal.uint32, 'expect ref_block_prefix'
+      assert marshal.point_in_time, 'expect expiration'
+      
+      assert_equal 1, marshal.signed_char, 'expect operations: 1'
+      
+      assert_equal :comment_options_operation, marshal.operation_type, 'expect operation type: comment_options_operation'
+      assert_equal 'alice', marshal.string, 'expect author: alice'
+      assert_equal 'permlink', marshal.string, 'expect permlink: permlink'
+      assert_equal '1000000.000 SBD', marshal.amount.to_s, 'expect max_accepted_payout: 1000000.000 SBD'
+      assert_equal 10000, marshal.uint16, 'expect percent_steem_dollars: 10000'
+      # assert_equal true, marshal.boolean, 'expect allow_replies: true'
+      assert_equal true, marshal.boolean, 'expect allow_votes: true'
+      assert_equal true, marshal.boolean, 'expect allow_curation_rewards: true'
+      assert_equal [{account: "alice", weight: 5000}, {account: "bob", weight: 5000}], marshal.comment_options_extensions, 'expect valid comment options extensions'
     end
     
     def test_trx_ad_hoc_9

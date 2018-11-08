@@ -32,7 +32,13 @@ module Steem
     
     def inspect
       properties = ATTRIBUTES.map do |prop|
-        if !!(v = instance_variable_get("@#{prop}"))
+        unless (v = instance_variable_get("@#{prop}")).nil?
+          v = if v.respond_to? :strftime
+            v.strftime('%Y-%m-%dT%H:%M:%S')
+          else
+            v
+          end
+
           "@#{prop}=#{v}" 
         end
       end.compact.join(', ')
@@ -63,22 +69,26 @@ module Steem
     end
     
     def ==(other_trx)
+      return true if self.equal? other_trx
+      return false unless self.class == other_trx.class
+      
       begin
         return false if self[:ref_block_num].to_i != other_trx[:ref_block_num].to_i
         return false if self[:ref_block_prefix].to_i != other_trx[:ref_block_prefix].to_i
         return false if self[:expiration].to_i != other_trx[:expiration].to_i
         return false if self[:operations].size != other_trx[:operations].size
         
-        vals = self[:operations].sort.map do |k, v|
-          v.values.join.gsub(/[^a-zA-Z0-9]/, '')
-        end.join
-
-        ovals = other_trx[:operations].sort.map do |k, v|
-          v.values.join.gsub(/[^a-zA-Z0-9]/, '')
-        end.join
-        # binding.pry if vals != ovals
-        return vals == ovals
-      rescue
+        op_values = self[:operations].map do |type, value|
+          [type.to_s, value.values.map{|v| v.to_s.gsub(/[^a-zA-Z0-9-]/, '')}]
+        end.flatten.sort
+        
+        other_op_values = other_trx[:operations].map do |type, value|
+          [type.to_s, value.values.map{|v| v.to_s.gsub(/[^a-zA-Z0-9-]/, '')}]
+        end.flatten.sort
+        # binding.pry unless op_values == other_op_values
+        op_values == other_op_values
+      rescue => e
+        # binding.pry
         false
       end
     end

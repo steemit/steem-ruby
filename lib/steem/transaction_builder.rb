@@ -28,10 +28,11 @@ module Steem
     
     attr_accessor :app_base, :database_api, :block_api, :expiration, :operations
     attr_writer :wif
-    attr_reader :signed, :testnet
+    attr_reader :signed, :testnet, :force_serialize
     
     alias app_base? app_base
     alias testnet? testnet
+    alias force_serialize? force_serialize
     
     def initialize(options = {})
       @app_base = !!options[:app_base] # default false
@@ -49,6 +50,7 @@ module Steem
       @wif = [options[:wif]].flatten
       @signed = false
       @testnet = !!options[:testnet]
+      @force_serialize = !!options[:force_serialize]
       
       if !!(trx = options[:trx])
         trx = case trx
@@ -218,22 +220,21 @@ module Steem
               result
             end
 
-            # TODO Now that we have the hex from steemd, we will make our own
-            # and compare them for better errors and debugging.
-            
-            derrived_trx = Transaction.new(hex: hex)
-            derrived_ops = derrived_trx.operations
-            derrived_trx.operations = derrived_ops.map do |op|
-              op_name = if app_base?
-                op[:type].to_sym
-              else
-                op[:type].to_s.sub(/_operation$/, '').to_sym
+            unless force_serialize?
+              derrived_trx = Transaction.new(hex: hex)
+              derrived_ops = derrived_trx.operations
+              derrived_trx.operations = derrived_ops.map do |op|
+                op_name = if app_base?
+                  op[:type].to_sym
+                else
+                  op[:type].to_s.sub(/_operation$/, '').to_sym
+                end
+                
+                normalize_operation op_name, JSON[op[:value].to_json]
               end
               
-              normalize_operation op_name, JSON[op[:value].to_json]
+              raise SerializationMismatchError unless @trx == derrived_trx
             end
-            
-            raise SerializationMismatchError unless @trx == derrived_trx
             
             hex = hex[0..-4] # drop empty signature array
             @trx.id = Digest::SHA256.hexdigest(unhexlify(hex))[0..39]

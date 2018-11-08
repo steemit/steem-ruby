@@ -6,6 +6,8 @@ module Steem
     include Utils
     include ChainConfig
     
+    PUBLIC_KEY_DISABLED = '1111111111111111111111111111111114T1Anm'
+    
     attr_reader :bytes, :cursor
 
     def initialize(options = {})
@@ -54,7 +56,7 @@ module Steem
     def int32; BinData::Int32le.read(scan(4)); end # 32-bit signed, little-endian
     def int64; BinData::Int64le.read(scan(8)); end # 64-bit signed, little-endian
 
-    def boolean; BinData::Bit1.read(scan(1)) != 0; end
+    def boolean; scan(1) == "\x01"; end
     
     def varint
       shift = 0
@@ -85,7 +87,7 @@ module Steem
         Time.at -1
       else
         Time.at time
-      end
+      end.utc
     end
     
     def public_key(prefix = @prefix)
@@ -93,7 +95,7 @@ module Steem
       checksum = OpenSSL::Digest::RIPEMD160.digest(raw_public_key)
       key = Base58.binary_to_base58(raw_public_key + checksum.slice(0, 4), :bitcoin)
       
-      prefix + key
+      prefix + key unless key == PUBLIC_KEY_DISABLED
     end
     
     def amount
@@ -125,13 +127,17 @@ module Steem
     end
     
     def comment_options_extensions
-      beneficiaries
+      if scan(1) == "\x01"
+        beneficiaries
+      else
+        []
+      end
     end
     
     def beneficiaries
-      varint.times.map {
-        {account: string, weight: uint16}
-      }
+      if scan(1) == "\x00"
+        varint.times.map {{account: string, weight: uint16}}
+      end
     end
     
     def chain_properties
@@ -204,6 +210,7 @@ module Steem
           
           op_class::serializable_types.each do |k, v|
             begin
+              # binding.pry if v == :comment_options_extensions
               op.send("#{k}=", send(v))
             rescue => e
               raise DeserializationError.new("#{type}.#{k} (#{v}) failed", e)

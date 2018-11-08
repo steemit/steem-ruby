@@ -661,10 +661,20 @@ module Steem
       api = Steem::DatabaseApi.new(url: 'https://testnet.steemitdev.com')
       
       api.get_transaction_hex(trx: trx) do |result|
-        expected_hex = '1400351942ace9efc45b02090000000000000000035445535453000006706f727465720c6132692d3036653133393831010000000106706f72746572010000010000000106706f72746572010000010000000106706f7274657201000003260545a135c05a8adec1ad4676d046cd1312f16f41b2fb1c01cb2276cf2536e8000306706f727465720c6132692d30366531333938310c2000000000000003544553545300000000'
-        assert_equal expected_hex, result.hex
+        # Sometimes testnet is unstable.
+        skip "Did not expect nil result for transaction: #{trx}" if result.nil?
         
-        hex = result.hex[0..-4] # drop empty signature array
+        expected_hex = '1400351942ace9efc45b02090000000000000000035445535453000006706f727465720c6132692d3036653133393831010000000106706f72746572010000010000000106706f72746572010000010000000106706f7274657201000003260545a135c05a8adec1ad4676d046cd1312f16f41b2fb1c01cb2276cf2536e8000306706f727465720c6132692d30366531333938310c2000000000000003544553545300000000'
+        
+        hex = if result.hex
+          result.hex
+        else
+          result
+        end
+        
+        assert_equal expected_hex, hex
+
+        hex = hex[0..-4] # drop empty signature array
         trx_id = Digest::SHA256.hexdigest(unhexlify(hex))[0..39]
         assert_equal trx_id, 'c68ad4eb64b3deb1033e002546481a2c9dfd9e9e'
       end
