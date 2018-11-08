@@ -17,7 +17,7 @@ module Steem
       get_tags_used_by_author get_transaction_hex
       get_witness_by_account verify_authority)
     
-    METHOD_NAMES_2_ARGS = %i(get_account_bandwidth get_account_reputations
+    METHOD_NAMES_2_ARGS = %i(get_account_reputations
       get_active_votes get_content get_content_replies get_escrow
       get_expiring_vesting_delegations get_ops_in_block
       get_reblogged_by get_required_signatures get_trending_tags
@@ -76,13 +76,13 @@ module Steem
     end
     
     def test_inspect
-      assert_equal "#<CondenserApi [@chain=steem, @methods=<85 elements>]>", @api.inspect
+      assert_equal "#<CondenserApi [@chain=steem, @methods=<84 elements>]>", @api.inspect
     end
     
     def test_inspect_testnet
       vcr_cassette("#{@api.class.api_name}_testnet") do
         api = Api.new(chain: :test)
-        assert_equal "#<CondenserApi [@chain=test, @methods=<85 elements>]>", api.inspect
+        assert_equal "#<CondenserApi [@chain=test, @methods=<84 elements>]>", api.inspect
       end
     end
     

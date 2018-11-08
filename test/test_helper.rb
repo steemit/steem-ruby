@@ -7,6 +7,7 @@ SimpleCov.merge_timeout 3600
 
 require 'steem'
 require 'minitest/autorun'
+require 'minitest/line/describe_track'
 require 'webmock/minitest'
 require 'vcr'
 require 'yaml'

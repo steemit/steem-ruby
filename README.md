@@ -15,15 +15,15 @@ The `steem-ruby` gem was written from the ground up by `@inertia`, who is also t
 
 > "I intend to continue work on `radiator` indefinitely. But in `radiator-0.5`, I intend to refactor `radiator` so that is uses `steem-ruby` as its core. This means that some features of `radiator` like Serialization will become redundant. I think it's still useful for radiator to do its own serialization because it reduces the number of API requests." - @inertia
 
-| `radiator` | `steem-ruby` |
-|-|-|
-| Has internal failover logic | Can have failover delegated externally |
-| Passes `error` responses to the caller | Handles `error` responses and raises exceptions |
-| Supports tx signing, does its own serialization | Also supports tx signing, but delegates serialization to `database_api.get_transaction_hex` |
-| All apis and methods are hardcoded | Asks `jsonrpc` what apis and methods are available from the node |
-| (`radiator-0.4.x`) Only supports AppBase but relies on `condenser_api` | Only supports AppBase but does not rely on `condenser_api` **(WIP)**
-| Small list of helper methods for select ops (in addition to build your own transaction) | Complete implementation of helper methods for every op (in addition to build your own transaction) |
-| Does not (yet) support `json-rpc-batch` requests | Supports `json-rpc-batch` requests |
+`radiator` | `steem-ruby`
+---------- | ------------
+Has internal failover logic | Can have failover delegated externally
+Passes `error` responses to the caller | Handles `error` responses and raises exceptions
+Supports tx signing, does its own serialization | Also supports tx signing, but delegates serialization to `database_api.get_transaction_hex`, then deserializes to verify
+All apis and methods are hardcoded | Asks `jsonrpc` what apis and methods are available from the node
+(`radiator-0.4.x`) Only supports AppBase but relies on `condenser_api` | Only supports AppBase but does not rely on `condenser_api` **(WIP)**
+Small list of helper methods for select ops (in addition to build your own transaction) | Complete implementation of helper methods for every op (in addition to build your own transaction)
+Does not (yet) support `json-rpc-batch` requests | Supports `json-rpc-batch` requests
 
 ## Getting Started
 
@@ -186,7 +186,7 @@ trx = open('trx.json').read
 builder = Steem::TransactionBuilder.new(wif: wif2, trx: trx)
 api = Steem::CondenserApi.new
 trx = builder.transaction
-api.broadcast_transaction_synchronous(trx: trx)
+api.broadcast_transaction_synchronous(trx)
 ```
 
 ### Get Accounts
