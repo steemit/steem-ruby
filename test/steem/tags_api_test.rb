@@ -6,7 +6,12 @@ module Steem
       @api = Steem::TagsApi.new(url: TEST_NODE)
       @jsonrpc = Jsonrpc.new(url: TEST_NODE)
       @methods = @jsonrpc.get_api_methods[@api.class.api_name]
+    rescue UnknownApiError => e
+      raise e unless TEST_NODE == 'https://api.steemit.com'
+      
+      skip e.to_s
     end
+    
     def test_api_class_name
       assert_equal 'TagsApi', Steem::TagsApi::api_class_name
     end

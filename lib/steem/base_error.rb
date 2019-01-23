@@ -74,6 +74,22 @@ module Steem
         raise Steem::ArgumentError, "#{context}: #{error.message}", build_backtrace(error)
       end
       
+      if error.message.include? 'Invalid parameters'
+        raise Steem::ArgumentError, "#{context}: #{error.message}", build_backtrace(error)
+      end
+      
+      if error.message.include? 'invalid account (not specified) (hivemind-alpha)'
+        raise Steem::HivemindArgumentError, "#{context}: #{error.message}", build_backtrace(error)
+      end
+      
+      if error.message.include? 'invalid account name type (hivemind-alpha)'
+        raise Steem::HivemindArgumentError, "#{context}: #{error.message}", build_backtrace(error)
+      end
+      
+      if error.message.include? 'tag must be a string (hivemind-alpha)'
+        raise Steem::HivemindArgumentError, "#{context}: #{error.message}", build_backtrace(error)
+      end
+      
       if error.message.include? 'blk->transactions.size() > itr->trx_in_block'
         raise Steem::VirtualOperationsNotAllowedError, "#{context}: #{error.message}", build_backtrace(error)
       end
@@ -189,6 +205,7 @@ module Steem
   class TheftError < ArgumentError; end
   class NonZeroRequiredError < ArgumentError; end
   class UnexpectedAssetError < ArgumentError; end
+  class HivemindArgumentError < ArgumentError; end
   class TransactionExpiredError < BaseError; end
   class DuplicateTransactionError < TransactionExpiredError; end
   class NonCanonicalSignatureError < TransactionExpiredError; end

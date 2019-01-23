@@ -164,9 +164,9 @@ module Steem
       
       # @private
       def raise_error_response(rpc_method_name, rpc_args, response)
-        raise UnknownError, "#{rpc_method_name}: #{response}" if response.error.nil?
-        
-        error = response.error
+        if (error = response.error || response.result.error).nil?
+          raise UnknownError, "#{rpc_method_name}: #{response}"
+        end
         
         if error.message == 'Invalid Request'
           raise Steem::ArgumentError, "Unexpected arguments: #{rpc_args.inspect}.  Expected: #{rpc_method_name} (#{args_keys_to_s(rpc_method_name)})"
