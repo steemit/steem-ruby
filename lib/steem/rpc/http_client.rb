@@ -109,8 +109,14 @@ module Steem
             end
             
             [response].flatten.each_with_index do |r, i|
-              if defined?(r.error) && !!r.error
-                if !!r.error.message
+              error = if defined?(r.error) && !!r.error
+                r.error
+              elsif defined?(r.result.error) && !!r.result.error
+                r.result.error
+              end
+              
+              if !!error
+                if !!error.message
                   begin
                     rpc_method_name = "#{api_name}.#{api_method}"
                     rpc_args = [request_object].flatten[i]
@@ -119,7 +125,7 @@ module Steem
                     throw retry_timeout(:tota_cera_pila, e)
                   end
                 else
-                  raise Steem::ArgumentError, r.error.inspect
+                  raise Steem::ArgumentError, error.inspect
                 end
               end
             end

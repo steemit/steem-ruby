@@ -2,19 +2,19 @@ require 'test_helper'
 
 module Steem
   class ApiTest < Steem::Test
-    METHOD_NAMES_1_ARG = %i(get_account_votes get_block get_block_header
-      get_blog_authors get_comment_discussions_by_payout
-      get_conversion_requests get_discussions_by_active
-      get_discussions_by_blog get_discussions_by_cashout
-      get_discussions_by_children get_discussions_by_comments
+    METHOD_NAMES_1_ARG = %i(get_block get_block_header
+      get_comment_discussions_by_payout
+      get_conversion_requests
+      get_discussions_by_blog
+      get_discussions_by_comments
       get_discussions_by_created get_discussions_by_feed
       get_discussions_by_hot get_discussions_by_promoted
-      get_discussions_by_trending get_discussions_by_votes
+      get_discussions_by_trending
       get_follow_count get_key_references get_open_orders
       get_owner_history get_post_discussions_by_payout
       get_potential_signatures get_recovery_request get_reward_fund
-      get_savings_withdraw_from get_savings_withdraw_to get_state
-      get_tags_used_by_author get_transaction_hex
+      get_savings_withdraw_from get_savings_withdraw_to
+      get_transaction_hex
       get_witness_by_account verify_authority)
     
     METHOD_NAMES_2_ARGS = %i(get_account_reputations
@@ -43,7 +43,10 @@ module Steem
       get_recent_trades get_ticker get_trade_history)
     
     # Plugins not enabled, or similar.
-    SKIP_METHOD_NAMES = %i(get_transaction)
+    SKIP_METHOD_NAMES = %i(get_account_votes get_blog_authors get_transaction
+      get_discussions_by_active get_discussions_by_cashout
+      get_discussions_by_children get_discussions_by_votes get_state
+      get_tags_used_by_author)
     
     ALL_METHOD_NAMES = METHOD_NAMES_1_ARG + METHOD_NAMES_2_ARGS +
       METHOD_NAMES_3_ARGS + METHOD_NAMES_4_ARGS + METHOD_NAMES_UNIMPLEMENTED +

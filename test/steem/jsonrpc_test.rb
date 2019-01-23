@@ -158,18 +158,6 @@ module Steem
             "verify_authority",
             "verify_signatures"
           ],
-          follow_api: [
-            "get_account_reputations",
-            "get_blog",
-            "get_blog_authors",
-            "get_blog_entries",
-            "get_feed",
-            "get_feed_entries",
-            "get_follow_count",
-            "get_followers",
-            "get_following",
-            "get_reblogged_by"
-          ],
           jsonrpc: [
             "get_methods",
             "get_signature"
@@ -187,12 +175,31 @@ module Steem
             "broadcast_block",
             "broadcast_transaction"
           ],
+          reputation_api: [
+            "get_account_reputations"
+          ],
           rc_api: [
             "find_rc_accounts",
             "get_resource_params",
             "get_resource_pool"
-          ],
-          tags_api: [
+          ]
+        }
+
+        unless TEST_NODE == 'https://api.steemit.com'
+          expected_apis[:follow_api] = [
+            "get_account_reputations",
+            "get_blog",
+            "get_blog_authors",
+            "get_blog_entries",
+            "get_feed",
+            "get_feed_entries",
+            "get_follow_count",
+            "get_followers",
+            "get_following",
+            "get_reblogged_by"
+          ]
+          
+          expected_apis[:tags_api] = [
             "get_active_votes",
             "get_comment_discussions_by_payout",
             "get_content_replies",
@@ -214,11 +221,12 @@ module Steem
             "get_tags_used_by_author",
             "get_trending_tags"
           ]
-        }
+        end
         
         api_names = expected_apis.keys.map(&:to_s)
         unexpected_apis = (api_names + apis.keys).uniq - api_names
         missing_apis = (api_names + apis.keys).uniq - apis.keys
+        
         assert_equal [], unexpected_apis, "found unexpected apis"
         assert_equal [], missing_apis, "missing expected apis"
         
