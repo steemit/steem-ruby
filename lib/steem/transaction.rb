@@ -78,19 +78,28 @@ module Steem
         return false if self[:expiration].to_i != other_trx[:expiration].to_i
         return false if self[:operations].size != other_trx[:operations].size
         
-        op_values = self[:operations].map do |type, value|
-          [type.to_s, value.values.map{|v| v.to_s.gsub(/[^a-zA-Z0-9-]/, '')}]
-        end.flatten.sort
+        op_values = denormalized_operation_values self[:operations]
         
-        other_op_values = other_trx[:operations].map do |type, value|
-          [type.to_s, value.values.map{|v| v.to_s.gsub(/[^a-zA-Z0-9-]/, '')}]
-        end.flatten.sort
+        other_op_values = denormalized_operation_values other_trx[:operations]
+        
         # binding.pry unless op_values == other_op_values
         op_values == other_op_values
       rescue => e
         # binding.pry
         false
       end
+    end
+  private
+    def denormalized_operation_values(ops)
+      ops.map do |type, value|
+        type, value = if value.nil?
+          [type[:type], type[:value]]
+        else
+          [type, value]
+        end
+        
+        [type.to_s, value.values.map{|v| v.to_s.gsub(/[^a-zA-Z0-9-]/, '')}]
+      end.flatten.sort
     end
   end
 end

@@ -213,13 +213,7 @@ module Steem
       
       unless @signed
         catch :serialize do; begin
-          transaction_hex.tap do |result|
-            hex = if app_base?
-              result.hex
-            else
-              result
-            end
-
+          transaction_hex.tap do |hex|
             unless force_serialize?
               derrived_trx = Transaction.new(hex: hex)
               derrived_ops = derrived_trx.operations
@@ -365,19 +359,17 @@ module Steem
     
     def normalize_operation(type, op = nil)
       if app_base?
-        case type
-        when Symbol, String
-          type_value = "#{type}_operation"
-          {type: type_value, value: op}
-        when Hash
-          type_value = "#{type.keys.first}_operation"
-          {type: type_value, value: type.values.first}
-        when Array
-          type_value = "#{type[0]}_operation"
-          {type: type_value, value: type[1]}
+        op = case type
+        when Symbol, String then {type: type.to_s, value: op}
+        when Hash then {type: type.keys.first.to_s, value: type.values.first}
+        when Array then {type: type[0].to_s, value: type[1]}
         else
           raise Steem::ArgumentError, "Don't know what to do with operation type #{type.class}: #{type} (#{op})"
         end
+        
+        type = op[:type]
+        type += '_operation' unless type.end_with? '_operation'
+        op.merge(type: type.to_sym)
       else
         case type
         when Symbol then [type, op]
