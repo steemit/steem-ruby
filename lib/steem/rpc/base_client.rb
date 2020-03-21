@@ -21,6 +21,7 @@ module Steem
         @url = case @chain
         when :steem then options[:url] || NETWORKS_STEEM_DEFAULT_NODE
         when :test then options[:url] || NETWORKS_TEST_DEFAULT_NODE
+        when :hive then options[:url] || NETWORKS_HIVE_DEFAULT_NODE
         else; raise UnsupportedChainError, "Unsupported chain: #{@chain}"
         end
       end

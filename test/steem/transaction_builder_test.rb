@@ -36,12 +36,24 @@ module Steem
       end
     end
     
-    def test_transaction_builder_initialize_bad_mainnet_injection
+    def test_transaction_builder_initialize_bad_mainnet_injection_01
       options = {
         database_api: :bogus_api,
         block_api: :bogus_api,
         testnet: true,
         chain_id: NETWORKS_STEEM_CHAIN_ID
+      }
+      assert_raises UnsupportedChainError do
+        TransactionBuilder.new(@options.merge options)
+      end
+    end
+
+    def test_transaction_builder_initialize_bad_mainnet_injection_02
+      options = {
+        database_api: :bogus_api,
+        block_api: :bogus_api,
+        testnet: true,
+        chain_id: NETWORKS_HIVE_CHAIN_ID
       }
       assert_raises UnsupportedChainError do
         TransactionBuilder.new(@options.merge options)

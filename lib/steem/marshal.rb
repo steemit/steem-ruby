@@ -21,6 +21,7 @@ module Steem
       @prefix ||= case @chain
       when :steem then NETWORKS_STEEM_ADDRESS_PREFIX
       when :test then NETWORKS_TEST_ADDRESS_PREFIX
+      when :hive then NETWORKS_HIVE_ADDRESS_PREFIX
       else; raise UnsupportedChainError, "Unsupported chain: #{@chain}"
       end
       @cursor = 0
