@@ -32,8 +32,12 @@ module Steem
   class Broadcast
     extend Retriable
     extend Utils
-    
-    DEFAULT_MAX_ACCEPTED_PAYOUT = Type::Amount.new(amount: '1000000000', precision: 3, nai: '@@000000013')
+
+    ##
+    # TODO We don't now which chain is active when the constant is initialized.
+    # TODO Use default chaing :steem for now.
+    #
+    DEFAULT_MAX_ACCEPTED_PAYOUT = Type::Amount.new({amount: '1000000000', precision: 3, nai: '@@000000013'})
     
     # This operation is used to cast a vote on a post/comment.
     # 

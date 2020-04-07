@@ -106,7 +106,7 @@ module Steem
       
       amount = "%.#{precision}f #{asset}" % (amount / 10 ** precision)
 
-      Steem::Type::Amount.new(amount)
+      Steem::Type::Amount.new(amount, :chain)
     end
     
     def price
@@ -159,14 +159,14 @@ module Steem
       varint.times do
         key = string.to_sym
         properties[key] = case key
-        when :account_creation_fee then Steem::Type::Amount.new(string)
+                          when :account_creation_fee then Steem::Type::Amount.new(string, :chain)
         when :account_subsidy_budget then scan(3)
         when :account_subsidy_decay, :maximum_block_size then uint32
         when :url then string
         when :sbd_exchange_rate
           JSON[string].tap do |rate|
-            rate["base"] = Steem::Type::Amount.new(rate["base"])
-            rate["quote"] = Steem::Type::Amount.new(rate["quote"])
+            rate["base"] = Steem::Type::Amount.new(rate["base"], :chain)
+            rate["quote"] = Steem::Type::Amount.new(rate["quote"], :chain)
           end
         when :sbd_interest_rate then uint16
         when :key, :new_signing_key then @prefix + scan(50)
