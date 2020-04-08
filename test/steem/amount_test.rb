@@ -443,6 +443,5 @@ module Steem
          _test.to_h,
          "test array should be {:amount => “123456700”, :nai =>  “@@000000037”, :precision =>  6}")
     end
-
   end
 end
