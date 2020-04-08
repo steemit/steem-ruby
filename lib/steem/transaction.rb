@@ -9,8 +9,12 @@ module Steem
     attr_accessor *ATTRIBUTES
     
     def initialize(options = {})
+      raise ArgumentError, "Parameter :chain must be set." unless options.key?(:chain)
+
+      @chain = options[:chain]
+
       if !!(hex = options.delete(:hex))
-        marshal = Marshal.new(hex: hex)
+        marshal = Marshal.new({hex: hex, chain: @chain})
         marshal.transaction(trx: self)
       end
       

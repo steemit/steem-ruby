@@ -35,6 +35,8 @@ module Steem
     alias force_serialize? force_serialize
     
     def initialize(options = {})
+      raise ArgumentError, "Parameter :chain must be set." unless options.key?(:chain)
+
       @app_base = !!options[:app_base] # default false
       @database_api = options[:database_api]
       @block_api = options[:block_api]
@@ -62,7 +64,7 @@ module Steem
       end
       
       @trx ||= Transaction.new
-      @chain = options[:chain] || :steem
+      @chain = options[:chain]
       @error_pipe = options[:error_pipe] || STDERR
       @chain_id = options[:chain_id]
       @chain_id ||= case @chain

@@ -35,22 +35,12 @@ module Steem
       private_constant :Coin_Info
       private_constant :Chain_Info
 
-      def self.to_h(amount)
-        new(amount).to_h
-      end
-
-      def self.to_s(amount)
-        new(amount).to_s
-      end
-
-      def self.to_bytes(amount)
-        new(amount).to_bytes
-      end
-
-      def initialize(value, chain = :steem)
+      def initialize(value, chain)
         super(:amount, value)
 
         _chain_info = @@chain_infos[chain]
+
+        raise ArgumentError, "Chain info for chain «" + chain.to_s + "» not found." if _chain_info == nil
 
         case value
         when Array
@@ -221,6 +211,18 @@ module Steem
               )
            )
         }
+
+        def to_h(amount, chain)
+          new(amount, chain).to_h
+        end
+
+        def to_s(amount, chain)
+          new(amount, chain).to_s
+        end
+
+        def to_bytes(amount, chain)
+          new(amount, chain).to_bytes
+        end
       end
     end
   end

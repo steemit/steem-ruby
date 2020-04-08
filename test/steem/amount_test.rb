@@ -3,26 +3,26 @@ require 'test_helper'
 module Steem
   class AmountTest < Steem::Test
     def setup
-      @amount = Steem::Type::Amount.new('0.000 STEEM')
+      @amount = Steem::Type::Amount.new('0.000 STEEM', :steem)
     end
     
     def test_to_s
-      assert_equal '0.000 SBD', Steem::Type::Amount.to_s(['0', 3, '@@000000013'])
-      assert_equal '0.000 STEEM', Steem::Type::Amount.to_s(['0', 3, '@@000000021'])
-      assert_equal '0.000000 VESTS', Steem::Type::Amount.to_s(['0', 6, '@@000000037'])
+      assert_equal '0.000 SBD', Steem::Type::Amount.to_s(['0', 3, '@@000000013'], :steem)
+      assert_equal '0.000 STEEM', Steem::Type::Amount.to_s(['0', 3, '@@000000021'], :steem)
+      assert_equal '0.000000 VESTS', Steem::Type::Amount.to_s(['0', 6, '@@000000037'], :steem)
       
       assert_raises TypeError do
-        Steem::Type::Amount.to_s(['0', 3, '@@00000000'])
+        Steem::Type::Amount.to_s(['0', 3, '@@00000000'], :steem)
       end
     end
     
     def test_to_h
-      assert_equal({amount: '0', precision: 3, nai: '@@000000013'}, Steem::Type::Amount.to_h('0.000 SBD'))
-      assert_equal({amount: '0', precision: 3, nai: '@@000000021'}, Steem::Type::Amount.to_h('0.000 STEEM'))
-      assert_equal({amount: '0', precision: 6, nai: '@@000000037'}, Steem::Type::Amount.to_h('0.000000 VESTS'))
+      assert_equal({amount: '0', precision: 3, nai: '@@000000013'}, Steem::Type::Amount.to_h('0.000 SBD', :steem))
+      assert_equal({amount: '0', precision: 3, nai: '@@000000021'}, Steem::Type::Amount.to_h('0.000 STEEM', :steem))
+      assert_equal({amount: '0', precision: 6, nai: '@@000000037'}, Steem::Type::Amount.to_h('0.000000 VESTS', :steem))
       
       assert_raises TypeError do
-        Steem::Type::Amount.to_h('0.000 BOGUS')
+        Steem::Type::Amount.to_h('0.000 BOGUS', :steem)
       end
     end
     
@@ -31,7 +31,7 @@ module Steem
     end
 
     def test_new_00
-      _test = Steem::Type::Amount.new({:amount => 1000, :precision => 3, :nai => "@@000000021"})
+      _test = Steem::Type::Amount.new({:amount => 1000, :precision => 3, :nai => "@@000000021"}, :steem)
 
       assert_equal(1.0, _test.to_f, "float value  should be 1.0")
       assert_equal("1.000", _test.amount, "test amount  should be “1.000”")
@@ -48,7 +48,7 @@ module Steem
     end
 
     def test_new_01
-      _test = Steem::Type::Amount.new(["1234", 3, "@@000000021"])
+      _test = Steem::Type::Amount.new(["1234", 3, "@@000000021"], :steem)
 
       assert_equal(1.234, _test.to_f, "float value  should be 1.234")
       assert_equal("1.234", _test.amount, "test amount  should be “1.234”")
@@ -65,7 +65,7 @@ module Steem
     end
 
     def test_new_02
-      _test = Steem::Type::Amount.new("1234.567 STEEM")
+      _test = Steem::Type::Amount.new("1234.567 STEEM", :steem)
 
       assert_equal(1234.567, _test.to_f, "float value  should be 1.234456")
       assert_equal("1234.567", _test.amount, "test amount  should be “1234.567”")
@@ -82,8 +82,8 @@ module Steem
     end
 
     def test_new_03
-      _source = Steem::Type::Amount.new("1234.567 STEEM")
-      _test   = Steem::Type::Amount.new(_source)
+      _source = Steem::Type::Amount.new("1234.567 STEEM", :steem)
+      _test   = Steem::Type::Amount.new(_source, _source.chain)
 
       assert_equal(1234.567, _test.to_f, "float value  should be 1.234456")
       assert_equal("1234.567", _test.amount, "test amount  should be “1234.567”")
@@ -152,7 +152,7 @@ module Steem
 
     def test_new_07
       _source = Steem::Type::Amount.new("1234.567 HIVE", :hive)
-      _test   = Steem::Type::Amount.new(_source)
+      _test   = Steem::Type::Amount.new(_source, _source.chain)
 
       assert_equal(1234.567, _test.to_f, "float value  should be 1.234456")
       assert_equal("1234.567", _test.amount, "test amount  should be “1234.567”")
@@ -169,7 +169,7 @@ module Steem
     end
 
     def test_new_10
-      _test = Steem::Type::Amount.new({:amount => 1000, :precision => 3, :nai => "@@000000013"})
+      _test = Steem::Type::Amount.new({:amount => 1000, :precision => 3, :nai => "@@000000013"}, :steem)
 
       assert_equal(1.0, _test.to_f, "float value  should be 1.0")
       assert_equal("1.000", _test.amount, "test amount  should be “1.000”")
@@ -186,7 +186,7 @@ module Steem
     end
 
     def test_new_11
-      _test = Steem::Type::Amount.new([1234, 3, "@@000000013"])
+      _test = Steem::Type::Amount.new([1234, 3, "@@000000013"], :steem)
 
       assert_equal(1.234, _test.to_f, "float value  should be 1.234")
       assert_equal("1.234", _test.amount, "test amount  should be “1.234”")
@@ -203,7 +203,7 @@ module Steem
     end
 
     def test_new_12
-      _test = Steem::Type::Amount.new("1234.567 SBD")
+      _test = Steem::Type::Amount.new("1234.567 SBD", :steem)
 
       assert_equal(1234.567, _test.to_f, "float value  should be 1.234456")
       assert_equal("1234.567", _test.amount, "test amount  should be “1234.567”")
@@ -220,8 +220,8 @@ module Steem
     end
 
     def test_new_13
-      _source = Steem::Type::Amount.new("1234.567 SBD")
-      _test   = Steem::Type::Amount.new(_source)
+      _source = Steem::Type::Amount.new("1234.567 SBD", :steem)
+      _test   = Steem::Type::Amount.new(_source, _source.chain)
 
       assert_equal(1234.567, _test.to_f, "float value  should be 1.234456")
       assert_equal("1234.567", _test.amount, "test amount  should be “1234.567”")
@@ -290,7 +290,7 @@ module Steem
 
     def test_new_17
       _source = Steem::Type::Amount.new("1234.567 HBD", :hive)
-      _test   = Steem::Type::Amount.new(_source)
+      _test   = Steem::Type::Amount.new(_source, _source.chain)
 
       assert_equal(1234.567, _test.to_f, "float value  should be 1.234456")
       assert_equal("1234.567", _test.amount, "test amount  should be “1234.567”")
@@ -307,7 +307,7 @@ module Steem
     end
 
     def test_new_20
-      _test = Steem::Type::Amount.new({:amount => 1000000, :precision => 6, :nai => "@@000000037"})
+      _test = Steem::Type::Amount.new({:amount => 1000000, :precision => 6, :nai => "@@000000037"}, :steem)
 
       assert_equal(1.0, _test.to_f, "float value  should be 1.0")
       assert_equal("1.000000", _test.amount, "test amount  should be “1.000000”")
@@ -324,7 +324,7 @@ module Steem
     end
 
     def test_new_21
-      _test = Steem::Type::Amount.new([1234000, 6, "@@000000037"])
+      _test = Steem::Type::Amount.new([1234000, 6, "@@000000037"], :steem)
 
       assert_equal(1.234, _test.to_f, "float value  should be 1.234")
       assert_equal("1.234000", _test.amount, "test amount  should be “1.234000”")
@@ -341,7 +341,7 @@ module Steem
     end
 
     def test_new_22
-      _test = Steem::Type::Amount.new("1.234567 VESTS")
+      _test = Steem::Type::Amount.new("1.234567 VESTS", :steem)
 
       assert_equal(1.234567, _test.to_f, "float value  should be 1.234456")
       assert_equal("1.234567", _test.amount, "test amount  should be “1.234567”")
@@ -358,8 +358,8 @@ module Steem
     end
 
     def test_new_23
-      _source = Steem::Type::Amount.new("123.4567 VESTS")
-      _test   = Steem::Type::Amount.new(_source)
+      _source = Steem::Type::Amount.new("123.4567 VESTS", :steem)
+      _test   = Steem::Type::Amount.new(_source, _source.chain)
 
       assert_equal(123.4567, _test.to_f, "float value  should be 123.4456")
       assert_equal("123.4567", _test.amount, "test amount  should be “123.4567”")
@@ -428,7 +428,7 @@ module Steem
 
     def test_new_27
       _source = Steem::Type::Amount.new("123.4567 VESTS", :hive)
-      _test   = Steem::Type::Amount.new(_source)
+      _test   = Steem::Type::Amount.new(_source, _source.chain)
 
       assert_equal(123.4567, _test.to_f, "float value  should be 123.4456")
       assert_equal("123.4567", _test.amount, "test amount  should be “123.4567”")
