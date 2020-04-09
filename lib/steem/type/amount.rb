@@ -2,9 +2,10 @@ require 'steem/chain_config'
 
 module Steem
   module Type
+
     # See: https://github.com/xeroc/piston-lib/blob/34a7525cee119ec9b24a99577ede2d54466fca0e/steembase/operations.py
     class Amount < BaseType
-      
+
       ##
       # information on a single coins available.
       #
@@ -17,6 +18,7 @@ module Steem
           @precision = precision
         end
       end
+      private_constant :Coin_Info
 
       ##
       # information on the coins of a one chain
@@ -30,59 +32,44 @@ module Steem
           @vest = vest
         end
       end
-
-      attr_reader :amount, :precision, :nai, :asset, :chain
-      private_constant :Coin_Info
       private_constant :Chain_Info
 
+      attr_reader :amount, :precision, :nai, :asset, :chain
+
       def initialize(value, chain)
-        super(:amount, value)
-
-        _chain_info = @@chain_infos[chain]
-
-        raise ArgumentError, "Chain info for chain «" + chain.to_s + "» not found." if _chain_info == nil
-
         case value
-        when Array
+        when Amount
+          super(:amount, value.to_s)
+
+          @chain     = value.chain
+          @amount    = value.amount
+          @precision = value.precision
+          @nai       = value.nai
+          @asset     = value.asset
+        when ::Array
+          super(:amount, value)
+
           @chain = chain
           @amount, @precision, @nai = value
-          @asset = case @nai
-          when _chain_info.core.nai then _chain_info.core.symbol
-          when _chain_info.debt.nai then _chain_info.debt.symbol
-          when _chain_info.vest.nai then _chain_info.vest.symbol
-          else; raise TypeError, "Asset #{@nai} unknown."
-          end
-
+          @asset = Amount.nai_to_asset(@nai, @chain)
           @amount = "%.#{@precision}f" % (@amount.to_f / 10 ** @precision)
-        when Hash
+        when ::Hash
+          super(:amount, value)
+
           @chain = chain
           @amount, @precision, @nai = value.map do |k, v|
             v if %i(amount precision nai).include? k.to_sym
           end.compact
-          @asset = case @nai
-          when _chain_info.core.nai then _chain_info.core.symbol
-          when _chain_info.debt.nai then _chain_info.debt.symbol
-          when _chain_info.vest.nai then _chain_info.vest.symbol
-          else; raise TypeError, "Asset #{@nai} unknown."
-          end
-
+          @asset = Amount.nai_to_asset(@nai, @chain)
           @amount = "%.#{@precision}f" % (@amount.to_f / 10 ** @precision)
-        when Amount
-          @chain = value.chain
-          @precision = value.precision
-          @nai = value.nai
-          @asset = value.asset
-          @amount = value.amount
         else
+          super(:amount, value)
+
           @chain = chain
           @amount, @asset = value.strip.split(' ') rescue ['', '']
-          @precision , @nai = case @asset
-          when _chain_info.core.symbol then [_chain_info.core.precision, _chain_info.core.nai]
-          when _chain_info.debt.symbol then [_chain_info.debt.precision, _chain_info.debt.nai]
-          when _chain_info.vest.symbol then [_chain_info.vest.precision, _chain_info.vest.nai]
-          else; raise TypeError, "Asset #{@asset} unknown."
-          end
-	end
+          @precision = Amount.asset_to_precision(@asset, @chain)
+          @nai = Amount.asset_to_nai(@asset, @chain)
+        end
       end
 
       def to_bytes
@@ -141,7 +128,7 @@ module Steem
       end
 
       def to_s
-        "#{@amount} #{@asset}"
+        return "%.#{@precision}f %s" % [@amount, @asset]
       end
 
       ##
@@ -154,6 +141,74 @@ module Steem
         return @amount.to_f
       end
 
+      ##
+      # operator to add two balances
+      #
+      # @param [Amount]
+      #     amount to add
+      # @return [Amount]
+      #     result of addition
+      # @raise [ArgumentError]
+      #    values of different asset type
+      #
+      def +(right)
+        raise ArgumentError, 'chain types differ' unless @chain == right.chain
+        raise ArgumentError, 'asset types differ' unless @asset == right.asset
+
+        return Amount.to_amount(@amount.to_f + right.to_f, @asset, @chain)
+      end
+
+      ##
+      # operator to subtract two balances
+      #
+      # @param [Amount]
+      #     amount to subtract
+      # @return [Amount]
+      #     result of subtraction
+      # @raise [ArgumentError]
+      #    values of different asset type
+      #
+      def -(right)
+        raise ArgumentError, 'chain types differ' unless @chain == right.chain
+        raise ArgumentError, 'asset types differ' unless @asset == right.asset
+
+        return Amount.to_amount(@amount.to_f - right.to_f, @asset, @chain)
+      end
+
+      ##
+      # operator to divert two balances
+      #
+      # @param [Amount]
+      #     amount to divert
+      # @return [Amount]
+      #     result of division
+      # @raise [ArgumentError]
+      #    values of different asset type
+      #
+      def *(right)
+        raise ArgumentError, 'chain types differ' unless @chain == right.chain
+        raise ArgumentError, 'asset types differ' unless @asset == right.asset
+
+        return Amount.to_amount(@amount.to_f * right.to_f, @asset, @chain)
+      end
+
+      ##
+      # operator to divert two balances
+      #
+      # @param [Amount]
+      #     amount to divert
+      # @return [Amount]
+      #     result of division
+      # @raise [ArgumentError]
+      #    values of different asset type
+      #
+      def /(right)
+        raise ArgumentError, 'chain types differ' unless @chain == right.chain
+        raise ArgumentError, 'asset types differ' unless @asset == right.asset
+
+        return Amount.to_amount(@amount.to_f / right.to_f, @asset, @chain)
+      end
+
       class << self
         ##
         # information on all coins of all chain.
@@ -161,67 +216,126 @@ module Steem
         @@chain_infos = {
            steem: Chain_Info.new(
               core = Coin_Info.new(
-                 symbol    = Steem::ChainConfig::NETWORKS_STEEM_CORE_SYMBOL,
-                 nai       = Steem::ChainConfig::NETWORKS_STEEM_CORE_ASSET[2],
-                 precision = Steem::ChainConfig::NETWORKS_STEEM_CORE_ASSET[1]
+                 symbol    = ChainConfig::NETWORKS_STEEM_CORE_SYMBOL,
+                 nai       = ChainConfig::NETWORKS_STEEM_CORE_ASSET[2],
+                 precision = ChainConfig::NETWORKS_STEEM_CORE_ASSET[1]
               ),
               debt = Coin_Info.new(
-                 symbol    = Steem::ChainConfig::NETWORKS_STEEM_DEBT_SYMBOL,
-                 nai       = Steem::ChainConfig::NETWORKS_STEEM_DEBT_ASSET[2],
-                 precision = Steem::ChainConfig::NETWORKS_STEEM_DEBT_ASSET[1]
+                 symbol    = ChainConfig::NETWORKS_STEEM_DEBT_SYMBOL,
+                 nai       = ChainConfig::NETWORKS_STEEM_DEBT_ASSET[2],
+                 precision = ChainConfig::NETWORKS_STEEM_DEBT_ASSET[1]
               ),
               vest = Coin_Info.new(
-                 symbol    = Steem::ChainConfig::NETWORKS_STEEM_VEST_SYMBOL,
-                 nai       = Steem::ChainConfig::NETWORKS_STEEM_VEST_ASSET[2],
-                 precision = Steem::ChainConfig::NETWORKS_STEEM_VEST_ASSET[1]
+                 symbol    = ChainConfig::NETWORKS_STEEM_VEST_SYMBOL,
+                 nai       = ChainConfig::NETWORKS_STEEM_VEST_ASSET[2],
+                 precision = ChainConfig::NETWORKS_STEEM_VEST_ASSET[1]
               )
            ),
            test: Chain_Info.new(
               core = Coin_Info.new(
-                 symbol    = Steem::ChainConfig::NETWORKS_TEST_CORE_SYMBOL,
-                 nai       = Steem::ChainConfig::NETWORKS_TEST_CORE_ASSET[2],
-                 precision = Steem::ChainConfig::NETWORKS_TEST_CORE_ASSET[1]
+                 symbol    = ChainConfig::NETWORKS_TEST_CORE_SYMBOL,
+                 nai       = ChainConfig::NETWORKS_TEST_CORE_ASSET[2],
+                 precision = ChainConfig::NETWORKS_TEST_CORE_ASSET[1]
               ),
               debt = Coin_Info.new(
-                 symbol    = Steem::ChainConfig::NETWORKS_TEST_DEBT_SYMBOL,
-                 nai       = Steem::ChainConfig::NETWORKS_TEST_DEBT_ASSET[2],
-                 precision = Steem::ChainConfig::NETWORKS_TEST_DEBT_ASSET[1]
+                 symbol    = ChainConfig::NETWORKS_TEST_DEBT_SYMBOL,
+                 nai       = ChainConfig::NETWORKS_TEST_DEBT_ASSET[2],
+                 precision = ChainConfig::NETWORKS_TEST_DEBT_ASSET[1]
               ),
               vest = Coin_Info.new(
-                 symbol    = Steem::ChainConfig::NETWORKS_TEST_VEST_SYMBOL,
-                 nai       = Steem::ChainConfig::NETWORKS_TEST_VEST_ASSET[2],
-                 precision = Steem::ChainConfig::NETWORKS_TEST_VEST_ASSET[1]
+                 symbol    = ChainConfig::NETWORKS_TEST_VEST_SYMBOL,
+                 nai       = ChainConfig::NETWORKS_TEST_VEST_ASSET[2],
+                 precision = ChainConfig::NETWORKS_TEST_VEST_ASSET[1]
               )
            ),
            hive: Chain_Info.new(
               core = Coin_Info.new(
-                 symbol    = Steem::ChainConfig::NETWORKS_HIVE_CORE_SYMBOL,
-                 nai       = Steem::ChainConfig::NETWORKS_HIVE_CORE_ASSET[2],
-                 precision = Steem::ChainConfig::NETWORKS_HIVE_CORE_ASSET[1]
+                 symbol    = ChainConfig::NETWORKS_HIVE_CORE_SYMBOL,
+                 nai       = ChainConfig::NETWORKS_HIVE_CORE_ASSET[2],
+                 precision = ChainConfig::NETWORKS_HIVE_CORE_ASSET[1]
               ),
               debt = Coin_Info.new(
-                 symbol    = Steem::ChainConfig::NETWORKS_HIVE_DEBT_SYMBOL,
-                 nai       = Steem::ChainConfig::NETWORKS_HIVE_DEBT_ASSET[2],
-                 precision = Steem::ChainConfig::NETWORKS_HIVE_DEBT_ASSET[1]
+                 symbol    = ChainConfig::NETWORKS_HIVE_DEBT_SYMBOL,
+                 nai       = ChainConfig::NETWORKS_HIVE_DEBT_ASSET[2],
+                 precision = ChainConfig::NETWORKS_HIVE_DEBT_ASSET[1]
               ),
               vest = Coin_Info.new(
-                 symbol    = Steem::ChainConfig::NETWORKS_HIVE_VEST_SYMBOL,
-                 nai       = Steem::ChainConfig::NETWORKS_HIVE_VEST_ASSET[2],
-                 precision = Steem::ChainConfig::NETWORKS_HIVE_VEST_ASSET[1]
+                 symbol    = ChainConfig::NETWORKS_HIVE_VEST_SYMBOL,
+                 nai       = ChainConfig::NETWORKS_HIVE_VEST_ASSET[2],
+                 precision = ChainConfig::NETWORKS_HIVE_VEST_ASSET[1]
               )
            )
         }
 
+        ##
+        # Helper factory method to create a new Amount from
+        # an value and asset type.
+        #
+        # @param [Float] value
+        #     the numeric value to create an amount from
+        # @param [String] asset
+        #     the asset type which should be STEEM, SBD or VESTS
+        # @return [Amount]
+        #     the value as amount
+        def to_amount(value, asset, chain)
+          return Amount.new(value.to_s + " " + asset, chain)
+        end
+
         def to_h(amount, chain)
-          new(amount, chain).to_h
+          return new(amount, chain).to_h
         end
 
         def to_s(amount, chain)
-          new(amount, chain).to_s
+          return new(amount, chain).to_s
         end
 
         def to_bytes(amount, chain)
-          new(amount, chain).to_bytes
+          return new(amount, chain).to_bytes
+        end
+
+        def asset_to_nai(asset, chain)
+          _chain_info = @@chain_infos[chain]
+
+          return case asset
+                   when _chain_info.core.symbol then
+                     _chain_info.core.nai
+                   when _chain_info.debt.symbol then
+                     _chain_info.debt.nai
+                   when _chain_info.vest.symbol then
+                     _chain_info.vest.nai
+                   else
+                     raise TypeError, "Asset #{@asset} unknown."
+                 end
+        end
+
+        def asset_to_precision(asset, chain)
+          _chain_info = @@chain_infos[chain]
+
+          return case asset
+                   when _chain_info.core.symbol then
+                     _chain_info.core.precision
+                   when _chain_info.debt.symbol then
+                     _chain_info.debt.precision
+                   when _chain_info.vest.symbol then
+                     _chain_info.vest.precision
+                   else
+                     raise TypeError, "Asset #{@asset} unknown."
+                 end
+        end
+
+        def nai_to_asset(nai, chain)
+          _chain_info = @@chain_infos[chain]
+
+          return case nai
+                   when _chain_info.core.nai then
+                     _chain_info.core.symbol
+                   when _chain_info.debt.nai then
+                     _chain_info.debt.symbol
+                   when _chain_info.vest.nai then
+                     _chain_info.vest.symbol
+                   else
+                     raise TypeError, "Asset #{@nai} unknown."
+                 end
         end
       end
     end
