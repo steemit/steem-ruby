@@ -319,7 +319,7 @@ module Steem
                    when _chain_info.vest.symbol then
                      _chain_info.vest.precision
                    else
-                     raise TypeError, "Asset #{@asset} unknown."
+                     raise TypeError, "Asset «#{@asset}» unknown."
                  end
         end
 
@@ -334,8 +334,53 @@ module Steem
                    when _chain_info.vest.nai then
                      _chain_info.vest.symbol
                    else
-                     raise TypeError, "Asset #{@nai} unknown."
+                     raise TypeError, "NAI «#{@nai}» unknown."
                  end
+        end
+
+        ##
+        # core symbol for chain
+	#
+        # @param [Symbol] chain
+        #     The chain for which we want to know the asset
+        # @return [String]
+        #     :steem "STEEM"
+        #     :hive  "HIVE"
+        #
+        def core_asset(chain)
+          _chain_info = @@chain_infos[chain]
+
+          return _chain_info.core.symbol
+	end
+
+        ##
+        # debt symbol for chain
+        #
+        # @param [Symbol] chain
+        #     The chain for which we want to know the asset
+        # @return [String]
+        #   :steem "SBD"
+        #   :hive  "HBD"
+        #
+        def debt_asset(chain)
+          _chain_info = @@chain_infos[chain]
+
+          return _chain_info.debt.symbol
+	end
+
+        ##
+        # core symbol for chain
+        #
+        # @param [Symbol] chain
+        #     The chain for which we want to know the asset
+        # @return [String]
+        #   :steem "VESTS"
+        #   :hive  "VESTS"
+        #
+        def vest_asset(chain)
+          _chain_info = @@chain_infos[chain]
+
+          return _chain_info.vest.symbol
         end
       end
     end
