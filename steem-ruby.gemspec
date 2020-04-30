@@ -6,8 +6,8 @@ require 'steem/version'
 Gem::Specification.new do |spec|
   spec.name = 'steem-ruby'
   spec.version = Steem::VERSION
-  spec.authors = ['Anthony Martin']
-  spec.email = ['anthony@steem.com']
+  spec.authors = ['Anthony Martin', 'Martin Krischik']
+  spec.email = ['anthony@steem.com', 'krischik@users.sourceforge.net']
 
   spec.summary = %q{Steem Ruby Client}
   spec.description = %q{Client for accessing the Steem blockchain.}

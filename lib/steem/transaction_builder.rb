@@ -35,6 +35,8 @@ module Steem
     alias force_serialize? force_serialize
     
     def initialize(options = {})
+      raise ArgumentError, "Parameter :chain must be set." unless options.key?(:chain)
+
       @app_base = !!options[:app_base] # default false
       @database_api = options[:database_api]
       @block_api = options[:block_api]
@@ -62,16 +64,17 @@ module Steem
       end
       
       @trx ||= Transaction.new
-      @chain = options[:chain] || :steem
+      @chain = options[:chain]
       @error_pipe = options[:error_pipe] || STDERR
       @chain_id = options[:chain_id]
       @chain_id ||= case @chain
       when :steem then NETWORKS_STEEM_CHAIN_ID
       when :test then NETWORKS_TEST_CHAIN_ID
+      when :hive then NETWORKS_HIVE_CHAIN_ID
       else; raise UnsupportedChainError, "Unsupported chain: #{@chain}"
       end
       
-      if testnet? && @chain_id == NETWORKS_STEEM_CHAIN_ID
+      if testnet? && (@chain_id == NETWORKS_STEEM_CHAIN_ID || @chain_id == NETWORKS_HIVE_CHAIN_ID)
         raise UnsupportedChainError, "Unsupported testnet chain id: #{@chain_id}"
       end
     end
