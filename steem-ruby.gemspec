@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   
   spec.add_dependency 'json', '~> 2.1', '>= 2.1.0'
   spec.add_dependency 'logging', '~> 2.2', '>= 2.2.0'
-  spec.add_dependency 'hashie', '~> 4.1', '>= 3.5.7'
+  spec.add_dependency 'hashie', '~> 5.0', '>= 4.1.0'
   spec.add_dependency 'bitcoin-ruby', '~> 0.0', '>= 0.0.18'
   spec.add_dependency 'ffi', '~> 1.9', '>= 1.9.23'
   spec.add_dependency 'bindata', '~> 2.4', '>= 2.4.4'
