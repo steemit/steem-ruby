@@ -76,7 +76,7 @@ module Steem
   
   def self.const_missing(api_name)
     api = api_classes[api_name]
-    api ||= Api.clone(freeze: true) rescue Api.clone
+    api ||= Api.clone(freeze: false) rescue Api.clone
     api.api_name = api_name
     api_classes[api_name] = api
   end
