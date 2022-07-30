@@ -3,6 +3,8 @@ require 'test_helper'
 module Steem
   class TagsApiTest < Steem::Test
     def setup
+      skip 'tags_api not supported'
+
       @api = Steem::TagsApi.new(url: TEST_NODE)
       @jsonrpc = Jsonrpc.new(url: TEST_NODE)
       @methods = @jsonrpc.get_api_methods[@api.class.api_name]

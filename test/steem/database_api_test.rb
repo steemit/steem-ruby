@@ -14,7 +14,7 @@ module Steem
     end
     
     def test_inspect
-      assert_equal "#<DatabaseApi [@chain=steem, @methods=<47 elements>]>", @api.inspect
+      assert_equal "#<DatabaseApi [@chain=steem, @methods=<50 elements>]>", @api.inspect
     end
     
     def test_method_missing
@@ -631,6 +631,10 @@ module Steem
           @api.get_version do |version|
             assert version.chain_id
           end
+        when '0.23.0'
+          @api.get_version do |version|
+            assert version.chain_id
+          end
         else; fail("Unknown hardfork: #{hf_properties.current_hardfork_version}")
         end
       end
@@ -658,8 +662,9 @@ module Steem
         extensions: []
       }
       
+      skip
       api = Steem::DatabaseApi.new(url: 'https://testnet.steemitdev.com')
-      
+
       api.get_transaction_hex(trx: trx) do |result|
         # Sometimes testnet is unstable.
         skip "Did not expect nil result for transaction: #{trx}" if result.nil?

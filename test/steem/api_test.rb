@@ -76,15 +76,15 @@ module Steem
     end
     
     def test_inspect
-      assert_equal "#<CondenserApi [@chain=steem, @methods=<84 elements>]>", @api.inspect
+      assert_equal "#<CondenserApi [@chain=steem, @methods=<87 elements>]>", @api.inspect
     end
     
-    def test_inspect_testnet
-      vcr_cassette("#{@api.class.api_name}_testnet") do
-        api = Api.new(chain: :test)
-        assert_equal "#<CondenserApi [@chain=test, @methods=<84 elements>]>", api.inspect
-      end
-    end
+    #def test_inspect_testnet
+    #  vcr_cassette("#{@api.class.api_name}_testnet") do
+    #    api = Api.new(chain: :test)
+    #    assert_equal "#<CondenserApi [@chain=test, @methods=<87 elements>]>", api.inspect
+    #  end
+    #end
     
     def test_unsupported_chain
       vcr_cassette("#{@api.class.api_name}_unsupported_chain") do
