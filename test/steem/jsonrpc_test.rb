@@ -107,7 +107,10 @@ module Steem
             "lookup_accounts",
             "lookup_witness_accounts",
             "verify_account_authority",
-            "verify_authority"
+            "verify_authority",
+            "find_proposals",
+            "list_proposal_votes",
+            "list_proposals"
           ],
           database_api: [
             "find_account_recovery_requests",
@@ -156,20 +159,23 @@ module Steem
             "list_witnesses",
             "verify_account_authority",
             "verify_authority",
-            "verify_signatures"
+            "verify_signatures",
+            "find_proposals",
+            "list_proposal_votes",
+            "list_proposals"
           ],
-          follow_api: [
-            "get_account_reputations",
-            "get_blog",
-            "get_blog_authors",
-            "get_blog_entries",
-            "get_feed",
-            "get_feed_entries",
-            "get_follow_count",
-            "get_followers",
-            "get_following",
-            "get_reblogged_by"
-          ],
+          #follow_api: [
+          #  "get_account_reputations",
+          #  "get_blog",
+          #  "get_blog_authors",
+          #  "get_blog_entries",
+          #  "get_feed",
+          #  "get_feed_entries",
+          #  "get_follow_count",
+          #  "get_followers",
+          #  "get_following",
+          #  "get_reblogged_by"
+          #],
           jsonrpc: [
             "get_methods",
             "get_signature"
@@ -192,27 +198,30 @@ module Steem
             "get_resource_params",
             "get_resource_pool"
           ],
-          tags_api: [
-            "get_active_votes",
-            "get_comment_discussions_by_payout",
-            "get_content_replies",
-            "get_discussion",
-            "get_discussions_by_active",
-            "get_discussions_by_author_before_date",
-            "get_discussions_by_blog",
-            "get_discussions_by_cashout",
-            "get_discussions_by_children",
-            "get_discussions_by_comments",
-            "get_discussions_by_created",
-            "get_discussions_by_feed",
-            "get_discussions_by_hot",
-            "get_discussions_by_promoted",
-            "get_discussions_by_trending",
-            "get_discussions_by_votes",
-            "get_post_discussions_by_payout",
-            "get_replies_by_last_update",
-            "get_tags_used_by_author",
-            "get_trending_tags"
+          #tags_api: [
+          #  "get_active_votes",
+          #  "get_comment_discussions_by_payout",
+          #  "get_content_replies",
+          #  "get_discussion",
+          #  "get_discussions_by_active",
+          #  "get_discussions_by_author_before_date",
+          #  "get_discussions_by_blog",
+          #  "get_discussions_by_cashout",
+          #  "get_discussions_by_children",
+          #  "get_discussions_by_comments",
+          #  "get_discussions_by_created",
+          #  "get_discussions_by_feed",
+          #  "get_discussions_by_hot",
+          #  "get_discussions_by_promoted",
+          #  "get_discussions_by_trending",
+          #  "get_discussions_by_votes",
+          #  "get_post_discussions_by_payout",
+          #  "get_replies_by_last_update",
+          #  "get_tags_used_by_author",
+          #  "get_trending_tags"
+          #],
+          reputation_api: [
+            "get_account_reputations"
           ]
         }
         
@@ -294,14 +303,14 @@ module Steem
       end
     end
     
-    def test_get_methods_non_api_endpoint
-      vcr_cassette('jsonrpc_get_methods_non_api_endpoint', record: :once) do
-        assert_raises UnknownError do # FIXME
-          jsonrpc = Jsonrpc.new(url: 'https://test.com')
-          jsonrpc.get_methods
-        end
-      end
-    end
+    #def test_get_methods_non_api_endpoint
+    #  vcr_cassette('jsonrpc_get_methods_non_api_endpoint', record: :once) do
+    #    assert_raises UnknownError do # FIXME
+    #      jsonrpc = Jsonrpc.new(url: 'https://test.com')
+    #      jsonrpc.get_methods
+    #    end
+    #  end
+    #end
     
     # def test_get_methods_non_appbase
     #   vcr_cassette('jsonrpc_get_methods_non_appbase', record: :once) do

@@ -3,6 +3,8 @@ require 'test_helper'
 module Steem
   class FollowApiTest < Steem::Test
     def setup
+      skip 'follow_api not supported'
+
       @api = Steem::FollowApi.new(url: TEST_NODE)
       @jsonrpc = Jsonrpc.new(url: TEST_NODE)
       @methods = @jsonrpc.get_api_methods[@api.class.api_name]
